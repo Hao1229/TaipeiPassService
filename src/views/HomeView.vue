@@ -4,6 +4,9 @@ import ServiceTabsView from '@/components/organisms/ServiceTabsView.vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import serviceListJson from '../../public/mock/serviceList.json';
 
+/**
+ * tab0 JS start
+ */
 const searchValue = ref('');
 const serviceList = ref(serviceListJson);
 const isSearch = ref(false);
@@ -56,6 +59,17 @@ const onSearchClick = () => {
     isSearch.value = false;
   }
 };
+/**
+ * tab0 JS end
+ */
+
+/**
+ * tab1 JS start
+ */
+const activeSituation = ref('apply');
+/**
+ * tab1 JS end
+ */
 </script>
 
 <template>
@@ -139,7 +153,32 @@ const onSearchClick = () => {
           </div>
         </div>
       </template>
-      <template #tab1> test2 </template>
+      <template #tab1>
+        <div class="p-4">
+          <section class="grid grid-cols-2">
+            <button
+              class="situation-button"
+              :class="{ 'situation-button--active': activeSituation === 'apply' }"
+              @click="activeSituation = 'apply'"
+            >
+              申辦中(0)
+            </button>
+            <button
+              class="situation-button"
+              :class="{ 'situation-button--active': activeSituation === 'done' }"
+              @click="activeSituation = 'done'"
+            >
+              已結案(0)
+            </button>
+          </section>
+          <section class="flex flex-col items-center pt-40">
+            <p v-if="activeSituation === 'apply'" class="text-primary-500 font-bold">
+              目前無申辦紀錄
+            </p>
+            <p v-else class="text-primary-500 font-bold">目前無結案紀錄</p>
+          </section>
+        </div>
+      </template>
     </ServiceTabsView>
   </main>
 </template>
@@ -159,5 +198,16 @@ const onSearchClick = () => {
   @apply before:bg-primary-500;
   @apply before:inline-block;
   @apply before:absolute before:-left-3.5 before:top-1/2 before:-translate-y-1/2;
+}
+
+.situation-button {
+  @apply text-primary-500;
+  @apply first:rounded-l last:rounded-r;
+  @apply border border-primary-500;
+  @apply py-0.5;
+
+  &--active {
+    @apply bg-primary-500 text-white;
+  }
 }
 </style>
