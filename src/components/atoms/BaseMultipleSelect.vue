@@ -6,7 +6,7 @@ import type { Option } from '@/components/atoms/BaseSelect.vue';
 
 const props = defineProps<{
   defaultText: string;
-  selectOptions: Option[];
+  selectOptions?: Option[];
 }>();
 
 const emit = defineEmits<{
@@ -19,7 +19,7 @@ const isOpen = ref(false);
 const checkedList = ref<string[] | number[]>([]);
 
 const selectOptionsMap = computed(
-  () => new Map(props.selectOptions.map((option) => [option.value, option.label]))
+  () => new Map(props.selectOptions?.map((option) => [option.value, option.label]))
 );
 
 const openModal = () => {

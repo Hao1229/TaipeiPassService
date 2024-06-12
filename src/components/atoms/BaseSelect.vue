@@ -7,7 +7,7 @@ export interface Option {
 const inputValue = defineModel({ default: '' });
 
 const props = defineProps<{
-  options: Option[];
+  options?: Option[];
   defaultSelected?: string;
   selectId: string;
 }>();
