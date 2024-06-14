@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Dialog, DialogPanel, DialogTitle, TransitionRoot, TransitionChild } from '@headlessui/vue';
 
 const props = withDefaults(
   defineProps<{
     fileMax?: number;
     title?: string;
+    required?: boolean;
+    triggerValidate?: boolean;
   }>(),
   {
     fileMax: 1
@@ -40,6 +42,7 @@ const onFileUpload = (event: Event) => {
     } else {
       isShowSizeError.value = false;
       fileList.value.push(file);
+      validate();
       // TODO: 將 file 傳給 API，並將 API 的 response 向外拋出給外面表單提交，API 可能會回傳檔案編號之類
     }
   }
@@ -47,7 +50,21 @@ const onFileUpload = (event: Event) => {
 
 const onCancelClick = (count: number) => {
   fileList.value.splice(count - 1, 1);
+  validate();
 };
+
+const isValidate = ref(true);
+
+const validate = () => {
+  isValidate.value = !!fileList.value.length;
+};
+
+watch(
+  () => props.triggerValidate,
+  () => {
+    validate();
+  }
+);
 </script>
 
 <template>
@@ -71,6 +88,7 @@ const onCancelClick = (count: number) => {
           v-show="fileList.length === count - 1"
           :for="`upload-file-${count}`"
           class="upload-box"
+          :class="{ 'upload-box--warn': required && !isValidate }"
         >
           <img src="@/assets/images/add-icon.svg" class="w-6 h-6" />
 
@@ -158,6 +176,10 @@ const onCancelClick = (count: number) => {
   @apply w-24 h-24 p-4;
   @apply rounded bg-gray-100;
   @apply text-sm font-semibold;
+
+  &--warn {
+    @apply border border-warn-200;
+  }
 }
 
 .preview-box {

@@ -1,11 +1,35 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue';
+
 const props = defineProps<{
   radioName: string;
   radioId: string;
   radioText: string;
+  required?: boolean;
+  triggerValidate?: boolean;
 }>();
 
 const inputValue = defineModel();
+
+const isValidate = ref(true);
+
+const validate = () => {
+  isValidate.value = !!inputValue.value;
+};
+
+watch(
+  () => props.triggerValidate,
+  () => {
+    validate();
+  }
+);
+
+watch(
+  () => inputValue.value,
+  () => {
+    isValidate.value = true;
+  }
+);
 </script>
 
 
@@ -19,7 +43,9 @@ const inputValue = defineModel();
       class="base-radio"
       v-model="inputValue"
     />
-    <span class="base-radio-text">{{ radioText }}</span>
+    <span class="base-radio-text" :class="{ 'base-radio-text--warn': required && !isValidate }">
+      {{ radioText }}
+    </span>
   </label>
 </template>
 
@@ -55,5 +81,9 @@ const inputValue = defineModel();
   @apply after:absolute after:top-[5px] after:left-[5px];
   @apply after:rounded-full;
   @apply after:transition-all;
+
+  &--warn {
+    @apply before:border-warn-200;
+  }
 }
 </style>

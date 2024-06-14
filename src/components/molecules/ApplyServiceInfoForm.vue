@@ -70,6 +70,8 @@ const handleForm = () => {
 onMounted(() => {
   handleForm();
 });
+
+const triggerValidate = ref(false);
 </script>
 
 <template>
@@ -110,6 +112,9 @@ onMounted(() => {
                 v-model="form[item.field]"
                 :id="item.field"
                 class="w-full"
+                :label="item.label"
+                :triggerValidate="triggerValidate"
+                :required="true"
                 :placeholder="`請輸入${item.label}`"
               />
             </div>
@@ -122,7 +127,9 @@ onMounted(() => {
               <BaseSelect
                 v-model="form[item.field]"
                 :selectId="item.field"
+                :required="item.required"
                 :options="item.options"
+                :triggerValidate="triggerValidate"
                 :default-selected="item.default_option"
                 class="w-full"
               />
@@ -146,6 +153,8 @@ onMounted(() => {
               <BaseMultipleSelect
                 :selectOptions="item.options"
                 :defaultText="`請選擇${item.label}`"
+                :required="item.required"
+                :triggerValidate="triggerValidate"
                 @confirm="(el) => (form[item.field] = el)"
                 @controlModal="(el) => insertOpenMultipleModal(el, index)"
               />
@@ -159,6 +168,9 @@ onMounted(() => {
               <BaseTextarea
                 v-model="form[item.field]"
                 :id="item.field"
+                :label="item.label"
+                :required="item.required"
+                :triggerValidate="triggerValidate"
                 class="w-full"
                 placeholder="人、事、時、地、物 4000字以內"
               />
@@ -177,6 +189,8 @@ onMounted(() => {
                   :radioId="option.value"
                   :radioName="item.field"
                   :radioText="option.label"
+                  :required="item.required"
+                  :triggerValidate="triggerValidate"
                 />
               </div>
             </div>
@@ -188,6 +202,8 @@ onMounted(() => {
                   v-for="option in item.options"
                   :key="option.value"
                   :option="option"
+                  :required="item.required"
+                  :triggerValidate="triggerValidate"
                   v-model="form[item.field]"
                 />
               </div>
@@ -195,7 +211,11 @@ onMounted(() => {
             <!-- type = date_picker -->
             <div v-else-if="item.type === 'date_picker'" class="flex flex-col">
               <p class="field-label">{{ item.label }}<span v-if="item.required">*</span></p>
-              <DatePicker v-model="form[item.field]" />
+              <DatePicker
+                v-model="form[item.field]"
+                :required="item.required"
+                :triggerValidate="triggerValidate"
+              />
             </div>
             <!-- type = upload -->
             <!-- TODO: 等 API 再來決定要給 form 什麼 -->
@@ -203,6 +223,8 @@ onMounted(() => {
               v-else-if="item.type === 'upload'"
               :file-max="item.upload_max_files"
               :title="item.label"
+              :required="item.required"
+              :triggerValidate="triggerValidate"
             />
           </div>
         </div>

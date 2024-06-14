@@ -38,6 +38,8 @@ const countyOptions = computed(() =>
       ]
     : []
 );
+
+const triggerValidate = ref(false);
 </script>
 
 <template>
@@ -74,7 +76,10 @@ const countyOptions = computed(() =>
             <BaseInput
               id="mail"
               class="w-full"
-              placeholder="請輸入通訊地址"
+              placeholder="請輸入電子信箱"
+              :required="true"
+              :triggerValidate="triggerValidate"
+              label="電子信箱"
               v-model="basicForm.mail"
             />
           </div>
@@ -86,6 +91,8 @@ const countyOptions = computed(() =>
             <BaseSelect
               selectId="city"
               :options="cityOptions"
+              :required="true"
+              :triggerValidate="triggerValidate"
               default-selected="請選擇縣市"
               class="w-full"
               v-model="basicForm.city"
@@ -99,6 +106,8 @@ const countyOptions = computed(() =>
             <BaseSelect
               selectId="county"
               :options="countyOptions"
+              :required="true"
+              :triggerValidate="triggerValidate"
               default-selected="請選擇鄉鎮區"
               class="w-full"
               v-model="basicForm.county"
@@ -113,6 +122,9 @@ const countyOptions = computed(() =>
               id="address"
               class="w-full"
               placeholder="請輸入通訊地址"
+              :required="true"
+              :triggerValidate="triggerValidate"
+              label="通訊地址"
               v-model="basicForm.address"
             />
           </div>

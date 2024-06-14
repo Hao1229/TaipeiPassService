@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import { Dialog, DialogPanel, DialogTitle, TransitionRoot, TransitionChild } from '@headlessui/vue';
 import type { Option } from '@/components/atoms/BaseSelect.vue';
@@ -7,6 +7,8 @@ import type { Option } from '@/components/atoms/BaseSelect.vue';
 const props = defineProps<{
   defaultText: string;
   selectOptions?: Option[];
+  required?: boolean;
+  triggerValidate?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -31,6 +33,19 @@ const onConfirmClick = () => {
   emit('confirm', checkedList.value);
   emit('controlModal', openModal);
 };
+
+const isValidate = ref(true);
+
+const validate = () => {
+  isValidate.value = !!checkedList.value.length;
+};
+
+watch(
+  () => props.triggerValidate,
+  () => {
+    validate();
+  }
+);
 </script>
 
 <template>
@@ -39,7 +54,12 @@ const onConfirmClick = () => {
     class="base-select-wrapper base-multiple-select-wrapper"
     @click="isOpen = true"
   >
-    <BaseInput v-bind:model-value="props.defaultText" readonly class="w-full"></BaseInput>
+    <BaseInput
+      v-bind:model-value="props.defaultText"
+      readonly
+      class="w-full"
+      :class="{ 'base-input--warn': required && !isValidate }"
+    ></BaseInput>
   </div>
   <div v-show="checkedList.length" class="flex flex-wrap">
     <p v-for="(value, index) in checkedList" :key="value">
