@@ -4,6 +4,7 @@ import ServiceStep from '@/components/molecules/ServiceStep.vue';
 import GeneralInfoForm from '@/components/molecules/GeneralInfoForm.vue';
 import ApplyServiceInfoForm from '@/components/molecules/ApplyServiceInfoForm.vue';
 import BaseButton from '@/components/atoms/BaseButton.vue';
+import FormPreview from '@/components/organisms/FormPreview.vue';
 import type { BasicForm } from '@/components/molecules/GeneralInfoForm.vue';
 
 const triggerValidate = ref(false);
@@ -18,6 +19,8 @@ const applyServiceForm = ref<{
   isValidate: boolean;
 }>();
 
+const activeStep = ref(1);
+
 const submitForm = ref();
 
 const onSubmitClick = () => {
@@ -25,6 +28,7 @@ const onSubmitClick = () => {
 
   if (basicForm.value?.isValidate && applyServiceForm.value?.isValidate) {
     submitForm.value = Object.assign(basicForm.value.form, applyServiceForm.value.form);
+    activeStep.value = 2;
   }
 };
 </script>
@@ -32,10 +36,10 @@ const onSubmitClick = () => {
 <template>
   <div class="pb-8">
     <section class="bg-grey-50 px-4 pt-5 pb-4">
-      <ServiceStep :activeStep="1" />
-      <p class="font-bold mt-4">Hi XXX，請填寫以下申辦資料</p>
+      <ServiceStep :activeStep="activeStep" />
+      <p v-show="activeStep === 1" class="font-bold mt-4">Hi XXX，請填寫以下申辦資料</p>
     </section>
-    <form>
+    <form v-show="activeStep === 1" @submit.stop="">
       <GeneralInfoForm
         :triggerValidate="triggerValidate"
         @onFormChange="(value) => (basicForm = value)"
@@ -50,5 +54,6 @@ const onSubmitClick = () => {
         <BaseButton label="下一步" @click="onSubmitClick" />
       </div>
     </form>
+    <FormPreview v-if="activeStep === 2" :submit-form="submitForm" @onModify="activeStep = 1" />
   </div>
 </template>
