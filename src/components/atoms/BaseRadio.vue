@@ -34,11 +34,11 @@ watch(
 
 
 <template>
-  <label :for="props.radioId">
+  <label :for="`${props.radioName}${props.radioId}`">
     <input
       type="radio"
       :name="props.radioName"
-      :id="props.radioId"
+      :id="`${props.radioName}${props.radioId}`"
       :value="props.radioId"
       class="base-radio"
       v-model="inputValue"

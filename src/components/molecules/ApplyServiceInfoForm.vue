@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import BaseSelect from '@/components/atoms/BaseSelect.vue';
 import BaseMultipleSelect from '@/components/atoms/BaseMultipleSelect.vue';
@@ -9,6 +10,7 @@ import BaseCheckbox from '@/components/atoms/BaseCheckbox.vue';
 import DatePicker from '@/components/molecules/DatePicker.vue';
 import UploadSection from '@/components/molecules/UploadSection.vue';
 import formJSON from '../../../public/mock/form.json';
+import { useFormStore } from '@/stores/form';
 
 const props = withDefaults(
   defineProps<{
@@ -21,12 +23,22 @@ const props = withDefaults(
 
 const emit = defineEmits(['onFormChange']);
 
+const store = useFormStore();
+
+const { formFormat } = storeToRefs(store);
+
+formFormat.value = formJSON;
+
 const isExpand = ref(true);
 
-const formFormat = ref(formJSON);
-
 const formValidateFieldMap = computed(
-  () => new Map(formFormat.value.data.map((item) => [item.field, item.required]))
+  () =>
+    new Map(
+      formFormat.value.data.map((item: { field: any; required: any }) => [
+        item.field,
+        item.required
+      ])
+    )
 );
 
 const openMultipleModalList = ref<any>([]);

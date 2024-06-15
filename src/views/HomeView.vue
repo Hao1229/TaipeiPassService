@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import { useFormStore } from '@/stores/form';
 import ServiceTabsView from '@/components/organisms/ServiceTabsView.vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import serviceListJson from '../../public/mock/service_list.json';
+
+const store = useFormStore();
+
+store.reset();
 
 /**
  * tab0 JS start

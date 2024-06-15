@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { Dialog, DialogPanel, DialogTitle, TransitionRoot, TransitionChild } from '@headlessui/vue';
+import { useFormStore } from '@/stores/form';
 
 const props = withDefaults(
   defineProps<{
@@ -14,11 +16,13 @@ const props = withDefaults(
   }
 );
 
+const store = useFormStore();
+
+const { fileList } = storeToRefs(store);
+
 const isOpen = ref(false);
 
 const isShowSizeError = ref(false);
-
-const fileList = ref<File[]>([]);
 
 const bytesToMB = (bytes: number) => {
   const megabytes = bytes / (1024 * 1024);

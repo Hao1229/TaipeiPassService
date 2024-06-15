@@ -7,6 +7,7 @@ const props = defineProps<{
   outline?: boolean;
   link?: boolean;
   routeInfo?: RouteLocationRaw;
+  disabled?: boolean;
 }>();
 
 const emit = defineEmits({
@@ -18,15 +19,17 @@ const emit = defineEmits({
   <RouterLink
     v-if="props.link && props.routeInfo"
     :to="props.routeInfo"
+    :disabled="props.disabled"
     class="base-button text-center"
-    :class="{ 'base-button--outline': props.outline }"
+    :class="{ 'base-button--outline': props.outline, 'base-button--disabled': props.disabled }"
   >
     {{ props.label }}
   </RouterLink>
   <button
     v-else
+    :disabled="props.disabled"
     class="base-button"
-    :class="{ 'base-button--outline': props.outline }"
+    :class="{ 'base-button--outline': props.outline, 'base-button--disabled': props.disabled }"
     @click.prevent="() => emit('click')"
   >
     {{ props.label }}
@@ -43,6 +46,10 @@ const emit = defineEmits({
   &--outline {
     @apply border border-primary-500;
     @apply bg-transparent text-primary-500;
+  }
+
+  &--disabled {
+    @apply text-black bg-gray-300;
   }
 }
 </style>

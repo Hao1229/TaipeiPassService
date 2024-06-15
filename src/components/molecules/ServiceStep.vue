@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<{ stepCount?: number; activeStep: number 
     >
       <span>{{ step }}</span>
     </div>
-    <div class="connect-line" />
+    <div class="connect-line" :class="{ 'connect-line--active': props.activeStep > 1 }" />
   </div>
 </template>
 
@@ -38,5 +38,9 @@ const props = withDefaults(defineProps<{ stepCount?: number; activeStep: number 
   @apply w-[calc(100%-56px)] h-0.5;
   @apply bg-grey-100;
   @apply z-10;
+
+  &--active {
+    @apply bg-primary-500;
+  }
 }
 </style>
