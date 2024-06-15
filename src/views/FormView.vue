@@ -1,19 +1,54 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import ServiceStep from '@/components/molecules/ServiceStep.vue';
 import GeneralInfoForm from '@/components/molecules/GeneralInfoForm.vue';
 import ApplyServiceInfoForm from '@/components/molecules/ApplyServiceInfoForm.vue';
+import BaseButton from '@/components/atoms/BaseButton.vue';
+import type { BasicForm } from '@/components/molecules/GeneralInfoForm.vue';
+
+const triggerValidate = ref(false);
+
+const basicForm = ref<{
+  form: BasicForm;
+  isValidate: boolean;
+}>();
+
+const applyServiceForm = ref<{
+  form: any;
+  isValidate: boolean;
+}>();
+
+const submitForm = ref();
+
+const onSubmitClick = () => {
+  triggerValidate.value = true;
+
+  if (basicForm.value?.isValidate && applyServiceForm.value?.isValidate) {
+    submitForm.value = Object.assign(basicForm.value.form, applyServiceForm.value.form);
+  }
+};
 </script>
 
 <template>
-  <div>
+  <div class="pb-8">
     <section class="bg-grey-50 px-4 pt-5 pb-4">
       <ServiceStep :activeStep="1" />
       <p class="font-bold mt-4">Hi XXX，請填寫以下申辦資料</p>
     </section>
-    <form action="">
-      <GeneralInfoForm />
+    <form>
+      <GeneralInfoForm
+        :triggerValidate="triggerValidate"
+        @onFormChange="(value) => (basicForm = value)"
+      />
       <div class="w-full h-2 bg-grey-50"></div>
-      <ApplyServiceInfoForm />
+      <ApplyServiceInfoForm
+        :triggerValidate="triggerValidate"
+        @onFormChange="(value) => (applyServiceForm = value)"
+      />
+      <div class="grid grid-cols-2 gap-x-2 px-2">
+        <BaseButton label="上一步" outline link :routeInfo="{ name: 'home' }" />
+        <BaseButton label="下一步" @click="onSubmitClick" />
+      </div>
     </form>
   </div>
 </template>

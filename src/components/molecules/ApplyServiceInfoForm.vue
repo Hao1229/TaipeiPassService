@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, watch, computed } from 'vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import BaseSelect from '@/components/atoms/BaseSelect.vue';
 import BaseMultipleSelect from '@/components/atoms/BaseMultipleSelect.vue';
@@ -10,9 +10,24 @@ import DatePicker from '@/components/molecules/DatePicker.vue';
 import UploadSection from '@/components/molecules/UploadSection.vue';
 import formJSON from '../../../public/mock/form.json';
 
+const props = withDefaults(
+  defineProps<{
+    triggerValidate?: boolean;
+  }>(),
+  {
+    triggerValidate: false
+  }
+);
+
+const emit = defineEmits(['onFormChange']);
+
 const isExpand = ref(true);
 
 const formFormat = ref(formJSON);
+
+const formValidateFieldMap = computed(
+  () => new Map(formFormat.value.data.map((item) => [item.field, item.required]))
+);
 
 const openMultipleModalList = ref<any>([]);
 
@@ -56,7 +71,7 @@ const handleForm = () => {
         form[item.field] = [];
         break;
       case 'date_picker':
-        form[item.field] = '';
+        form[item.field] = undefined;
         break;
       case 'upload':
         form[item.field] = [];
@@ -71,7 +86,24 @@ onMounted(() => {
   handleForm();
 });
 
-const triggerValidate = ref(false);
+watch(
+  () => form,
+  () => {
+    const isValidate = Object.keys(form)
+      .filter((key) => formValidateFieldMap.value.get(key))
+      .every((key) => {
+        const value = Array.isArray(form[key]) ? form[key].length : form[key];
+
+        return !!value;
+      });
+
+    emit('onFormChange', {
+      isValidate,
+      form
+    });
+  },
+  { deep: true }
+);
 </script>
 
 <template>
@@ -113,7 +145,7 @@ const triggerValidate = ref(false);
                 :id="item.field"
                 class="w-full"
                 :label="item.label"
-                :triggerValidate="triggerValidate"
+                :triggerValidate="props.triggerValidate"
                 :required="true"
                 :placeholder="`請輸入${item.label}`"
               />
@@ -129,7 +161,7 @@ const triggerValidate = ref(false);
                 :selectId="item.field"
                 :required="item.required"
                 :options="item.options"
-                :triggerValidate="triggerValidate"
+                :triggerValidate="props.triggerValidate"
                 :default-selected="item.default_option"
                 class="w-full"
               />
@@ -154,7 +186,7 @@ const triggerValidate = ref(false);
                 :selectOptions="item.options"
                 :defaultText="`請選擇${item.label}`"
                 :required="item.required"
-                :triggerValidate="triggerValidate"
+                :triggerValidate="props.triggerValidate"
                 @confirm="(el) => (form[item.field] = el)"
                 @controlModal="(el) => insertOpenMultipleModal(el, index)"
               />
@@ -170,7 +202,7 @@ const triggerValidate = ref(false);
                 :id="item.field"
                 :label="item.label"
                 :required="item.required"
-                :triggerValidate="triggerValidate"
+                :triggerValidate="props.triggerValidate"
                 class="w-full"
                 placeholder="人、事、時、地、物 4000字以內"
               />
@@ -190,7 +222,7 @@ const triggerValidate = ref(false);
                   :radioName="item.field"
                   :radioText="option.label"
                   :required="item.required"
-                  :triggerValidate="triggerValidate"
+                  :triggerValidate="props.triggerValidate"
                 />
               </div>
             </div>
@@ -203,7 +235,7 @@ const triggerValidate = ref(false);
                   :key="option.value"
                   :option="option"
                   :required="item.required"
-                  :triggerValidate="triggerValidate"
+                  :triggerValidate="props.triggerValidate"
                   v-model="form[item.field]"
                 />
               </div>
@@ -214,7 +246,7 @@ const triggerValidate = ref(false);
               <DatePicker
                 v-model="form[item.field]"
                 :required="item.required"
-                :triggerValidate="triggerValidate"
+                :triggerValidate="props.triggerValidate"
               />
             </div>
             <!-- type = upload -->
@@ -224,7 +256,7 @@ const triggerValidate = ref(false);
               :file-max="item.upload_max_files"
               :title="item.label"
               :required="item.required"
-              :triggerValidate="triggerValidate"
+              :triggerValidate="props.triggerValidate"
             />
           </div>
         </div>

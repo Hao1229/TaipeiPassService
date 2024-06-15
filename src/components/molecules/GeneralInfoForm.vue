@@ -1,16 +1,51 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
+import { ref, computed, reactive, watch } from 'vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import BaseSelect from '@/components/atoms/BaseSelect.vue';
 
+export interface BasicForm {
+  mail: string;
+  city: string;
+  county: string;
+  address: string;
+}
+
+const props = withDefaults(
+  defineProps<{
+    triggerValidate?: boolean;
+  }>(),
+  {
+    triggerValidate: false
+  }
+);
+
+const emit = defineEmits(['onFormChange']);
+
 const isExpand = ref(true);
 
-const basicForm = reactive({
+const form = reactive<BasicForm>({
   mail: '',
   city: '',
   county: '',
   address: ''
 });
+
+watch(
+  () => form,
+  () => {
+    const isValidate = Object.keys(form).every((key) => {
+      const value = form[key as keyof BasicForm];
+
+      return !!value;
+    });
+
+    emit('onFormChange', {
+      isValidate,
+      form
+    });
+  },
+  { deep: true }
+);
 
 // TODO: 鄉鎮市資料串 API
 const cityOptions = [
@@ -25,7 +60,7 @@ const cityOptions = [
 ];
 
 const countyOptions = computed(() =>
-  basicForm.city
+  form.city
     ? [
         {
           label: '中和區',
@@ -38,8 +73,6 @@ const countyOptions = computed(() =>
       ]
     : []
 );
-
-const triggerValidate = ref(false);
 </script>
 
 <template>
@@ -78,9 +111,9 @@ const triggerValidate = ref(false);
               class="w-full"
               placeholder="請輸入電子信箱"
               :required="true"
-              :triggerValidate="triggerValidate"
+              :triggerValidate="props.triggerValidate"
               label="電子信箱"
-              v-model="basicForm.mail"
+              v-model="form.mail"
             />
           </div>
           <div class="flex flex-col">
@@ -92,10 +125,10 @@ const triggerValidate = ref(false);
               selectId="city"
               :options="cityOptions"
               :required="true"
-              :triggerValidate="triggerValidate"
+              :triggerValidate="props.triggerValidate"
               default-selected="請選擇縣市"
               class="w-full"
-              v-model="basicForm.city"
+              v-model="form.city"
             />
           </div>
           <div class="flex flex-col">
@@ -107,10 +140,10 @@ const triggerValidate = ref(false);
               selectId="county"
               :options="countyOptions"
               :required="true"
-              :triggerValidate="triggerValidate"
+              :triggerValidate="props.triggerValidate"
               default-selected="請選擇鄉鎮區"
               class="w-full"
-              v-model="basicForm.county"
+              v-model="form.county"
             />
           </div>
           <div class="flex flex-col">
@@ -123,9 +156,9 @@ const triggerValidate = ref(false);
               class="w-full"
               placeholder="請輸入通訊地址"
               :required="true"
-              :triggerValidate="triggerValidate"
+              :triggerValidate="props.triggerValidate"
               label="通訊地址"
-              v-model="basicForm.address"
+              v-model="form.address"
             />
           </div>
         </div>
