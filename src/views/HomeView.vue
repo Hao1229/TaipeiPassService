@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 import ServiceTabsView from '@/components/organisms/ServiceTabsView.vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
-import serviceListJson from '../../public/mock/serviceList.json';
+import serviceListJson from '../../public/mock/service_list.json';
 
 /**
  * tab0 JS start
@@ -37,13 +38,13 @@ const searchResult = ref<
     title: string;
     subtitle: string;
     type: string;
-    agencyType: string;
+    agency_type: string;
   }[]
 >();
 
 const searchResultTypeSet = computed(() => new Set(searchResult.value?.map((item) => item.type)));
 const searchResultAgencyTypeSet = computed(
-  () => new Set(searchResult.value?.map((item) => item.agencyType))
+  () => new Set(searchResult.value?.map((item) => item.agency_type))
 );
 const searchResultTitle = computed(() => searchResult.value?.map((item) => item.title));
 
@@ -89,13 +90,15 @@ const activeSituation = ref('apply');
               v-show="!searchResult?.length || searchResultTypeSet.has(item.name)"
               v-for="item in serviceList.list"
               :key="item.name"
-              @click="onExpandClick(item.name)"
               class="px-4 py-2"
               :class="{
                 'bg-grey-50': expandListSet.has(item.name)
               }"
             >
-              <button class="w-full flex justify-between items-center mb-5">
+              <button
+                class="w-full flex justify-between items-center mb-5"
+                @click="onExpandClick(item.name)"
+              >
                 <span>{{ item.name }}</span>
                 <img
                   src="@/assets/images/down-icon.svg"
@@ -136,10 +139,12 @@ const activeSituation = ref('apply');
                           :key="option.id"
                           class="mb-3"
                         >
-                          <p class="option-title">{{ option.title }}</p>
-                          <p v-if="option.subtitle" class="text-sm text-grey-400">
-                            {{ option.subtitle }}
-                          </p>
+                          <RouterLink :to="{ name: 'form', params: { id: option.id } }">
+                            <p class="option-title">{{ option.title }}</p>
+                            <p v-if="option.subtitle" class="text-sm text-grey-400">
+                              {{ option.subtitle }}
+                            </p>
+                          </RouterLink>
                         </li>
                       </ul>
                     </div>

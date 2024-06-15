@@ -7,7 +7,7 @@ const props = defineProps<{
   triggerValidate?: boolean;
 }>();
 
-const inputValue = defineModel();
+const inputValue = defineModel({ default: '' });
 
 const isValidate = ref(true);
 
@@ -24,12 +24,12 @@ watch(
 </script>
 
 <template>
-  <input
-    type="text"
+  <textarea
     v-model="inputValue"
     v-bind="$attrs"
-    class="base-input"
-    :class="{ 'base-input--warn': required && !isValidate }"
+    maxlength="4000"
+    class="base-textarea"
+    :class="{ 'base-textarea--warn': required && !isValidate }"
     @input="validate"
   />
   <p v-if="required && !isValidate" class="mt-2 text-right text-warn-200 text-sm">
@@ -38,13 +38,14 @@ watch(
 </template>
 
 <style lang="postcss">
-.base-input {
+.base-textarea {
+  @apply bg-gray-100 h-32;
+  @apply p-3;
   @apply rounded-lg outline-none;
-  @apply bg-gray-100;
-  @apply p-2.5;
+  @apply overflow-y-auto;
 
   &--warn {
-    @apply border border-warn-200 text-warn-200;
+    @apply border border-warn-200;
     @apply placeholder:text-warn-200;
   }
 }
