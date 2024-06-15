@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useFormStore } from '@/stores/form';
 import BaseRadio from '@/components/atoms/BaseRadio.vue';
 import BaseButton from '@/components/atoms/BaseButton.vue';
+import BaseDialog from '@/components/atoms/BaseDialog.vue';
 
 const props = defineProps<{
   submitForm: any;
@@ -14,6 +16,8 @@ const emit = defineEmits(['onModify']);
 const store = useFormStore();
 
 const { formFormat, fileList } = storeToRefs(store);
+
+const router = useRouter();
 
 const formFormatMap = computed(
   () => new Map(formFormat.value.data.map((item: { field: any }) => [item.field, item]))
@@ -57,6 +61,18 @@ const agreeOptions = ref([
 // TODO: 串 API 傳送資料
 const onSubmitClick = () => {
   console.log('submitForm:', props.submitForm);
+  isFinishDialogOpen.value = true;
+};
+
+const isFinishDialogOpen = ref(false);
+
+// TODO: 導頁至進度查詢
+const onPositiveClick = () => {
+  router.push({ name: 'home' });
+};
+
+const onNegativeClick = () => {
+  router.push({ name: 'home' });
 };
 </script>
 
@@ -143,6 +159,15 @@ const onSubmitClick = () => {
     <BaseButton label="修改" outline @click="emit('onModify')" />
     <BaseButton label="送出" :disabled="isAgree === 'N'" @click="onSubmitClick" />
   </div>
+  <BaseDialog
+    v-model="isFinishDialogOpen"
+    title="案件已完成申辦"
+    content="後續處理相關訊息可至案件查詢"
+    positiveText="前往查看"
+    negativeText="確認"
+    @onPositiveClick="onPositiveClick"
+    @onNegativeClick="onNegativeClick"
+  />
 </template>
 
 <style lang="postcss">
