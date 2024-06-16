@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import ServiceStep from '@/components/molecules/ServiceStep.vue';
 import GeneralInfoForm from '@/components/molecules/GeneralInfoForm.vue';
 import ApplyServiceInfoForm from '@/components/molecules/ApplyServiceInfoForm.vue';
@@ -31,6 +31,14 @@ const onSubmitClick = () => {
     activeStep.value = 2;
   }
 };
+
+watch(activeStep, () => {
+  if (window) {
+    window.scrollTo({
+      top: 0
+    });
+  }
+});
 </script>
 
 <template>
