@@ -6,10 +6,14 @@ export const useFormStore = defineStore('form', () => {
 
   const fileList = ref<File[]>([]);
 
+  const userName = ref('');
+  const usePhone = ref('');
+  const userTaxID = ref('');
+
   const reset = () => {
     formFormat.value = undefined;
     fileList.value = [];
   };
 
-  return { formFormat, fileList, reset };
+  return { formFormat, fileList, userName, usePhone, userTaxID, reset };
 });
