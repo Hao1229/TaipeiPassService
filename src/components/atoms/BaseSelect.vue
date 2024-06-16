@@ -28,6 +28,10 @@ watch(
     validate();
   }
 );
+
+watch(inputValue, () => {
+  validate();
+});
 </script>
 
 <template>
@@ -38,7 +42,6 @@ watch(
       v-model="inputValue"
       class="base-select"
       :class="{ 'base-select--warn': props.required && !isValidate }"
-      @change="validate"
     >
       <option v-if="props.defaultSelected" value="" selected>
         {{ props.defaultSelected }}
