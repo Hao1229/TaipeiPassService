@@ -2,6 +2,8 @@
 import { ref, computed, reactive, watch } from 'vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import BaseSelect from '@/components/atoms/BaseSelect.vue';
+import { city } from '@/zipcode/city';
+import { county } from '@/zipcode/county';
 
 export interface BasicForm {
   mail: string;
@@ -25,8 +27,8 @@ const isExpand = ref(true);
 
 const form = reactive<BasicForm>({
   mail: '',
-  city: '',
   county: '',
+  city: '',
   address: ''
 });
 
@@ -47,31 +49,22 @@ watch(
   { deep: true }
 );
 
-// TODO: 鄉鎮市資料串 API
-const cityOptions = [
-  {
-    label: '臺北市',
-    value: '臺北市'
-  },
-  {
-    label: '新北市',
-    value: '新北市'
-  }
-];
+const countyOptions = computed(() => county.map((item) => ({ label: item.name, value: item.id })));
 
-const countyOptions = computed(() =>
-  form.city
-    ? [
-        {
-          label: '中和區',
-          value: '中和區'
-        },
-        {
-          label: '北投區',
-          value: '北投區'
-        }
-      ]
+const cityOptions = computed(() =>
+  form.county
+    ? city
+        .filter((item) => item.county === form.county)
+        .map((item) => ({ label: item.city, value: item.city }))
     : []
+);
+
+watch(
+  () => form.county,
+  () => {
+    form.city = '';
+  },
+  { deep: true }
 );
 </script>
 
@@ -117,23 +110,8 @@ const countyOptions = computed(() =>
             />
           </div>
           <div class="flex flex-col">
-            <label for="city" class="field-label">
-              縣市
-              <span>*</span>
-            </label>
-            <BaseSelect
-              selectId="city"
-              :options="cityOptions"
-              :required="true"
-              :triggerValidate="props.triggerValidate"
-              default-selected="請選擇縣市"
-              class="w-full"
-              v-model="form.city"
-            />
-          </div>
-          <div class="flex flex-col">
             <label for="county" class="field-label">
-              鄉鎮(市)區
+              縣市
               <span>*</span>
             </label>
             <BaseSelect
@@ -141,9 +119,24 @@ const countyOptions = computed(() =>
               :options="countyOptions"
               :required="true"
               :triggerValidate="props.triggerValidate"
-              default-selected="請選擇鄉鎮區"
+              default-selected="請選擇縣市"
               class="w-full"
               v-model="form.county"
+            />
+          </div>
+          <div class="flex flex-col">
+            <label for="city" class="field-label">
+              鄉鎮(市)區
+              <span>*</span>
+            </label>
+            <BaseSelect
+              selectId="city"
+              :options="cityOptions"
+              :required="true"
+              :triggerValidate="props.triggerValidate"
+              default-selected="請選擇鄉鎮區"
+              class="w-full"
+              v-model="form.city"
             />
           </div>
           <div class="flex flex-col">
