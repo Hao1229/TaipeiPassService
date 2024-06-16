@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import ServiceTabs from '@/components/molecules/ServiceTabs.vue';
 import type { TabsProps } from '@/components/molecules/ServiceTabs.vue';
 
@@ -16,7 +15,7 @@ const props = withDefaults(defineProps<TabsProps>(), {
   ]
 });
 
-const activeTab = ref(0);
+const activeTab = defineModel({ default: 0 });
 </script>
 
 <template>
