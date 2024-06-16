@@ -15,7 +15,7 @@ const emit = defineEmits(['onModify']);
 
 const store = useFormStore();
 
-const { formFormat, fileList } = storeToRefs(store);
+const { formFormat, fileList, userName, usePhone, userTaxID } = storeToRefs(store);
 
 const router = useRouter();
 
@@ -84,15 +84,15 @@ const onNegativeClick = () => {
     <ul class="px-4 py-2 flex flex-col gap-y-4">
       <li class="preview-item">
         <span class="field-name">姓名</span>
-        <span>XXX</span>
+        <span>{{ userName }}</span>
       </li>
       <li class="preview-item">
         <span class="field-name">身分證字號</span>
-        <span>A111111111</span>
+        <span>{{ userTaxID }}</span>
       </li>
       <li class="preview-item">
         <span class="field-name">手機號碼</span>
-        <span>0900000000</span>
+        <span>{{ usePhone }}</span>
       </li>
       <li class="preview-item">
         <span class="field-name">電子信箱</span>
