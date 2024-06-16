@@ -66,9 +66,8 @@ const onSubmitClick = () => {
 
 const isFinishDialogOpen = ref(false);
 
-// TODO: 導頁至進度查詢
 const onPositiveClick = () => {
-  router.push({ name: 'home' });
+  router.push({ name: 'home', query: { isSearch: 'true' } });
 };
 
 const onNegativeClick = () => {

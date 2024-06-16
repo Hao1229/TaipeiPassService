@@ -1,14 +1,23 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
 import { useFormStore } from '@/stores/form';
 import ServiceTabsView from '@/components/organisms/ServiceTabsView.vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
+import ServiceStep from '@/components/molecules/ServiceStep.vue';
 import serviceListJson from '../../public/mock/service_list.json';
 
 const store = useFormStore();
 
 store.reset();
+
+const route = useRoute();
+
+const activeTab = ref(0);
+
+if (route.query.isSearch) {
+  activeTab.value = 1;
+}
 
 /**
  * tab0 JS start
@@ -73,6 +82,35 @@ const onSearchClick = () => {
  * tab1 JS start
  */
 const activeSituation = ref('apply');
+
+// TODO: 這邊串 API 拿資料回來
+const searchRecord = ref([
+  {
+    id: '202406120002',
+    name: '臺北市路邊停車費重複繳費申請退費',
+    date: '2024/06/12',
+    status: '待審核'
+  },
+  {
+    id: '202406100002',
+    name: '臺北市路邊停車費重複繳費申請退費',
+    date: '2024/06/10',
+    status: '待審核'
+  },
+  {
+    id: '202406120002',
+    name: '臺北市路邊停車費重複繳費申請退費',
+    date: '2024/06/12',
+    status: '已結案'
+  }
+]);
+
+const applyRecord = computed(() => searchRecord.value.filter((item) => item.status === '待審核'));
+const finishRecord = computed(() => searchRecord.value.filter((item) => item.status === '已結案'));
+
+const activeRecord = computed(() =>
+  activeSituation.value === 'apply' ? applyRecord.value : finishRecord.value
+);
 /**
  * tab1 JS end
  */
@@ -80,7 +118,7 @@ const activeSituation = ref('apply');
 
 <template>
   <main>
-    <ServiceTabsView>
+    <ServiceTabsView v-model="activeTab">
       <template #tab0>
         <div class="py-4">
           <section class="flex items-center px-4">
@@ -171,21 +209,39 @@ const activeSituation = ref('apply');
               :class="{ 'situation-button--active': activeSituation === 'apply' }"
               @click="activeSituation = 'apply'"
             >
-              申辦中(0)
+              申辦中({{ applyRecord.length }})
             </button>
             <button
               class="situation-button"
               :class="{ 'situation-button--active': activeSituation === 'done' }"
               @click="activeSituation = 'done'"
             >
-              已結案(0)
+              已結案({{ finishRecord.length }})
             </button>
           </section>
-          <section class="flex flex-col items-center pt-40">
-            <p v-if="activeSituation === 'apply'" class="text-primary-500 font-bold">
-              目前無申辦紀錄
+          <section v-if="!activeRecord.length" class="flex flex-col items-center pt-40">
+            <p class="text-primary-500 font-bold">
+              目前無{{ activeSituation === 'apply' ? '申辦' : '結案' }}紀錄
             </p>
-            <p v-else class="text-primary-500 font-bold">目前無結案紀錄</p>
+          </section>
+          <section v-else>
+            <ul class="py-4 grid grid-cols-1 gap-y-4">
+              <li v-for="item in activeRecord" :key="item.id">
+                <p>{{ item.name }}</p>
+                <div class="mt-1 mb-4 flex justify-between pr-6">
+                  <div class="text-gray-500 text-sm">
+                    <p class="mb-1">{{ item.id }}</p>
+                    <p>申報日期：{{ item.date }}</p>
+                  </div>
+                  <div class="flex flex-col items-center">
+                    <!-- TODO: icon update -->
+                    <img src="@/assets/images/info-icon.svg" />
+                    <span class="text-sm">{{ item.status }}</span>
+                  </div>
+                </div>
+                <ServiceStep :stepCount="3" :activeStep="item.status === '待審核' ? 2 : 3" />
+              </li>
+            </ul>
           </section>
         </div>
       </template>
