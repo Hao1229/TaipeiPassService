@@ -1,13 +1,22 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import ServiceStep from '@/components/molecules/ServiceStep.vue';
 import GeneralInfoForm from '@/components/molecules/GeneralInfoForm.vue';
 import ApplyServiceInfoForm from '@/components/molecules/ApplyServiceInfoForm.vue';
 import BaseButton from '@/components/atoms/BaseButton.vue';
 import FormPreview from '@/components/organisms/FormPreview.vue';
 import type { BasicForm } from '@/components/molecules/GeneralInfoForm.vue';
+import { useFormStore } from '@/stores/form';
+import formJSON from '../../public/mock/form.json';
 
 const triggerValidate = ref(false);
+
+const store = useFormStore();
+
+const { formFormat } = storeToRefs(store);
+
+formFormat.value = formJSON;
 
 const basicForm = ref<{
   form: BasicForm;

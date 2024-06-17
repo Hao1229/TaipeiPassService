@@ -13,7 +13,7 @@ const store = useFormStore();
 
 store.reset();
 
-const { userName, usePhone, userTaxID } = storeToRefs(store);
+const { userName, userPhone, userTaxID } = storeToRefs(store);
 
 const route = useRoute();
 
@@ -30,11 +30,11 @@ if (route.query.userName) {
   userName.value = 'XXX';
 }
 
-if (route.query.usePhone) {
-  usePhone.value = route.query.usePhone as string;
+if (route.query.userPhone) {
+  userPhone.value = route.query.userPhone as string;
 } else {
   // TODO: 跟 APP 對接後移除
-  usePhone.value = 'A111111111';
+  userPhone.value = 'A111111111';
 }
 
 if (route.query.userTaxID) {
