@@ -111,10 +111,10 @@ const activeSituation = ref('apply');
 const caseProgress = ref(caseProgressJson);
 
 const applyRecord = computed(() =>
-  caseProgress.value.data.filter((item) => item.status === '待審核')
+  caseProgress.value.data.filter((item) => item.current_step !== item.total_step)
 );
 const finishRecord = computed(() =>
-  caseProgress.value.data.filter((item) => item.status === '已結案')
+  caseProgress.value.data.filter((item) => item.current_step === item.total_step)
 );
 
 const activeRecord = computed(() =>
