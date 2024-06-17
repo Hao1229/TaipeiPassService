@@ -15,7 +15,7 @@ const emit = defineEmits(['onModify']);
 
 const store = useFormStore();
 
-const { formFormat, fileList, userName, usePhone, userTaxID } = storeToRefs(store);
+const { formFormat, fileList, userName, userPhone, userTaxID } = storeToRefs(store);
 
 const router = useRouter();
 
@@ -92,7 +92,7 @@ const onNegativeClick = () => {
       </li>
       <li class="preview-item">
         <span class="field-name">手機號碼</span>
-        <span>{{ usePhone }}</span>
+        <span>{{ userPhone }}</span>
       </li>
       <li class="preview-item">
         <span class="field-name">電子信箱</span>
