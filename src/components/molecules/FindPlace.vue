@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch, computed } from 'vue';
 import { storeToRefs } from 'pinia';
-import formJSON from '../../../public/mock/form.json';
-import { useFormStore } from '@/stores/form';
 import placeListJson from '../../../public/mock/place_list.json';
+
+const emit = defineEmits(['onSearchChange', 'update:isExpand']);
 
 const searchValue = ref('');
 
@@ -25,11 +25,21 @@ const searchHistoryList = ref<
 ]);
 /** 服務列表 */
 const placeList = ref(placeListJson);
+/** 服務列表下拉選單 */
+const options = computed(() => {
+  return placeList.value.list
+    .map((category) => category.places) // 提取所有的places陣列
+    .flat() // 將所有的places合併為一個陣列
+    .map((place) => ({
+      label: place.name,
+      value: place.id
+    }));
+});
 
 const expandList = ref<string[]>([]);
 const expandListSet = computed(() => new Set(expandList.value.map((name) => name)));
 
-const onExpandClick = (name: string) => {
+const onPanelExpandClick = (name: string) => {
   if (expandListSet.value.has(name)) {
     const index = expandList.value.findIndex((el) => el === name);
     expandList.value.splice(index, 1);
@@ -38,100 +48,39 @@ const onExpandClick = (name: string) => {
   }
 };
 
-const emit = defineEmits(['onFormChange']);
-
-const store = useFormStore();
-
-const { formFormat } = storeToRefs(store);
-
-formFormat.value = formJSON;
-
 const isExpand = ref(false);
-
-const formValidateFieldMap = computed(
-  () =>
-    new Map(
-      formFormat.value.data.map((item: { field: any; required: any }) => [
-        item.field,
-        item.required
-      ])
-    )
-);
-const form = reactive<any>({});
-
-const createImgPreviewUrl = (img: File) => {
-  return URL.createObjectURL(img);
+const toggleExpand = () => {
+  isExpand.value = !isExpand.value;
 };
 
-const handleForm = () => {
-  formJSON.data.forEach((item) => {
-    switch (item.type) {
-      case 'input':
-        form[item.field] = '';
-        break;
-      case 'select':
-        form[item.field] = '';
-        break;
-      case 'multiple_select':
-        form[item.field] = [];
-        break;
-      case 'radio_group':
-        form[item.field] = '';
-        break;
-      case 'textarea':
-        form[item.field] = '';
-        break;
-      case 'checkbox_group':
-        form[item.field] = [];
-        break;
-      case 'date_picker':
-        form[item.field] = undefined;
-        break;
-      case 'upload':
-        form[item.field] = [];
-        break;
-      default:
-        form[item.field] = '';
-    }
-  });
-};
+watch([isExpand, searchValue], ([newExpandValue, newSearchValue]) => {
+  console.log('isExpand:', newExpandValue, 'searchValue:', newSearchValue);
 
-onMounted(() => {
-  handleForm();
+  emit('update:isExpand', newExpandValue);
+  emit('onSearchChange', newSearchValue);
 });
 
-watch(
-  () => form,
-  () => {
-    const isValidate = Object.keys(form)
-      .filter((key) => formValidateFieldMap.value.get(key))
-      .every((key) => {
-        const value = Array.isArray(form[key]) ? form[key].length : form[key];
-
-        return !!value;
-      });
-
-    emit('onFormChange', {
-      isValidate,
-      form
-    });
-  },
-  { deep: true }
-);
+const onSelect = (place: { id: string; name: string; icon: string; type: string }) => {
+  searchValue.value = place.id;
+  toggleExpand();
+};
 </script>
 
 <template>
-  <section class="relative h-screen flex flex-col">
-    <div class="py-5 px-4">
+  <section class="relative flex flex-col flex-1">
+    <div class="py-5 pl-4 pr-2">
       <div class="base-select-wrapper" :class="{ expanded: isExpand }">
         <select
           v-bind="$attrs"
           id="findPlace"
           v-model="searchValue"
           class="base-select"
-          @mousedown.prevent="isExpand = !isExpand"
+          @mousedown.prevent="toggleExpand"
         >
           <option value="" selected>請選擇要找的服務地圖</option>
+          <option v-for="option in options" :key="option.value" :value="option.value">
+            {{ option.label }}
+          </option>
         </select>
       </div>
     </div>
@@ -152,7 +101,7 @@ watch(
               :class="{
                 'pb-4': expandListSet.has(item.name)
               }"
-              @click="onExpandClick(item.name)"
+              @click="onPanelExpandClick(item.name)"
             >
               <span>{{ item.name }}</span>
               <div class="flex items-center">
@@ -180,7 +129,10 @@ watch(
             >
               <ul class="overflow-hidden">
                 <li v-for="place in item.places" :key="place.name" class="px-4 bg-grey-50">
-                  <div class="flex items-center py-5 px-4 border-b border-grey-200">
+                  <div
+                    class="flex items-center py-5 px-4 border-b border-grey-200"
+                    @click="onSelect(place)"
+                  >
                     <img src="@/assets/images/icon-history.svg" class="w-6 h-6 mr-2" />
                     <span class="text-grey-700">
                       {{ place.name }}
@@ -204,7 +156,7 @@ watch(
           >
             <button
               class="px-4 w-full flex justify-between items-center text-grey-700 font-bold"
-              @click="onExpandClick(item.name)"
+              @click="onPanelExpandClick(item.name)"
             >
               <span>{{ item.name }}</span>
               <img
@@ -223,7 +175,10 @@ watch(
             >
               <ul class="overflow-hidden">
                 <li v-for="place in item.places" :key="place.name" class="px-4">
-                  <div class="flex items-center py-5 px-4 border-b border-grey-200">
+                  <div
+                    class="flex items-center py-5 px-4 border-b border-grey-200"
+                    @click="onSelect(place)"
+                  >
                     <!-- <img src="@/assets/images/icon-drinking.svg" class="w-6 h-6 mr-2" /> -->
                     <span class="text-grey-700">
                       {{ place.name }}
@@ -234,19 +189,6 @@ watch(
             </div>
           </li>
         </ul>
-      </div>
-    </template>
-    <template v-else>
-      <div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo, laudantium! Debitis
-        praesentium laudantium tenetur tempore blanditiis sed qui a esse officiis? Fugit sint labore
-        possimus nostrum ut quia impedit commodi repudiandae cumque soluta dolorum eligendi
-        repellendus deleniti placeat sequi, ipsum nisi veniam culpa alias eveniet. Autem rerum earum
-        corrupti, voluptates fuga nobis! Sed fugiat perspiciatis vitae et. Corporis, tenetur qui.
-        Harum, alias. Voluptatibus porro alias possimus quisquam at, sapiente tempore vero tempora
-        inventore, deleniti, fugiat quam similique minima praesentium ratione cum libero temporibus
-        molestias. Inventore error aperiam repudiandae sapiente nam quos, qui expedita. Consequatur
-        iure asperiores doloribus, labore facere non.
       </div>
     </template>
   </section>
@@ -261,9 +203,5 @@ watch(
   &.expanded {
     @apply after:rotate-180;
   }
-}
-
-.absolute-div {
-  @apply absolute left-0 right-0 w-full;
 }
 </style>
