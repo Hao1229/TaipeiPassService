@@ -9,7 +9,6 @@ import BaseRadio from '@/components/atoms/BaseRadio.vue';
 import BaseCheckbox from '@/components/atoms/BaseCheckbox.vue';
 import DatePicker from '@/components/molecules/DatePicker.vue';
 import UploadSection from '@/components/molecules/UploadSection.vue';
-import formJSON from '../../../public/mock/form.json';
 import { useFormStore } from '@/stores/form';
 
 const props = withDefaults(
@@ -26,8 +25,6 @@ const emit = defineEmits(['onFormChange']);
 const store = useFormStore();
 
 const { formFormat } = storeToRefs(store);
-
-formFormat.value = formJSON;
 
 const isExpand = ref(true);
 
@@ -62,7 +59,7 @@ const onMultipleChangeClick = (index: number) => {
 };
 
 const handleForm = () => {
-  formJSON.data.forEach((item) => {
+  formFormat.value.data.forEach((item: any) => {
     switch (item.type) {
       case 'input':
         form[item.field] = '';

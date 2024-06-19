@@ -7,12 +7,13 @@ import ServiceTabsView from '@/components/organisms/ServiceTabsView.vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import ServiceStep from '@/components/molecules/ServiceStep.vue';
 import serviceListJson from '../../public/mock/service_list.json';
+import caseProgressJson from '../../public/mock/case_progress.json';
 
 const store = useFormStore();
 
 store.reset();
 
-const { userName, usePhone, userTaxID } = storeToRefs(store);
+const { userName, userPhone, userTaxID } = storeToRefs(store);
 
 const route = useRoute();
 
@@ -29,11 +30,11 @@ if (route.query.userName) {
   userName.value = 'XXX';
 }
 
-if (route.query.usePhone) {
-  usePhone.value = route.query.usePhone as string;
+if (route.query.userPhone) {
+  userPhone.value = route.query.userPhone as string;
 } else {
   // TODO: 跟 APP 對接後移除
-  usePhone.value = 'A111111111';
+  userPhone.value = 'A111111111';
 }
 
 if (route.query.userTaxID) {
@@ -107,30 +108,14 @@ const onSearchClick = () => {
  */
 const activeSituation = ref('apply');
 
-// TODO: 這邊串 API 拿資料回來
-const searchRecord = ref([
-  {
-    id: '202406120002',
-    name: '臺北市路邊停車費重複繳費申請退費',
-    date: '2024/06/12',
-    status: '待審核'
-  },
-  {
-    id: '202406100002',
-    name: '臺北市路邊停車費重複繳費申請退費',
-    date: '2024/06/10',
-    status: '待審核'
-  },
-  {
-    id: '202406120002',
-    name: '臺北市路邊停車費重複繳費申請退費',
-    date: '2024/06/12',
-    status: '已結案'
-  }
-]);
+const caseProgress = ref(caseProgressJson);
 
-const applyRecord = computed(() => searchRecord.value.filter((item) => item.status === '待審核'));
-const finishRecord = computed(() => searchRecord.value.filter((item) => item.status === '已結案'));
+const applyRecord = computed(() =>
+  caseProgress.value.data.filter((item) => item.current_step !== item.total_step)
+);
+const finishRecord = computed(() =>
+  caseProgress.value.data.filter((item) => item.current_step === item.total_step)
+);
 
 const activeRecord = computed(() =>
   activeSituation.value === 'apply' ? applyRecord.value : finishRecord.value
@@ -263,7 +248,7 @@ const activeRecord = computed(() =>
                     <span class="text-sm">{{ item.status }}</span>
                   </div>
                 </div>
-                <ServiceStep :stepCount="3" :activeStep="item.status === '待審核' ? 2 : 3" />
+                <ServiceStep :stepCount="item.total_step" :activeStep="item.current_step" />
               </li>
             </ul>
           </section>

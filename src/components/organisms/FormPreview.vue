@@ -15,7 +15,7 @@ const emit = defineEmits(['onModify']);
 
 const store = useFormStore();
 
-const { formFormat, fileList, userName, usePhone, userTaxID } = storeToRefs(store);
+const { formFormat, fileList, userName, userPhone, userTaxID } = storeToRefs(store);
 
 const router = useRouter();
 
@@ -58,9 +58,36 @@ const agreeOptions = ref([
   { label: '不同意', value: 'N' }
 ]);
 
-// TODO: 串 API 傳送資料
-const onSubmitClick = () => {
+const onSubmitClick = async () => {
   console.log('submitForm:', props.submitForm);
+
+  /**
+   * 註解區塊是串接提交表單 API 的範例
+   * 透過 JS 原生 fetch 做串接
+   * 開發者可以用自己習慣的方式去做 API 串接
+   * 例如：axios 等
+   */
+
+  // try {
+  //   const response = await fetch(formFormat.value.submit_target.url, {
+  //     method: formFormat.value.submit_target.method,
+  //     headers: {
+  //       'Content-Type': formFormat.value.submit_target.content_type
+  //     },
+  //     body: JSON.stringify(props.submitForm)
+  //   });
+
+  //   if (!response.ok) {
+  //     throw new Error(`request error: ${response.status}!!`);
+  //   }
+
+  //   const responseData = await response.json();
+  //   console.log('success upload:', responseData);
+  //   isFinishDialogOpen.value = true;
+  // } catch (error) {
+  //   console.log('error:', error);
+  // }
+
   isFinishDialogOpen.value = true;
 };
 
@@ -92,7 +119,7 @@ const onNegativeClick = () => {
       </li>
       <li class="preview-item">
         <span class="field-name">手機號碼</span>
-        <span>{{ usePhone }}</span>
+        <span>{{ userPhone }}</span>
       </li>
       <li class="preview-item">
         <span class="field-name">電子信箱</span>

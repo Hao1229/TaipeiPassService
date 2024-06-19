@@ -1,4 +1,9 @@
 {
+  "submit_target": {
+    "url": "https://www.gov.taipei/",
+    "method": "POST",
+    "content_type": "application/json"
+  },
   "data": [
     {
       "type": "input",
