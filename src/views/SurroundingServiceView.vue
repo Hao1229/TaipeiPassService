@@ -18,7 +18,12 @@ interface Place {
 const googleMapsStore = useGoogleMapsStore();
 
 const searchValue = ref('');
+const searchValueName = ref('');
+/** 搜尋結果 */
 const searchPlaceList = ref<Place[]>([]);
+/** 視窗下搜尋結果 */
+const filteredPlaceList = ref<Place[]>([]);
+
 const isExpand = ref(false);
 
 let isMapReady = ref(false);
@@ -47,10 +52,11 @@ const handleExpandChange = (newValue: boolean) => {
   isExpand.value = newValue;
 };
 
-const handleSearchChange = (value: string) => {
+const handleSearchChange = (value: string, label: string) => {
   console.log('handleSearchChange:', value);
   searchPlaceList.value = [];
   searchValue.value = value;
+  searchValueName.value = label;
 
   switch (value) {
     case 'pa-1':
@@ -200,11 +206,11 @@ const updateMarkers = async () => {
   const bounds = map.getBounds();
   if (!bounds) return;
 
-  const filteredPlaces = searchPlaceList.value.filter((place) => {
+  filteredPlaceList.value = searchPlaceList.value.filter((place) => {
     const position = new google.maps.LatLng(place.latitude, place.longitude);
     return bounds.contains(position);
   });
-  locations.value = filteredPlaces.map((place) => {
+  locations.value = filteredPlaceList.value.map((place) => {
     return { lat: Number(place.latitude), lng: Number(place.longitude) };
   });
 
@@ -302,7 +308,7 @@ watch(searchPlaceList, updateMarkers);
   <div class="pb-8 h-screen">
     <div class="flex items-center">
       <FindPlace
-        @onSearchChange="(value) => handleSearchChange(value)"
+        @onSearchChange="(value, label) => handleSearchChange(value, label)"
         @update:isExpand="handleExpandChange"
       />
       <button
@@ -317,6 +323,19 @@ watch(searchPlaceList, updateMarkers);
       <div v-if="isMapReady" class="gps" @click="getPositionClick">
         <img src="@/assets/images/gps.png" width="20" alt="" />
       </div>
+    </div>
+    <!-- 底部搜尋結果 -->
+    <div
+      v-if="searchValue && !isExpand"
+      class="absolute bottom-0 w-full flex items-center justify-between bg-white px-4 py-6 rounded-t-xl"
+    >
+      <div class="flex items-center">
+        <span class="font-bold mr-2">{{ searchValueName }}</span>
+        <div class="text-primary-500 border border-primary-500 rounded-full px-2">
+          {{ filteredPlaceList.length }}筆結果
+        </div>
+      </div>
+      <a class="text-primary-500">展開列表</a>
     </div>
   </div>
 </template>

@@ -56,8 +56,9 @@ const toggleExpand = () => {
 watch([isExpand, searchValue], ([newExpandValue, newSearchValue]) => {
   console.log('isExpand:', newExpandValue, 'searchValue:', newSearchValue);
 
+  const searchName = options.value.find((option) => option.value === newSearchValue)?.label;
   emit('update:isExpand', newExpandValue);
-  emit('onSearchChange', newSearchValue);
+  emit('onSearchChange', newSearchValue, searchName);
 });
 
 const onSelect = (place: { id: string; name: string; icon: string; type: string }) => {
