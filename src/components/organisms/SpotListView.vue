@@ -12,7 +12,12 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['update:isExpandList']);
 
-onMounted(() => {});
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+};
 </script>
 
 <template>
@@ -58,6 +63,7 @@ onMounted(() => {});
       shape="rounded"
       v-if="filteredSpotList.length"
       class="fixed bottom-10 right-6 w-[56px] h-[56px]"
+      @click="scrollToTop"
     >
       TOP
     </BaseButton>
