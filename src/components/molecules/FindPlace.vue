@@ -3,14 +3,20 @@ import { ref, reactive, onMounted, watch, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import placeListJson from '../../../public/mock/place_list.json';
 
+export interface Place {
+  id: string;
+  name: string;
+  icon: string;
+  agency: string;
+  type: string;
+}
+
 const emit = defineEmits(['onSearchChange', 'update:isExpand']);
 
 const searchValue = ref('');
 
 /** 搜尋紀錄列表 */
-const searchHistoryList = ref<
-  { name: string; places: { id: string; name: string; icon: string; type: string }[] }[]
->([
+const searchHistoryList = ref<{ name: string; places: Place[] }[]>([
   {
     name: '搜尋紀錄',
     places: [
@@ -18,6 +24,7 @@ const searchHistoryList = ref<
         id: 'sa-1',
         name: '微笑單車 2.0',
         icon: '',
+        agency: '',
         type: '搜尋紀錄'
       }
     ]
@@ -25,6 +32,7 @@ const searchHistoryList = ref<
 ]);
 /** 服務列表 */
 const placeList = ref(placeListJson);
+const places = computed(() => placeList.value.list.map((category) => category.places).flat());
 /** 服務列表下拉選單 */
 const options = computed(() => {
   return placeList.value.list
@@ -56,12 +64,13 @@ const toggleExpand = () => {
 watch([isExpand, searchValue], ([newExpandValue, newSearchValue]) => {
   console.log('isExpand:', newExpandValue, 'searchValue:', newSearchValue);
 
-  const searchName = options.value.find((option) => option.value === newSearchValue)?.label;
+  const selectedSearchData = places.value.find((place) => place.id === newSearchValue);
+  // const searchName = options.value.find((option) => option.value === newSearchValue)?.label;
   emit('update:isExpand', newExpandValue);
-  emit('onSearchChange', newSearchValue, searchName);
+  emit('onSearchChange', selectedSearchData);
 });
 
-const onSelect = (place: { id: string; name: string; icon: string; type: string }) => {
+const onSelect = (place: Place) => {
   searchValue.value = place.id;
   toggleExpand();
 };

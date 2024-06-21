@@ -7,12 +7,14 @@
           "id": "pa-1",
           "name": "微笑單車 2.0",
           "icon": "",
+          "agency": "台北市政府交通局",
           "type": "交通運輸、停車場、充電站"
         },
         {
           "id": "pa-2",
           "name": "機車充電站",
           "icon": "",
+          "agency": "台北市政府環境保護局",
           "type": "交通運輸、停車場、充電站"
         }
       ]
@@ -24,36 +26,42 @@
           "id": "pb-1",
           "name": "飲水機/提供飲水店家",
           "icon": "@/assets/images/icon-drinking.svg",
+          "agency": "台北市政府環境保護局",
           "type": "飲水機、公廁、哺集乳室、AED場所"
         },
         {
           "id": "pb-2",
           "name": "地區直飲台",
           "icon": "",
+          "agency": "",
           "type": "飲水機、公廁、哺集乳室、AED場所"
         },
         {
           "id": "pb-3",
           "name": "公廁",
           "icon": "",
+          "agency": "",
           "type": "飲水機、公廁、哺集乳室、AED場所"
         },
         {
           "id": "pb-4",
           "name": "哺集乳室",
-          "icon": "@/assets/images/icon-drinking.svg",
+          "icon": "",
+          "agency": "",
           "type": "飲水機、公廁、哺集乳室、AED場所"
         },
         {
           "id": "pb-5",
           "name": "捐血站",
           "icon": "",
+          "agency": "",
           "type": "飲水機、公廁、哺集乳室、AED場所"
         },
         {
           "id": "pb-6",
           "name": "AED場所",
           "icon": "",
+          "agency": "",
           "type": "飲水機、公廁、哺集乳室、AED場所"
         },
         {

@@ -1,30 +1,53 @@
 <script setup lang="ts">
-import FindPlace from '@/components/molecules/FindPlace.vue';
+import FindPlace, { type Place } from '@/components/molecules/FindPlace.vue';
+import SpotList from '@/components/organisms/SpotListView.vue';
 import { useGoogleMapsStore } from '@/stores/googleMaps';
 import axios from 'axios';
 import { Ref, onMounted, ref, watch } from 'vue';
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer';
 import greenDotIconUrl from '@/assets/images/mappin-green.svg';
 import greenFocusIconUrl from '@/assets/images/mappin-green-focus.svg';
+import { youBikeFormatter } from '@/utils/spot-formatter.ts';
 
-interface Place {
-  sno: string;
-  sna: string;
-  sarea: string;
+export interface Spot {
+  id: string;
+  /** 站點名稱 */
+  name: string;
+  /** 行政區 */
+  area: string;
+  /** 地址 */
+  address: string;
+  /** 經度 */
   latitude: number;
+  /** 緯度 */
   longitude: number;
+
+  /** 其餘詳細資訊 */
+  [key: string]: any;
 }
 
 const googleMapsStore = useGoogleMapsStore();
 
-const searchValue = ref('');
-const searchValueName = ref('');
-/** 搜尋結果 */
-const searchPlaceList = ref<Place[]>([]);
-/** 視窗下搜尋結果 */
-const filteredPlaceList = ref<Place[]>([]);
+const selectedSearchData = ref<Place>({
+  id: '',
+  name: '',
+  icon: '',
+  agency: '',
+  type: ''
+});
 
+// const searchValue = ref('');
+// const searchValueName = ref('');
+
+/** 搜尋結果 */
+const searchSpotList = ref<Spot[]>([]);
+/** 視窗下搜尋結果 */
+const filteredSpotList = ref<Spot[]>([]);
+
+/** 是否展開找地點面板 */
 const isExpand = ref(false);
+/** 是否點選展開列表 */
+const isExpandList = ref(false);
 
 let isMapReady = ref(false);
 
@@ -52,13 +75,15 @@ const handleExpandChange = (newValue: boolean) => {
   isExpand.value = newValue;
 };
 
-const handleSearchChange = (value: string, label: string) => {
-  console.log('handleSearchChange:', value);
-  searchPlaceList.value = [];
-  searchValue.value = value;
-  searchValueName.value = label;
+const handleSearchChange = (data: Place) => {
+  if (!data) {
+    return;
+  }
+  console.log('handleSearchChange:', data);
+  searchSpotList.value = [];
+  selectedSearchData.value = data;
 
-  switch (value) {
+  switch (data.id) {
     case 'pa-1':
       fetchYouBikeData();
       break;
@@ -171,20 +196,30 @@ const errorCallback = (error: any) => {
   }
 };
 
-const fetchYouBikeData = async () => {
+const fetchAndFormatData = async (url: string, formatter: (item: any) => Spot) => {
   try {
-    const response = await axios.get<Place[]>(
-      'https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json'
-    );
-    searchPlaceList.value = response.data;
-    console.log('searchPlaceList:', searchPlaceList.value);
+    const response = await axios.get(url);
+    return formatSpotData(response.data, formatter);
   } catch (error) {
-    console.error('Failed to fetch YouBike data:', error);
+    console.error(`Failed to fetch data from ${url}:`, error);
+    return [];
   }
 };
 
+const formatSpotData = (data: any, formatter: (item: any) => Spot): Spot[] => {
+  return data.map(formatter);
+};
+
+const fetchYouBikeData = async () => {
+  searchSpotList.value = await fetchAndFormatData(
+    'https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json',
+    youBikeFormatter
+  );
+  console.log('searchSpotList:', searchSpotList.value);
+};
+
 const updateMarkers = async () => {
-  if (!searchValue.value) {
+  if (!selectedSearchData.value.id) {
     clearMarkers();
     return;
   }
@@ -206,12 +241,15 @@ const updateMarkers = async () => {
   const bounds = map.getBounds();
   if (!bounds) return;
 
-  filteredPlaceList.value = searchPlaceList.value.filter((place) => {
-    const position = new google.maps.LatLng(place.latitude, place.longitude);
+  filteredSpotList.value = searchSpotList.value.filter((spot) => {
+    const position = new google.maps.LatLng(spot.latitude, spot.longitude);
     return bounds.contains(position);
   });
-  locations.value = filteredPlaceList.value.map((place) => {
-    return { lat: Number(place.latitude), lng: Number(place.longitude) };
+
+  console.log('filteredSpotList:', filteredSpotList.value);
+
+  locations.value = filteredSpotList.value.map((spot) => {
+    return { lat: Number(spot.latitude), lng: Number(spot.longitude) };
   });
 
   // Clear existing markers
@@ -229,7 +267,7 @@ const updateMarkers = async () => {
     anchor: new google.maps.Point(15, 15) // 設置圖標的錨點，使其底部中心對齊
   };
 
-  let currentFocusedMarker = null;
+  let currentFocusedMarker: any = null;
 
   locations.value.forEach((position, i) => {
     const marker = new google.maps.Marker({
@@ -300,43 +338,54 @@ const clearMarkers = () => {
   }
 };
 
-// Watch for changes in searchPlaceList
-watch(searchPlaceList, updateMarkers);
+// Watch for changes in searchSpotList
+watch(searchSpotList, updateMarkers);
 </script>
 
 <template>
   <div class="pb-8 h-screen">
-    <div class="flex items-center">
-      <FindPlace
-        @onSearchChange="(value, label) => handleSearchChange(value, label)"
-        @update:isExpand="handleExpandChange"
-      />
-      <button
-        v-if="searchValue && !isExpand"
-        class="bg-primary-500 w-[48px] h-[48px] flex items-center justify-center rounded-lg my-5 ml-2 mr-4"
-      >
-        <img src="@/assets/images/icon-filter-white.svg" width="24" alt="" />
-      </button>
-    </div>
-    <div class="relative flex-1" :class="{ hidden: isExpand, visible: !isExpand }">
-      <div class="google-map" id="map"></div>
-      <div v-if="isMapReady" class="gps" @click="getPositionClick">
-        <img src="@/assets/images/gps.png" width="20" alt="" />
-      </div>
-    </div>
-    <!-- 底部搜尋結果 -->
-    <div
-      v-if="searchValue && !isExpand"
-      class="absolute bottom-0 w-full flex items-center justify-between bg-white px-4 py-6 rounded-t-xl"
-    >
+    <div :class="{ hidden: isExpandList, visible: !isExpandList }">
+      <!-- 找地點搜尋框 -->
       <div class="flex items-center">
-        <span class="font-bold mr-2">{{ searchValueName }}</span>
-        <div class="text-primary-500 border border-primary-500 rounded-full px-2">
-          {{ filteredPlaceList.length }}筆結果
+        <FindPlace
+          @onSearchChange="(value) => handleSearchChange(value)"
+          @update:isExpand="handleExpandChange"
+        />
+        <button
+          v-if="selectedSearchData.id && !isExpand"
+          class="bg-primary-500 w-[48px] h-[48px] flex items-center justify-center rounded-lg my-5 ml-2 mr-4"
+        >
+          <img src="@/assets/images/icon-filter-white.svg" width="24" alt="" />
+        </button>
+      </div>
+      <!-- 地圖 -->
+      <div class="relative flex-1" :class="{ hidden: isExpand, visible: !isExpand }">
+        <div class="google-map" id="map"></div>
+        <div v-if="isMapReady" class="gps" @click="getPositionClick">
+          <img src="@/assets/images/gps.png" width="20" alt="" />
         </div>
       </div>
-      <a class="text-primary-500">展開列表</a>
+      <!-- 底部搜尋結果 -->
+      <div
+        v-if="selectedSearchData.id && !isExpand"
+        class="absolute bottom-0 w-full flex items-center justify-between bg-white px-4 py-6 rounded-t-xl shadow-[0_-4px_10px_0_rgba(0,0,0,0.04)]"
+      >
+        <div class="flex items-center">
+          <span class="font-bold mr-2">{{ selectedSearchData.name }}</span>
+          <div class="text-primary-500 border border-primary-500 rounded-full px-2">
+            {{ filteredSpotList.length }}筆結果
+          </div>
+        </div>
+        <a class="text-primary-500" @click="isExpandList = true">展開列表</a>
+      </div>
     </div>
+    <!-- 搜尋結果列表 -->
+    <SpotList
+      v-if="selectedSearchData.id && isExpandList"
+      :selectedSearchData="selectedSearchData"
+      :filteredSpotList="filteredSpotList"
+      @update:isExpandList="(value) => (isExpandList = value)"
+    />
   </div>
 </template>
 
