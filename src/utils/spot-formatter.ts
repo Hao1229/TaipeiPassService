@@ -7,8 +7,8 @@ export const youBikeFormatter = (item: any): Spot => {
         name: item.sna,
         area: item.sarea,
         address: item.ar,
-        latitude: parseFloat(item.lat),
-        longitude: parseFloat(item.lng),
+        lat: parseFloat(item.latitude),
+        lng: parseFloat(item.longitude),
         ...item
     };
 }
@@ -20,8 +20,8 @@ export const otherApiFormatter = (item: any): Spot => {
         name: item.stationName,
         area: item.district,
         address: item.address,
-        latitude: parseFloat(item.latitude),
-        longitude: parseFloat(item.longitude),
+        lat: parseFloat(item.latitude),
+        lng: parseFloat(item.longitude),
         ...item
     };
 }

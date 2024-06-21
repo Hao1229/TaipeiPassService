@@ -10,7 +10,7 @@ const props = defineProps<{
   selectedSearchData: Place;
   filteredSpotList: Spot[];
 }>();
-const emit = defineEmits(['update:isExpandList']);
+const emit = defineEmits(['update:isExpandList', 'update:selectedSpot']);
 
 const scrollToTop = () => {
   window.scrollTo({
@@ -33,14 +33,22 @@ const scrollToTop = () => {
       <p class="text-grey-500 text-sm">{{ selectedSearchData.agency }}</p>
     </div>
     <!-- list -->
-    <div v-for="spot in filteredSpotList" :key="spot.id" class="mx-5 py-4 border-b border-grey-200">
+    <div
+      v-for="spot in filteredSpotList"
+      :key="spot.id"
+      class="mx-5 py-4 border-b border-grey-200"
+      @click="
+        emit('update:isExpandList', false);
+        emit('update:selectedSpot', spot);
+      "
+    >
       <p class="underline font-bold mb-2">{{ spot.name }}</p>
       <div class="flex">
         <img src="@/assets/images/icon-geo.svg" alt="" />
         <span>{{ spot.address }}</span>
       </div>
     </div>
-    <div class="flex-1 flex justify-center items-center">
+    <div v-if="!filteredSpotList.length" class="flex-1 flex justify-center items-center">
       <div class="text-center">
         <img src="@/assets/images/img-maplost.svg" class="mx-auto mb-2" alt="" />
         <p class="text-primary-500 font-bold text-xl mb-2">無符合搜尋結果</p>

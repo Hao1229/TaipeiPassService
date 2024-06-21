@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import FindPlace, { type Place } from '@/components/molecules/FindPlace.vue';
 import SpotList from '@/components/organisms/SpotListView.vue';
+import SpotDetail from '@/components/organisms/SpotDetailView.vue';
 import { useGoogleMapsStore } from '@/stores/googleMaps';
 import axios from 'axios';
-import { Ref, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer';
 import greenDotIconUrl from '@/assets/images/mappin-green.svg';
-import greenFocusIconUrl from '@/assets/images/mappin-green-focus.svg';
-import { youBikeFormatter } from '@/utils/spot-formatter.ts';
+import greenFocusIconUrl from '@/assets/images/map/youbike/icon_mappin-ubike-green-pressed.svg';
+import { youBikeFormatter } from '@/utils/spot-formatter';
 
 export interface Spot {
   id: string;
@@ -18,9 +19,9 @@ export interface Spot {
   /** 地址 */
   address: string;
   /** 經度 */
-  latitude: number;
+  lat: number;
   /** 緯度 */
-  longitude: number;
+  lng: number;
 
   /** 其餘詳細資訊 */
   [key: string]: any;
@@ -36,18 +37,19 @@ const selectedSearchData = ref<Place>({
   type: ''
 });
 
-// const searchValue = ref('');
-// const searchValueName = ref('');
-
 /** 搜尋結果 */
 const searchSpotList = ref<Spot[]>([]);
 /** 視窗下搜尋結果 */
 const filteredSpotList = ref<Spot[]>([]);
+const selectedSpot = ref<Spot | null>(null);
 
 /** 是否展開找地點面板 */
 const isExpand = ref(false);
 /** 是否點選展開列表 */
 const isExpandList = ref(false);
+/** 是否點選展開明細 */
+const isExpandDetail = ref(false);
+const isFrom = ref<'spot' | 'list' | ''>('');
 
 let isMapReady = ref(false);
 
@@ -56,19 +58,17 @@ let markers: google.maps.Marker[] = [];
 let markerCluster: any = null;
 
 /**
- * 目前選定位置
+ * 目前位置
  */
-const selectLocation = ref<{ lat: number; lng: number; results: any[] }>({
+const currentLocation = ref<{ lat: number; lng: number; results: any[] }>({
   // 預設經緯度在信義區附近
   lat: 25.0325917,
   lng: 121.5624999,
   results: []
 });
 
-const locations = ref<{ lat: number; lng: number }[]>([]);
-
 onMounted(() => {
-  initMap(selectLocation.value.lat, selectLocation.value.lng);
+  initMap(currentLocation.value.lat, currentLocation.value.lng);
 });
 
 const handleExpandChange = (newValue: boolean) => {
@@ -131,8 +131,8 @@ const initMap = (lat: number, lng: number) => {
 
     new google.maps.Marker({
       position: {
-        lat: selectLocation.value.lat,
-        lng: selectLocation.value.lng
+        lat: currentLocation.value.lat,
+        lng: currentLocation.value.lng
       },
       map,
       title: 'your location',
@@ -178,11 +178,11 @@ const getPositionClick = () => {
 
 const successCallback = (position: GeolocationPosition) => {
   console.log(position);
-  selectLocation.value.lat = position.coords.latitude;
-  selectLocation.value.lng = position.coords.longitude;
+  currentLocation.value.lat = position.coords.latitude;
+  currentLocation.value.lng = position.coords.longitude;
 
   // 使用者目前位置
-  initMap(selectLocation.value.lat, selectLocation.value.lng);
+  initMap(currentLocation.value.lat, currentLocation.value.lng);
   // loadingStore.loading(false, '');
 };
 const errorCallback = (error: any) => {
@@ -191,7 +191,7 @@ const errorCallback = (error: any) => {
     // 使用者未開啟定位
     // showMapNotification.value = true;
     // 預設位置
-    initMap(selectLocation.value.lat, selectLocation.value.lng);
+    initMap(currentLocation.value.lat, currentLocation.value.lng);
     // loadingStore.loading(false);
   }
 };
@@ -224,33 +224,15 @@ const updateMarkers = async () => {
     return;
   }
 
-  const svgContent = `
-        <svg fill="#2eb6c7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100" height="100">
-          <circle fill="#2eb6c7" cx="120" cy="120" opacity=".6" r="90" />
-          <circle fill="#fff" cx="120" cy="120" r="70" />
-          <text x="50%" y="50%" style="fill:#2eb6c7" text-anchor="middle" font-size="50" dominant-baseline="middle" font-family="roboto,arial,sans-serif">Custom</text>
-        </svg>
-      `;
-  // 點擊後顯示相關資訊
-  const infoWindow = new google.maps.InfoWindow({
-    content: `<div class="bg-primary-500">123</div>`,
-    disableAutoPan: true,
-    headerDisabled: true
-  });
-
   const bounds = map.getBounds();
   if (!bounds) return;
 
   filteredSpotList.value = searchSpotList.value.filter((spot) => {
-    const position = new google.maps.LatLng(spot.latitude, spot.longitude);
+    const position = new google.maps.LatLng(spot.lat, spot.lng);
     return bounds.contains(position);
   });
 
   console.log('filteredSpotList:', filteredSpotList.value);
-
-  locations.value = filteredSpotList.value.map((spot) => {
-    return { lat: Number(spot.latitude), lng: Number(spot.longitude) };
-  });
 
   // Clear existing markers
   clearMarkers();
@@ -258,20 +240,20 @@ const updateMarkers = async () => {
   const greenDotIcon = {
     url: greenDotIconUrl, // 默認綠色小圓點圖標的路徑
     scaledSize: new google.maps.Size(20, 20), // 設置圖標的大小
-    anchor: new google.maps.Point(10, 10) // 設置圖標的錨點，使其中心對齊
+    anchor: new google.maps.Point(10, 20) // 設置圖標的錨點，使其中心對齊底部
   };
 
   const focusedIcon = {
     url: greenFocusIconUrl, // 點擊後聚焦圖標的路徑
-    scaledSize: new google.maps.Size(30, 30), // 設置圖標的大小
-    anchor: new google.maps.Point(15, 15) // 設置圖標的錨點，使其底部中心對齊
+    scaledSize: new google.maps.Size(100, 100), // 設置圖標的大小
+    anchor: new google.maps.Point(50, 100) // 設置圖標的錨點，使其中心對齊底部
   };
 
   let currentFocusedMarker: any = null;
 
-  locations.value.forEach((position, i) => {
+  filteredSpotList.value.forEach((spot, i) => {
     const marker = new google.maps.Marker({
-      position,
+      position: { lat: Number(spot.lat), lng: Number(spot.lng) },
       map,
       icon: greenDotIcon
     });
@@ -280,14 +262,16 @@ const updateMarkers = async () => {
       if (currentFocusedMarker && currentFocusedMarker !== marker) {
         // 恢復之前聚焦的標記為默認圖標
         currentFocusedMarker.setIcon(greenDotIcon);
+        selectedSpot.value = null;
       }
 
       // 設置當前標記為聚焦圖標
       marker.setIcon(focusedIcon);
       currentFocusedMarker = marker;
 
-      infoWindow.setContent(`Latitude: ${position.lat}, Longitude: ${position.lng}`);
-      infoWindow.open(map, marker);
+      // 獲取所選擇的 spot 的所有屬性
+      selectedSpot.value = spot;
+      console.log('Selected spot:', selectedSpot);
     });
 
     markers.push(marker);
@@ -336,6 +320,7 @@ const clearMarkers = () => {
   if (markerCluster) {
     markerCluster.clearMarkers();
   }
+  selectedSpot.value = null;
 };
 
 // Watch for changes in searchSpotList
@@ -344,7 +329,9 @@ watch(searchSpotList, updateMarkers);
 
 <template>
   <div class="pb-8 h-screen">
-    <div :class="{ hidden: isExpandList, visible: !isExpandList }">
+    <div
+      :class="{ hidden: isExpandList || isExpandDetail, visible: !isExpandList && !isExpandDetail }"
+    >
       <!-- 找地點搜尋框 -->
       <div class="flex items-center">
         <FindPlace
@@ -365,11 +352,26 @@ watch(searchSpotList, updateMarkers);
           <img src="@/assets/images/gps.png" width="20" alt="" />
         </div>
       </div>
-      <!-- 底部搜尋結果 -->
+      <!-- 選取的點 -->
       <div
-        v-if="selectedSearchData.id && !isExpand"
-        class="absolute bottom-0 w-full flex items-center justify-between bg-white px-4 py-6 rounded-t-xl shadow-[0_-4px_10px_0_rgba(0,0,0,0.04)]"
+        v-if="selectedSearchData.id && !isExpand && selectedSpot"
+        class="floating-box bottom-24 left-[50%] translate-x-[-50%] w-[90%]"
+        @click="
+          isExpandDetail = true;
+          isFrom = 'spot';
+        "
       >
+        <div>
+          <p class="font-bold mb-2">{{ selectedSpot.name }}</p>
+          <div class="flex">
+            <img src="@/assets/images/icon-geo.svg" alt="" />
+            <span class="underline">{{ selectedSpot.address }}</span>
+          </div>
+        </div>
+        <img src="@/assets/images/down-icon.svg" class="-rotate-90" alt="" />
+      </div>
+      <!-- 底部搜尋結果 -->
+      <div v-if="selectedSearchData.id && !isExpand" class="floating-box bottom-0 w-full">
         <div class="flex items-center">
           <span class="font-bold mr-2">{{ selectedSearchData.name }}</span>
           <div class="text-primary-500 border border-primary-500 rounded-full px-2">
@@ -381,10 +383,32 @@ watch(searchSpotList, updateMarkers);
     </div>
     <!-- 搜尋結果列表 -->
     <SpotList
-      v-if="selectedSearchData.id && isExpandList"
+      v-if="isExpandList"
       :selectedSearchData="selectedSearchData"
       :filteredSpotList="filteredSpotList"
-      @update:isExpandList="(value) => (isExpandList = value)"
+      @update:isExpandList="(value: boolean) => (isExpandList = value)"
+      @update:selectedSpot="
+        (value: Spot) => {
+          selectedSpot = value;
+          isExpandDetail = true;
+          isFrom = 'list';
+        }
+      "
+    />
+    <!-- 搜尋結果明細 -->
+    <SpotDetail
+      v-if="selectedSpot && isExpandDetail && isFrom"
+      :selectedSpot="selectedSpot"
+      @update:isExpandDetail="
+        (value) => {
+          isExpandDetail = value;
+          selectedSpot = null;
+          if (isFrom === 'list') {
+            isExpandList = true;
+          }
+          isFrom = '';
+        }
+      "
     />
   </div>
 </template>
@@ -415,5 +439,17 @@ watch(searchSpotList, updateMarkers);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.floating-box {
+  @apply absolute;
+  @apply flex;
+  @apply items-center;
+  @apply justify-between;
+  @apply bg-white;
+  @apply px-4;
+  @apply py-6;
+  @apply rounded-xl;
+  @apply shadow-[0_-4px_10px_0_rgba(0,0,0,0.04)];
 }
 </style>
