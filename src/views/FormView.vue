@@ -67,8 +67,8 @@ watch(activeStep, () => {
         @onFormChange="(value) => (applyServiceForm = value)"
       />
       <div class="grid grid-cols-2 gap-x-2 px-2">
-        <BaseButton label="上一步" outline link :routeInfo="{ name: 'home' }" />
-        <BaseButton label="下一步" @click="onSubmitClick" />
+        <BaseButton outline link :routeInfo="{ name: 'home' }">上一步</BaseButton>
+        <BaseButton @click="onSubmitClick">下一步</BaseButton>
       </div>
     </form>
     <FormPreview v-if="activeStep === 2" :submit-form="submitForm" @onModify="activeStep = 1" />

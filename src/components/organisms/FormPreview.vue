@@ -182,8 +182,8 @@ const onNegativeClick = () => {
     </div>
   </section>
   <div class="grid grid-cols-2 gap-x-2 px-4 mt-4">
-    <BaseButton label="修改" outline @click="emit('onModify')" />
-    <BaseButton label="送出" :disabled="isAgree === 'N'" @click="onSubmitClick" />
+    <BaseButton outline @click="emit('onModify')">修改</BaseButton>
+    <BaseButton :disabled="isAgree === 'N'" @click="onSubmitClick">送出</BaseButton>
   </div>
   <BaseDialog
     v-model="isFinishDialogOpen"
