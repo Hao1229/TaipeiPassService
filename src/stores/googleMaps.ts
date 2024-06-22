@@ -3,11 +3,10 @@ import { defineStore } from 'pinia';
 import { Loader } from '@googlemaps/js-api-loader';
 
 export const useGoogleMapsStore = defineStore('googleMaps', () => {
-
   const loader = new Loader({
     apiKey: 'AIzaSyCocXKpChBFYrx1pEzPQGatIBrZ4KbwKbk',
     version: 'weekly',
-    libraries: ['places']
+    libraries: ['places', 'geometry']
   });
 
   /**
@@ -15,32 +14,23 @@ export const useGoogleMapsStore = defineStore('googleMaps', () => {
    */
   const showMapNotification = ref(false);
 
-  const postSearchAddrLog = reactive({
-    name: '',
-    address: '',
-    prefixAddress: '',
-    suffixAddress: '',
-    lat: 0,
-    lng: 0,
-  });
-
   /**
    * 獲取目前位置
    */
   const gettingPosition = () => {
     if (navigator.geolocation) {
       return new Promise((resolve, reject) => {
-        let option = {
+        const option = {
           enableAcuracy: false, // 提高精確度
           maximumAge: 0, // 設定上一次位置資訊的有效期限(毫秒)
-          timeout: 10000, // 逾時計時器(毫秒)
+          timeout: 10000 // 逾時計時器(毫秒)
         };
         navigator.geolocation.getCurrentPosition(resolve, reject, option);
       });
     } else {
       alert('Does not support positioning!');
     }
-  }
+  };
 
   /**
    * 獲取完整地址

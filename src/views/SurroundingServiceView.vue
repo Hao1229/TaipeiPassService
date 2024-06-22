@@ -6,8 +6,12 @@ import { useGoogleMapsStore } from '@/stores/googleMaps';
 import axios from 'axios';
 import { computed, onMounted, ref, watch } from 'vue';
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer';
-import greenDotIconUrl from '@/assets/images/mappin-green.svg';
+import greenDotIconUrl from '@/assets/images/map/youbike/mappin-green.svg';
+import yellowDotIconUrl from '@/assets/images/map/youbike/mappin-yellow.svg';
+import redDotIconUrl from '@/assets/images/map/youbike/mappin-red.svg';
 import greenFocusIconUrl from '@/assets/images/map/youbike/icon_mappin-ubike-green-pressed.svg';
+import yellowFocusIconUrl from '@/assets/images/map/youbike/icon_mappin-ubike-yellow-pressed.svg';
+import redFocusIconUrl from '@/assets/images/map/youbike/icon_mappin-ubike-red-pressed.svg';
 import { youBikeFormatter } from '@/utils/spot-formatter';
 
 export interface Spot {
@@ -22,6 +26,8 @@ export interface Spot {
   lat: number;
   /** 緯度 */
   lng: number;
+  /** 距離 */
+  distance: number;
 
   /** 其餘詳細資訊 */
   [key: string]: any;
@@ -127,8 +133,6 @@ const initMap = (lat: number, lng: number) => {
       mapId: 'fc1ec68c1093dea4'
     });
 
-    console.log('initMap:', map);
-
     new google.maps.Marker({
       position: {
         lat: currentLocation.value.lat,
@@ -165,6 +169,7 @@ const initMap = (lat: number, lng: number) => {
     isMapReady.value = true;
     setMapHeight();
     window.addEventListener('resize', setMapHeight);
+    getPositionClick();
   });
 };
 
@@ -177,13 +182,24 @@ const getPositionClick = () => {
 };
 
 const successCallback = (position: GeolocationPosition) => {
-  console.log(position);
   currentLocation.value.lat = position.coords.latitude;
   currentLocation.value.lng = position.coords.longitude;
+
+  console.log('currentLocation:', currentLocation.value);
 
   // 使用者目前位置
   initMap(currentLocation.value.lat, currentLocation.value.lng);
   // loadingStore.loading(false, '');
+
+  // 定義兩個點的經緯度
+  const pointA = new google.maps.LatLng(24.5492903, 120.9731761); // 台北101
+  const pointB = new google.maps.LatLng(25.02055, 121.52855); // 台北故宮
+
+  // 計算距離
+  const distanceInMeters = google.maps.geometry.spherical.computeDistanceBetween(pointA, pointB);
+  const distanceInKilometers = distanceInMeters / 1000;
+
+  console.log(`Distance between points: ${distanceInKilometers} km`);
 };
 const errorCallback = (error: any) => {
   console.log(error);
@@ -227,31 +243,41 @@ const updateMarkers = async () => {
   const bounds = map.getBounds();
   if (!bounds) return;
 
-  filteredSpotList.value = searchSpotList.value.filter((spot) => {
-    const position = new google.maps.LatLng(spot.lat, spot.lng);
-    return bounds.contains(position);
-  });
-
-  console.log('filteredSpotList:', filteredSpotList.value);
+  filteredSpotList.value = searchSpotList.value
+    .map((spot) => ({
+      ...spot,
+      position: new google.maps.LatLng(spot.lat, spot.lng)
+    }))
+    .filter((spot) => bounds.contains(spot.position))
+    .map((spot) => ({
+      ...spot,
+      distance: parseFloat(
+        (
+          google.maps.geometry.spherical.computeDistanceBetween(
+            new google.maps.LatLng(currentLocation.value.lat, currentLocation.value.lng),
+            new google.maps.LatLng(spot.lat, spot.lng)
+          ) / 1000
+        ).toFixed(1)
+      )
+    }));
 
   // Clear existing markers
   clearMarkers();
 
-  const greenDotIcon = {
-    url: greenDotIconUrl, // 默認綠色小圓點圖標的路徑
-    scaledSize: new google.maps.Size(20, 20), // 設置圖標的大小
-    anchor: new google.maps.Point(10, 20) // 設置圖標的錨點，使其中心對齊底部
-  };
-
-  const focusedIcon = {
-    url: greenFocusIconUrl, // 點擊後聚焦圖標的路徑
-    scaledSize: new google.maps.Size(100, 100), // 設置圖標的大小
-    anchor: new google.maps.Point(50, 100) // 設置圖標的錨點，使其中心對齊底部
-  };
-
   let currentFocusedMarker: any = null;
 
   filteredSpotList.value.forEach((spot, i) => {
+    const greenDotIcon = {
+      url:
+        spot.available_rent_bikes === 0
+          ? yellowDotIconUrl
+          : spot.available_return_bikes === 0
+            ? redDotIconUrl
+            : greenDotIconUrl, // 默認綠色小圓點圖標的路徑
+      scaledSize: new google.maps.Size(20, 20), // 設置圖標的大小
+      anchor: new google.maps.Point(10, 20) // 設置圖標的錨點，使其中心對齊底部
+    };
+
     const marker = new google.maps.Marker({
       position: { lat: Number(spot.lat), lng: Number(spot.lng) },
       map,
@@ -264,6 +290,17 @@ const updateMarkers = async () => {
         currentFocusedMarker.setIcon(greenDotIcon);
         selectedSpot.value = null;
       }
+
+      const focusedIcon = {
+        url:
+          spot.available_rent_bikes === 0
+            ? yellowFocusIconUrl
+            : spot.available_return_bikes === 0
+              ? redFocusIconUrl
+              : greenFocusIconUrl, // 點擊後聚焦圖標的路徑
+        scaledSize: new google.maps.Size(100, 100), // 設置圖標的大小
+        anchor: new google.maps.Point(50, 100) // 設置圖標的錨點，使其中心對齊底部
+      };
 
       // 設置當前標記為聚焦圖標
       marker.setIcon(focusedIcon);
@@ -363,10 +400,58 @@ watch(searchSpotList, updateMarkers);
       >
         <div>
           <p class="font-bold mb-2">{{ selectedSpot.name }}</p>
-          <div class="flex">
+          <div class="flex mb-2">
             <img src="@/assets/images/icon-geo.svg" alt="" />
             <span class="underline">{{ selectedSpot.address }}</span>
           </div>
+          <!-- custom template -->
+          <template v-if="selectedSearchData.id === 'pa-1'">
+            <div class="flex text-grey-500">
+              <span>{{ selectedSpot.distance }}公里</span>
+              <span class="mx-2">|</span>
+              <span class="flex">
+                <template
+                  v-if="
+                    selectedSpot.available_rent_bikes !== 0 &&
+                    selectedSpot.available_return_bikes !== 0
+                  "
+                >
+                  <img src="@/assets/images/map/youbike/icon-info-ubike-green.svg" alt="" />
+                  <span class="ml-1 text-[#76A732]">正常租借</span>
+                </template>
+                <template v-if="selectedSpot.available_rent_bikes === 0">
+                  <img src="@/assets/images/map/youbike/icon-info-ubike-yellow.svg" alt="" />
+                  <span class="ml-1 text-secondary-500">無車可借</span>
+                </template>
+                <template v-if="selectedSpot.available_return_bikes === 0">
+                  <img src="@/assets/images/map/youbike/icon-info-ubike-red.svg" alt="" />
+                  <span class="ml-1 text-[#E5464B]"> 車位滿載</span>
+                </template>
+              </span>
+              <span class="mx-2">|</span>
+              <span>
+                <span class="text-grey-500 mr-1">可借</span>
+                <span
+                  class="mr-1"
+                  :class="
+                    selectedSpot.available_rent_bikes === 0
+                      ? 'text-secondary-500'
+                      : 'text-[#76A732]'
+                  "
+                >
+                  {{ selectedSpot.available_rent_bikes }}
+                </span>
+                <span class="text-grey-500 mr-1">可停</span>
+                <span
+                  :class="
+                    selectedSpot.available_return_bikes === 0 ? 'text-[#E5464B]' : 'text-grey-950'
+                  "
+                >
+                  {{ selectedSpot.available_return_bikes }}
+                </span>
+              </span>
+            </div>
+          </template>
         </div>
         <img src="@/assets/images/down-icon.svg" class="-rotate-90" alt="" />
       </div>
@@ -398,6 +483,7 @@ watch(searchSpotList, updateMarkers);
     <!-- 搜尋結果明細 -->
     <SpotDetail
       v-if="selectedSpot && isExpandDetail && isFrom"
+      :selectedSearchData="selectedSearchData"
       :selectedSpot="selectedSpot"
       @update:isExpandDetail="
         (value) => {
