@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
 import type { RouteLocationRaw } from 'vue-router';
+import { defineProps, defineEmits } from 'vue';
 
-const props = defineProps<{
-  label: string;
-  outline?: boolean;
-  link?: boolean;
-  routeInfo?: RouteLocationRaw;
-  disabled?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    outline?: boolean;
+    link?: boolean;
+    routeInfo?: RouteLocationRaw;
+    disabled?: boolean;
+    shape?: 'rounded' | 'rectangular';
+  }>(),
+  {
+    shape: 'rectangular'
+  }
+);
 
 const emit = defineEmits({
   click: null
@@ -23,16 +29,21 @@ const emit = defineEmits({
     class="base-button text-center"
     :class="{ 'base-button--outline': props.outline, 'base-button--disabled': props.disabled }"
   >
-    {{ props.label }}
+    <slot />
   </RouterLink>
   <button
     v-else
     :disabled="props.disabled"
     class="base-button"
-    :class="{ 'base-button--outline': props.outline, 'base-button--disabled': props.disabled }"
+    :class="{
+      'base-button--outline': props.outline,
+      'base-button--disabled': props.disabled,
+      'base-button--rounded': props.shape === 'rounded',
+      'base-button--rectangular': props.shape === 'rectangular'
+    }"
     @click.prevent="() => emit('click')"
   >
-    {{ props.label }}
+    <slot />
   </button>
 </template>
 
@@ -50,6 +61,14 @@ const emit = defineEmits({
 
   &--disabled {
     @apply text-black bg-gray-300;
+  }
+
+  &--rounded {
+    @apply rounded-full;
+  }
+
+  &--rectangular {
+    @apply rounded-lg;
   }
 }
 </style>
