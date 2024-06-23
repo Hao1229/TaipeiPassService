@@ -8,7 +8,7 @@ import BaseTextarea from '@/components/atoms/BaseTextarea.vue';
 import BaseRadio from '@/components/atoms/BaseRadio.vue';
 import BaseCheckbox from '@/components/atoms/BaseCheckbox.vue';
 import DatePicker from '@/components/molecules/DatePicker.vue';
-import UploadSection from '@/components/molecules/UploadSection.vue';
+// import UploadSection from '@/components/molecules/UploadSection.vue';
 import { useFormStore } from '@/stores/form';
 
 const props = withDefaults(
@@ -82,9 +82,9 @@ const handleForm = () => {
       case 'date_picker':
         form[item.field] = undefined;
         break;
-      case 'upload':
-        form[item.field] = [];
-        break;
+      // case 'upload':
+      //   form[item.field] = [];
+      //   break;
       default:
         form[item.field] = '';
     }
@@ -260,13 +260,14 @@ watch(
             </div>
             <!-- type = upload -->
             <!-- TODO: 等 API 再來決定要給 form 什麼 -->
-            <UploadSection
+            <!-- DOC: 上傳先拿掉 -->
+            <!-- <UploadSection
               v-else-if="item.type === 'upload'"
               :file-max="item.upload_max_files"
               :title="item.label"
               :required="item.required"
               :triggerValidate="props.triggerValidate"
-            />
+            /> -->
           </div>
         </div>
       </div>
