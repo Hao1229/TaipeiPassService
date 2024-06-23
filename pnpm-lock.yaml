@@ -12,13 +12,13 @@ importers:
         specifier: 1.7.22
         version: 1.7.22(vue@3.4.21(typescript@5.4.5))
       '@popperjs/core':
-        specifier: ^2.11.8
+        specifier: 2.11.8
         version: 2.11.8
       pinia:
         specifier: 2.1.7
         version: 2.1.7(typescript@5.4.5)(vue@3.4.21(typescript@5.4.5))
       v-calendar:
-        specifier: ^3.1.2
+        specifier: 3.1.2
         version: 3.1.2(@popperjs/core@2.11.8)(vue@3.4.21(typescript@5.4.5))
       vue:
         specifier: 3.4.21
