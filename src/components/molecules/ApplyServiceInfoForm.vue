@@ -31,7 +31,7 @@ const isExpand = ref(true);
 const formValidateFieldMap = computed(
   () =>
     new Map(
-      formFormat.value.data.map((item: { field: any; required: any }) => [
+      formFormat.value.data.form_format.map((item: { field: any; required: any }) => [
         item.field,
         item.required
       ])
@@ -59,7 +59,7 @@ const onMultipleChangeClick = (index: number) => {
 };
 
 const handleForm = () => {
-  formFormat.value.data.forEach((item: any) => {
+  formFormat.value.data.form_format.forEach((item: any) => {
     switch (item.type) {
       case 'input':
         form[item.field] = '';
@@ -142,7 +142,7 @@ watch(
       >
         <div class="overflow-hidden flex flex-col gap-4 pt-5">
           <!-- 這邊開始透過 API 的 form format 來組成 -->
-          <div v-for="(item, index) in formFormat.data" :key="index">
+          <div v-for="(item, index) in formFormat.data.form_format" :key="index">
             <!-- type = input -->
             <div v-if="item.type === 'input'" class="flex flex-col">
               <label :for="item.field" class="field-label">
