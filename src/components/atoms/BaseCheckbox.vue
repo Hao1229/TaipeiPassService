@@ -66,10 +66,6 @@ watch(
   @apply w-0 h-0 opacity-0 absolute;
 
   &:checked {
-    & + span {
-      @apply text-primary-500;
-    }
-
     & ~ div {
       & > img {
         &:first-child {

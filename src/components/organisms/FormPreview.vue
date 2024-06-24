@@ -145,7 +145,8 @@ const onNegativeClick = () => {
         class="preview-item"
         :class="{ 'preview-item--attachment': item.field === 'attachments' }"
       >
-        <template v-if="item.field === 'attachments'">
+        <!-- 附件先移除 -->
+        <!-- <template v-if="item.field === 'attachments'">
           <span class="field-name">附件</span>
           <div class="flex flex-wrap gap-4 mt-2">
             <div v-for="item in fileList" :key="item.name">
@@ -159,11 +160,9 @@ const onNegativeClick = () => {
               </div>
             </div>
           </div>
-        </template>
-        <template v-else>
-          <span class="field-name">{{ item.label }}</span>
-          <span>{{ applyFieldTextHandle(item.field) }}</span>
-        </template>
+        </template> -->
+        <span class="field-name">{{ item.label }}</span>
+        <span>{{ applyFieldTextHandle(item.field) }}</span>
       </li>
     </ul>
   </section>
