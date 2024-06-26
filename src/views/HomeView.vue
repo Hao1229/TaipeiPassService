@@ -151,7 +151,10 @@ const activeRecord = computed(() =>
                 class="w-full flex justify-between items-center mb-5"
                 @click="onExpandClick(item.name)"
               >
-                <span>{{ item.name }}</span>
+                <div class="flex items-end">
+                  <img v-if="item.icon" :src="item.icon" class="w-5 h-5 object-cover mr-1" />
+                  <span>{{ item.name }}</span>
+                </div>
                 <img
                   src="@/assets/images/down-icon.svg"
                   class="transition-transform"
