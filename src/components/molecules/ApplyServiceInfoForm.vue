@@ -8,7 +8,7 @@ import BaseTextarea from '@/components/atoms/BaseTextarea.vue';
 import BaseRadio from '@/components/atoms/BaseRadio.vue';
 import BaseCheckbox from '@/components/atoms/BaseCheckbox.vue';
 import DatePicker from '@/components/molecules/DatePicker.vue';
-import UploadSection from '@/components/molecules/UploadSection.vue';
+// import UploadSection from '@/components/molecules/UploadSection.vue';
 import { useFormStore } from '@/stores/form';
 
 const props = withDefaults(
@@ -31,7 +31,7 @@ const isExpand = ref(true);
 const formValidateFieldMap = computed(
   () =>
     new Map(
-      formFormat.value.data.map((item: { field: any; required: any }) => [
+      formFormat.value.data.form_format.map((item: { field: any; required: any }) => [
         item.field,
         item.required
       ])
@@ -59,7 +59,7 @@ const onMultipleChangeClick = (index: number) => {
 };
 
 const handleForm = () => {
-  formFormat.value.data.forEach((item: any) => {
+  formFormat.value.data.form_format.forEach((item: any) => {
     switch (item.type) {
       case 'input':
         form[item.field] = '';
@@ -82,9 +82,9 @@ const handleForm = () => {
       case 'date_picker':
         form[item.field] = undefined;
         break;
-      case 'upload':
-        form[item.field] = [];
-        break;
+      // case 'upload':
+      //   form[item.field] = [];
+      //   break;
       default:
         form[item.field] = '';
     }
@@ -142,7 +142,7 @@ watch(
       >
         <div class="overflow-hidden flex flex-col gap-4 pt-5">
           <!-- 這邊開始透過 API 的 form format 來組成 -->
-          <div v-for="(item, index) in formFormat.data" :key="index">
+          <div v-for="(item, index) in formFormat.data.form_format" :key="index">
             <!-- type = input -->
             <div v-if="item.type === 'input'" class="flex flex-col">
               <label :for="item.field" class="field-label">
@@ -260,13 +260,14 @@ watch(
             </div>
             <!-- type = upload -->
             <!-- TODO: 等 API 再來決定要給 form 什麼 -->
-            <UploadSection
+            <!-- DOC: 上傳先拿掉 -->
+            <!-- <UploadSection
               v-else-if="item.type === 'upload'"
               :file-max="item.upload_max_files"
               :title="item.label"
               :required="item.required"
               :triggerValidate="props.triggerValidate"
-            />
+            /> -->
           </div>
         </div>
       </div>

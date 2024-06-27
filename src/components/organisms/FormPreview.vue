@@ -15,12 +15,12 @@ const emit = defineEmits(['onModify']);
 
 const store = useFormStore();
 
-const { formFormat, fileList, userName, userPhone, userTaxID } = storeToRefs(store);
+const { formFormat, userName, userPhone, userTaxID } = storeToRefs(store);
 
 const router = useRouter();
 
 const formFormatMap = computed(
-  () => new Map(formFormat.value.data.map((item: { field: any }) => [item.field, item]))
+  () => new Map(formFormat.value.data.form_format.map((item: { field: any }) => [item.field, item]))
 );
 
 const applyFieldTextHandle = (field: string) => {
@@ -69,10 +69,10 @@ const onSubmitClick = async () => {
    */
 
   // try {
-  //   const response = await fetch(formFormat.value.submit_target.url, {
-  //     method: formFormat.value.submit_target.method,
+  //   const response = await fetch(formFormat.value.data.submit_target.url, {
+  //     method: formFormat.value.data.submit_target.method,
   //     headers: {
-  //       'Content-Type': formFormat.value.submit_target.content_type
+  //       'Content-Type': formFormat.value.data.submit_target.content_type
   //     },
   //     body: JSON.stringify(props.submitForm)
   //   });
@@ -140,12 +140,13 @@ const onNegativeClick = () => {
     </div>
     <ul class="px-4 py-2 flex flex-col gap-y-4">
       <li
-        v-for="item in formFormat?.data ?? []"
+        v-for="item in formFormat?.data?.form_format ?? []"
         :key="item.field"
         class="preview-item"
         :class="{ 'preview-item--attachment': item.field === 'attachments' }"
       >
-        <template v-if="item.field === 'attachments'">
+        <!-- 附件先移除 -->
+        <!-- <template v-if="item.field === 'attachments'">
           <span class="field-name">附件</span>
           <div class="flex flex-wrap gap-4 mt-2">
             <div v-for="item in fileList" :key="item.name">
@@ -159,11 +160,9 @@ const onNegativeClick = () => {
               </div>
             </div>
           </div>
-        </template>
-        <template v-else>
-          <span class="field-name">{{ item.label }}</span>
-          <span>{{ applyFieldTextHandle(item.field) }}</span>
-        </template>
+        </template> -->
+        <span class="field-name">{{ item.label }}</span>
+        <span>{{ applyFieldTextHandle(item.field) }}</span>
       </li>
     </ul>
   </section>

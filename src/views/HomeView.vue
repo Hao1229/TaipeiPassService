@@ -52,7 +52,7 @@ const serviceList = ref(serviceListJson);
 const isSearch = ref(false);
 
 const flatServiceList = computed(() =>
-  serviceList.value.list
+  serviceList.value.data
     .map((item) => item.agency)
     .reduce((prev, acc) => [...acc, ...prev], [])
     .map((item) => item.options)
@@ -140,7 +140,7 @@ const activeRecord = computed(() =>
           <ul v-show="!isSearch || (isSearch && searchResult?.length)">
             <li
               v-show="!searchResult?.length || searchResultTypeSet.has(item.name)"
-              v-for="item in serviceList.list"
+              v-for="item in serviceList.data"
               :key="item.name"
               class="px-4 py-2"
               :class="{
@@ -151,7 +151,10 @@ const activeRecord = computed(() =>
                 class="w-full flex justify-between items-center mb-5"
                 @click="onExpandClick(item.name)"
               >
-                <span>{{ item.name }}</span>
+                <div class="flex items-end">
+                  <img v-if="item.icon" :src="item.icon" class="w-5 h-5 object-cover mr-1" />
+                  <span>{{ item.name }}</span>
+                </div>
                 <img
                   src="@/assets/images/down-icon.svg"
                   class="transition-transform"
