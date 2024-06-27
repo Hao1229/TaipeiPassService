@@ -2,6 +2,7 @@
 import FindPlace, { type Place } from '@/components/molecules/FindPlace.vue';
 import SpotList from '@/components/organisms/SpotListView.vue';
 import SpotDetail from '@/components/organisms/SpotDetailView.vue';
+import MessageModal from '@/components/molecules/MessageModal.vue';
 import { useGoogleMapsStore } from '@/stores/googleMaps';
 import axios from 'axios';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -72,6 +73,11 @@ const currentLocation = ref<{ lat: number; lng: number; results: any[] }>({
   lng: 121.5624999,
   results: []
 });
+
+/**
+ * 是否顯示未開啟取用位置權限通知
+ */
+let isShowGeoError = ref(false);
 
 onMounted(() => {
   initMap(currentLocation.value.lat, currentLocation.value.lng);
@@ -205,9 +211,8 @@ const errorCallback = (error: any) => {
   console.log(error);
   if (error.code === 1) {
     // 使用者未開啟定位
-    // showMapNotification.value = true;
+    isShowGeoError.value = true;
     // 預設位置
-    initMap(currentLocation.value.lat, currentLocation.value.lng);
     // loadingStore.loading(false);
   }
 };
@@ -497,6 +502,19 @@ watch(searchSpotList, updateMarkers);
       "
     />
   </div>
+
+  <!-- modal -->
+  <MessageModal :is-show="isShowGeoError">
+    <template #header>
+      <p>請啟用定位服務</p>
+    </template>
+    <template #body>
+      <p class="text-grey-700">打開定位服務來允許“台北通”確認您的位置</p>
+    </template>
+    <template #footer>
+      <button class="btn" @click="isShowGeoError = false">確認</button>
+    </template>
+  </MessageModal>
 </template>
 
 <style lang="postcss" scoped>
@@ -537,5 +555,11 @@ watch(searchSpotList, updateMarkers);
   @apply py-6;
   @apply rounded-xl;
   @apply shadow-[0_-4px_10px_0_rgba(0,0,0,0.04)];
+}
+
+.btn {
+  @apply text-primary-500;
+  @apply w-full;
+  padding: 10px 30px;
 }
 </style>
