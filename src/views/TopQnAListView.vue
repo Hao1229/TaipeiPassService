@@ -66,9 +66,9 @@ const onPanelExpandClick = (id: string) => {
           </div>
         </li>
       </ul>
-      <BaseButton shape="rounded" @click="router.push(`/qna/${'aaa'}`)">
+      <!-- <BaseButton shape="rounded" @click="router.push(`/qna/${'aaa'}`)">
         <span>查看其他常見問題</span>
-      </BaseButton>
+      </BaseButton> -->
     </div>
   </div>
 </template>
