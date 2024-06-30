@@ -2,15 +2,31 @@
 import { computed } from 'vue';
 import { ref } from 'vue';
 import qnaListJson from '../../public/mock/qna_list.json';
-import BaseButton from '@/components/atoms/BaseButton.vue';
-import { useRouter } from 'vue-router';
 
-const router = useRouter();
-
-const topQnAList = computed(() => {
-  const list = qnaListJson.data.flatMap((item) => item.list);
-  return list.filter((item) => item.is_show_front_page);
+const currentCategory = ref('登入註冊');
+const currentCategoryItem = computed(() => {
+  return qnaList.value.find((item) => item.name === currentCategory.value);
 });
+
+const categoryList = computed(() => {
+  return qnaList.value.map((item) => item.name);
+});
+
+const qnaList = ref<
+  {
+    name: string;
+    pageSize: number;
+    list: {
+      id: string;
+      is_show_front_page: boolean;
+      category: string;
+      name: string;
+      name_en?: string;
+      content: string;
+      content_en?: string;
+    }[];
+  }[]
+>(qnaListJson.data);
 const expandList = ref<string[]>([]);
 const expandListSet = computed(() => new Set(expandList.value.map((name) => name)));
 
@@ -24,13 +40,26 @@ const onPanelExpandClick = (id: string) => {
 </script>
 
 <template>
-  <div class="p-5 qna-wrapper">
-    <h5 class="text-primary-500 mb-10 text-[32px] font-bold title">Q & A • 常見問題</h5>
+  <div class="p-5">
+    <div class="grid grid-cols-2 gap-4 mb-8">
+      <button
+        v-for="category in categoryList"
+        :key="category"
+        class="tab"
+        :class="{ 'tab--active': currentCategory === category }"
+        @click="currentCategory = category"
+      >
+        {{ category }}
+      </button>
+    </div>
+    <h5 class="text-primary-500 mb-10 text-[32px] font-bold title">
+      {{ currentCategoryItem?.name }}常見問題
+    </h5>
     <div class="w-full flex flex-col overflow-y-auto">
       <ul class="mb-6">
         <li
           class="text-primary-500 border-b border-gray-300"
-          v-for="item in topQnAList"
+          v-for="item in currentCategoryItem?.list"
           :key="item.id"
           :class="{
             'bg-grey-50 pt-4': expandListSet.has(item.name),
@@ -67,20 +96,11 @@ const onPanelExpandClick = (id: string) => {
           </div>
         </li>
       </ul>
-      <BaseButton shape="rounded" @click="router.push(`/qna/categories`)">
-        <span>查看其他常見問題</span>
-      </BaseButton>
     </div>
   </div>
 </template>
 
 <style lang="postcss">
-.qna-wrapper {
-  background-image: url('@/assets/images/bg-one.svg');
-  background-size: 80%;
-  background-position: -150% 0;
-}
-
 .title {
   position: relative;
   display: inline-block;
@@ -95,5 +115,12 @@ const onPanelExpandClick = (id: string) => {
   position: absolute;
   left: 0;
   bottom: -5px; /* 根據需要調整底線與標題之間的距離 */
+}
+
+.tab {
+  @apply bg-white border border-grey-400 text-grey-400 text-center py-2 px-4 rounded-xl rounded-bl-none;
+  &--active {
+    @apply bg-primary-500 text-white border-primary-500;
+  }
 }
 </style>

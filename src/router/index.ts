@@ -27,6 +27,11 @@ const router = createRouter({
       path: '/qna',
       name: 'top-qna-list',
       component: TopQnAListView
+    },
+    {
+      path: '/qna/categories',
+      name: 'qna-list',
+      component: QnAListView
     }
   ]
 });
