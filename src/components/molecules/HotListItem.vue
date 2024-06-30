@@ -2,6 +2,11 @@
 import { computed } from 'vue';
 import BaseCardlabel from '@/components/atoms/BaseCardlabel.vue';
 import { CardLabelType } from '@/components/atoms/BaseCardlabel.vue';
+import type { Ticket, Coupon } from '@/views/CouponView.vue';
+
+const props = defineProps<{
+  item: Ticket | Coupon;
+}>();
 
 const textContentMaxWidth = computed(() => (window ? window.innerWidth - 32 : '0'));
 </script>
@@ -11,27 +16,39 @@ const textContentMaxWidth = computed(() => (window ? window.innerWidth - 32 : '0
     class="hot-list-item-image-block"
     :style="{
       'background-image': `url(
-                    'https://plus.unsplash.com/premium_photo-1686741733157-1d7863a7a04e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                    ${props.item.img_url}
                   )`
     }"
   >
-    <p class="text-white">| 臺北市立美術館 | 入場門票</p>
+    <p v-if="'type' in props.item && props.item.type" class="text-white">
+      | {{ props.item.name }} | {{ props.item.type }}
+    </p>
+    <p v-else class="text-white">{{ props.item.name }}</p>
     <BaseCardlabel
-      title="會員獨享"
+      v-if="props.item.vip_text"
+      :title="props.item.vip_text"
       :label-type="CardLabelType.VIP"
       class="absolute top-3 -right-2"
     />
     <BaseCardlabel
-      title="市民優惠"
+      v-if="props.item.discount_text"
+      :title="props.item.discount_text"
       :label-type="CardLabelType.DISCOUNT"
       class="absolute top-10 -right-2"
+      :class="{ 'top-3': !props.item.vip_text }"
     />
   </div>
   <div class="p-2 text-sm" :style="{ maxWidth: `${textContentMaxWidth}px` }">
     <p class="text-ellipsis overflow-hidden whitespace-nowrap">
-      僅限開館日每日0:00-17:00開放線上購票僅限開館日每日0:00-17:00開放線上購票僅限開館日每日0:00-17:00開放線上購票
+      {{ props.item.text }}
     </p>
-    <p class="text-primary-500 font-bold">NT$ 15起</p>
+    <p v-if="'price' in props.item && props.item.price" class="text-primary-500 font-bold">
+      NT$ {{ props.item.price }}起
+    </p>
+    <div v-else-if="'deadline' in props.item" class="text-gray-400 text-sm mt-2">
+      <span> {{ props.item.deadline }} 截止 </span>
+      <span v-if="props.item.remaining">| 剩餘張數:{{ props.item.remaining }}份</span>
+    </div>
   </div>
 </template>
 

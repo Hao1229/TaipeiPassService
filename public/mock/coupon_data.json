@@ -1,0 +1,74 @@
+{
+  "data": {
+    "ticket_list": [
+      {
+        "id": "t-1",
+        "name": "臺北市立美術館",
+        "type": "入場門票",
+        "text": "僅限營業時間開放線上購票。",
+        "price": 15,
+        "vip_text": "會員獨享",
+        "discount_text": "市民優惠",
+        "is_hot": true,
+        "img_url": "https://plus.unsplash.com/premium_photo-1686741733157-1d7863a7a04e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      },
+      {
+        "id": "t-2",
+        "name": "臺北市立動物園",
+        "type": "入場門票",
+        "text": "僅限營業時間開放線上購票。",
+        "price": 60,
+        "vip_text": "會員獨享",
+        "discount_text": "",
+        "is_hot": true,
+        "img_url": "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3DD"
+      },
+      {
+        "id": "t-3",
+        "name": "兒童新樂園",
+        "type": "一日樂Fun券",
+        "text": "僅限營運時間開放兌換使用，票券含入園門票及不限次數搭乘編號1號至13號大型遊樂設施。",
+        "price": 200,
+        "vip_text": "",
+        "discount_text": "市民優惠",
+        "is_hot": false,
+        "img_url": "https://images.unsplash.com/photo-1575783970733-1aaedde1db74?q=80&w=2076&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      }
+    ],
+    "coupon_list": [
+      {
+        "id": "c-1",
+        "name": "郭董私房菜",
+        "text": "強強聯手 - 郭董私房菜 X 國宴主廚",
+        "vip_text": "",
+        "discount_text": "贈粽子",
+        "deadline": "2024/06/30",
+        "remaining": "",
+        "is_hot": true,
+        "img_url": "https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      },
+      {
+        "id": "c-2",
+        "name": "阿爸手工皂",
+        "text": "滿1000元送100元。",
+        "vip_text": "",
+        "discount_text": "滿千送百",
+        "deadline": "2024/06/30",
+        "remaining": "158",
+        "is_hot": true,
+        "img_url": "https://images.unsplash.com/photo-1454873019514-eae2f086587a?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      },
+      {
+        "id": "c-3",
+        "name": "沃田旅店",
+        "text": "餐飲消費滿1500送薑爆小卷(小份)、消費滿5000送薑爆小卷(大份)\n注意事項：適用於小吃單點、桌菜(合菜不適用)",
+        "vip_text": "",
+        "discount_text": "",
+        "deadline": "2024/12/31",
+        "remaining": "",
+        "is_hot": true,
+        "img_url": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      }
+    ]
+  }
+}

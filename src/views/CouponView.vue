@@ -1,11 +1,51 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { computed, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useRoute, RouterLink } from 'vue-router';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import ServiceTabsView from '@/components/organisms/ServiceTabsView.vue';
 import HotList from '@/components/organisms/HotList.vue';
+import { useCouponStore } from '@/stores/coupon';
+import couponDataJson from '../../public/mock/coupon_data.json';
+
+export interface Ticket {
+  id: string;
+  name: string;
+  type: string;
+  text: string;
+  price: number;
+  vip_text: string;
+  discount_text: string;
+  is_hot: boolean;
+  img_url: string;
+}
+
+export interface Coupon {
+  id: string;
+  name: string;
+  text: string;
+  vip_text: string;
+  discount_text: string;
+  deadline: string;
+  remaining: string;
+  is_hot: boolean;
+  img_url: string;
+}
+
+const route = useRoute();
+
+const store = useCouponStore();
+
+const { ticketList, couponList } = storeToRefs(store);
+
+ticketList.value = couponDataJson.data.ticket_list;
+couponList.value = couponDataJson.data.coupon_list;
 
 const activeTab = ref(0);
+
+if (route.query?.tab === '2') {
+  activeTab.value = 1;
+}
 
 const tabList = [
   {
@@ -17,6 +57,9 @@ const tabList = [
     title: '優惠券'
   }
 ];
+
+const hotTicketList = computed(() => ticketList.value?.filter((item) => item.is_hot) ?? []);
+const hotCouponList = computed(() => couponList.value?.filter((item) => item.is_hot) ?? []);
 </script>
 
 <template>
@@ -24,24 +67,66 @@ const tabList = [
     <ServiceTabsView v-model="activeTab" :tab-list="tabList">
       <template #tab0>
         <section class="flex items-center p-4">
-          <RouterLink :to="{ name: 'coupon-list' }" class="flex-grow">
+          <RouterLink
+            :to="{
+              name: 'coupon-list',
+              query: {
+                tab: '1'
+              }
+            }"
+            class="flex-grow"
+          >
             <BaseInput placeholder="搜尋票券或場館名稱" readonly class="w-full" />
           </RouterLink>
-          <RouterLink :to="{ name: 'coupon-list' }" class="search-button">
+          <RouterLink
+            :to="{
+              name: 'coupon-list',
+              query: {
+                tab: '1'
+              }
+            }"
+            class="search-button"
+          >
             <img src="@/assets/images/search-icon.svg" alt="搜尋" />
           </RouterLink>
-          <RouterLink :to="{ name: 'coupon-list' }" class="search-button ml-2">
-            <img src="@/assets/images/icon-filter-white.svg" alt="搜尋" />
+          <RouterLink
+            :to="{
+              name: 'coupon-list',
+              query: {
+                tab: '1'
+              }
+            }"
+            class="search-button ml-2"
+          >
+            <img src="@/assets/images/icon-filter-white.svg" alt="篩選" />
           </RouterLink>
         </section>
         <section class="px-4 grid grid-cols-2 gap-x-3">
-          <RouterLink :to="{ name: 'coupon-list' }" class="ticket-hot-button">
+          <RouterLink
+            :to="{
+              name: 'coupon-list',
+              query: {
+                tab: '1',
+                isList: 'Y'
+              }
+            }"
+            class="ticket-hot-button"
+          >
             <span class="text-lg font-bold">人氣特展</span>
             <br />
             <span>廣受好評的票券</span>
             <img src="@/assets/images/award-icon.svg" />
           </RouterLink>
-          <RouterLink :to="{ name: 'coupon-list' }" class="ticket-hot-button">
+          <RouterLink
+            :to="{
+              name: 'coupon-list',
+              query: {
+                tab: '1',
+                isHot: 'Y'
+              }
+            }"
+            class="ticket-hot-button"
+          >
             <span class="text-lg font-bold">熱門場館</span>
             <br />
             <span>熱門景點</span>
@@ -49,23 +134,49 @@ const tabList = [
           </RouterLink>
         </section>
         <section class="px-4 mt-5">
-          <HotList />
+          <HotList tab="1" :list="hotTicketList" />
         </section>
       </template>
       <template #tab1>
         <section class="flex items-center p-4">
-          <RouterLink :to="{ name: 'coupon-list' }" class="flex-grow">
+          <RouterLink
+            :to="{
+              name: 'coupon-list',
+              query: {
+                tab: '2',
+                search: 'Y'
+              }
+            }"
+            class="flex-grow"
+          >
             <BaseInput placeholder="輸入店家名稱" readonly class="w-full" />
           </RouterLink>
-          <RouterLink :to="{ name: 'coupon-list' }" class="search-button">
+          <RouterLink
+            :to="{
+              name: 'coupon-list',
+              query: {
+                tab: '2'
+              }
+            }"
+            class="search-button"
+          >
             <img src="@/assets/images/search-icon.svg" alt="搜尋" />
           </RouterLink>
-          <RouterLink :to="{ name: 'coupon-list' }" class="search-button ml-2">
-            <img src="@/assets/images/icon-filter-white.svg" alt="搜尋" />
+          <RouterLink
+            :to="{
+              name: 'coupon-list',
+              query: {
+                tab: '2',
+                isFilter: 'Y'
+              }
+            }"
+            class="search-button ml-2"
+          >
+            <img src="@/assets/images/icon-filter-white.svg" alt="篩選" />
           </RouterLink>
         </section>
         <section class="px-4 mt-5">
-          <HotList />
+          <HotList tab="2" :list="hotCouponList" />
         </section>
       </template>
     </ServiceTabsView>
