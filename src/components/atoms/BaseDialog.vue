@@ -6,6 +6,7 @@ const props = defineProps<{
   content: string;
   negativeText?: string;
   positiveText?: string;
+  isAlert?: boolean;
 }>();
 
 const emit = defineEmits(['onPositiveClick', 'onNegativeClick']);
@@ -44,6 +45,9 @@ const onNegativeClick = () => {
             <DialogPanel
               class="w-4/5 max-w-screen-md flex flex-col transform overflow-y-auto bg-white transition-all rounded pt-4"
             >
+              <div v-if="props.isAlert" class="flex justify-center">
+                <img src="@/assets/images/alert-icon.svg" class="w-24" />
+              </div>
               <DialogTitle v-if="props.title" class="text-xl text-center font-extrabold">
                 {{ title }}
               </DialogTitle>

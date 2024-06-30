@@ -8,6 +8,19 @@ import HotList from '@/components/organisms/HotList.vue';
 import { useCouponStore } from '@/stores/coupon';
 import couponDataJson from '../../public/mock/coupon_data.json';
 
+export interface HotSpot {
+  id: string;
+  name: string;
+  explain: string;
+  business_hours: string[];
+  address: {
+    text: string;
+    map: string;
+  };
+  is_sell_ticket: boolean;
+  img_url: string;
+}
+
 export interface Ticket {
   id: string;
   name: string;
@@ -36,10 +49,11 @@ const route = useRoute();
 
 const store = useCouponStore();
 
-const { ticketList, couponList } = storeToRefs(store);
+const { ticketList, couponList, hotSpotList } = storeToRefs(store);
 
 ticketList.value = couponDataJson.data.ticket_list;
 couponList.value = couponDataJson.data.coupon_list;
+hotSpotList.value = couponDataJson.data.hot_spot_list;
 
 const activeTab = ref(0);
 
@@ -122,7 +136,8 @@ const hotCouponList = computed(() => couponList.value?.filter((item) => item.is_
               name: 'coupon-list',
               query: {
                 tab: '1',
-                isHot: 'Y'
+                isHot: 'Y',
+                hotSpot: 'Y'
               }
             }"
             class="ticket-hot-button"
