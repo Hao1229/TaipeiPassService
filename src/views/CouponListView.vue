@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useRoute, RouterLink } from 'vue-router';
 import BaseInput from '@/components/atoms/BaseInput.vue';
+import CouponListResult from '@/components/organisms/CouponListResult.vue';
+import HotSpotList from '@/components/organisms/HotSpotList.vue';
 
 const route = useRoute();
 </script>
@@ -28,7 +30,7 @@ const route = useRoute();
       </h1>
       <div />
     </div>
-    <section class="flex items-center mt-3">
+    <section v-if="route.query?.hotSpot !== 'Y'" class="flex items-center mt-3">
       <BaseInput
         :placeholder="route.query.tab === '1' ? '搜尋票券或場館名稱' : '輸入店家名稱'"
         class="flex-grow"
@@ -39,6 +41,10 @@ const route = useRoute();
       <button :to="{ name: 'coupon-list' }" class="search-button ml-2">
         <img src="@/assets/images/icon-filter-white.svg" alt="搜尋" />
       </button>
+    </section>
+    <section class="py-4">
+      <HotSpotList v-if="route.query?.hotSpot === 'Y'" />
+      <CouponListResult v-else />
     </section>
   </div>
 </template>

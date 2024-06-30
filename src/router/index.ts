@@ -4,6 +4,7 @@ import FormView from '../views/FormView.vue';
 import SurroundingServiceView from '../views/SurroundingServiceView.vue';
 import CouponView from '../views/CouponView.vue';
 import CouponListView from '../views/CouponListView.vue';
+import HotSpotView from '../views/HotSpotView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +36,11 @@ const router = createRouter({
           path: 'list',
           name: 'coupon-list',
           component: CouponListView
+        },
+        {
+          path: 'hotspot/:id',
+          name: 'hotspot',
+          component: HotSpotView
         }
       ]
     }
