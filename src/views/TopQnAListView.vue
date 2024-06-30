@@ -23,7 +23,7 @@ const onPanelExpandClick = (id: string) => {
 </script>
 
 <template>
-  <div class="p-5">
+  <div class="p-5 qna-wrapper">
     <h5 class="text-primary-500 mb-10 text-[32px] font-bold title">Q & A • 常見問題</h5>
     <div class="w-full flex flex-col overflow-y-auto">
       <ul class="mb-6">
@@ -74,6 +74,12 @@ const onPanelExpandClick = (id: string) => {
 </template>
 
 <style lang="postcss">
+.qna-wrapper {
+  background-image: url('@/assets/images/bg-one.svg');
+  background-size: 80%;
+  background-position: -150% 0;
+}
+
 .title {
   position: relative;
   display: inline-block;
