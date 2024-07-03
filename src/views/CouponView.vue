@@ -11,7 +11,7 @@ import couponDataJson from '../../public/mock/coupon_data.json';
 export interface HotSpot {
   id: string;
   name: string;
-  explain: string;
+  introduce: string;
   business_hours: string[];
   address: {
     text: string;
@@ -31,6 +31,16 @@ export interface Ticket {
   discount_text: string;
   is_hot: boolean;
   img_url: string;
+  detail_price: string[];
+  address: {
+    text: string;
+    map: string;
+  };
+  activity_date: string;
+  ticket_illustrate: string[];
+  spot_introduce: string;
+  instructions: string[];
+  purchase_link: string;
 }
 
 export interface Coupon {

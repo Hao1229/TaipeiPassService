@@ -15,7 +15,7 @@ const { hotSpotList } = storeToRefs(store);
         <HotSpotItem
           :name="item.name"
           :img_url="item.img_url"
-          :explain="item.explain"
+          :introduce="item.introduce"
           :business_hours="item.business_hours"
         />
       </RouterLink>

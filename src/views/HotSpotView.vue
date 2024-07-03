@@ -30,7 +30,7 @@ const onMapOpenClick = () => {
   window.open(activeItem.value?.address.map, '_blank', 'noopener,noreferrer');
 };
 
-const isExplainExpand = ref(false);
+const isIntroduceExpand = ref(false);
 </script>
 
 <template>
@@ -76,16 +76,16 @@ const isExplainExpand = ref(false);
         </div>
       </div>
       <div class="grid grid-cols-9">
-        <img src="@/assets/images/explain-icon.svg" />
+        <img src="@/assets/images/introduce-icon.svg" />
         <div class="col-span-8">
           <div class="flex justify-between">
             <span class="font-bold">場館說明</span>
-            <button @click="isExplainExpand = !isExplainExpand">
+            <button @click="isIntroduceExpand = !isIntroduceExpand">
               <img
                 src="@/assets/images/down-icon.svg"
                 class="transition-transform"
                 :class="{
-                  'rotate-180': isExplainExpand
+                  'rotate-180': isIntroduceExpand
                 }"
               />
             </button>
@@ -93,10 +93,10 @@ const isExplainExpand = ref(false);
           <div
             class="grid grid-rows-[0fr] transition-all"
             :class="{
-              'grid-rows-[1fr]': isExplainExpand
+              'grid-rows-[1fr]': isIntroduceExpand
             }"
           >
-            <p class="overflow-hidden">{{ activeItem?.explain }}</p>
+            <p class="overflow-hidden">{{ activeItem?.introduce }}</p>
           </div>
         </div>
       </div>
