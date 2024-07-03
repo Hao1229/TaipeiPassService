@@ -78,9 +78,6 @@ onMounted(() => {
       <button class="search-button" @click="onSearchClick">
         <img src="@/assets/images/search-icon.svg" alt="搜尋" />
       </button>
-      <button class="search-button ml-2">
-        <img src="@/assets/images/icon-filter-white.svg" alt="搜尋" />
-      </button>
     </section>
     <section class="py-4">
       <HotSpotList v-if="route.query?.hotSpot === 'Y'" />

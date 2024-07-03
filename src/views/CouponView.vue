@@ -104,17 +104,6 @@ const hotCouponList = computed(() => couponList.value?.filter((item) => item.is_
           >
             <img src="@/assets/images/search-icon.svg" alt="搜尋" />
           </RouterLink>
-          <RouterLink
-            :to="{
-              name: 'coupon-list',
-              query: {
-                tab: '1'
-              }
-            }"
-            class="search-button ml-2"
-          >
-            <img src="@/assets/images/icon-filter-white.svg" alt="篩選" />
-          </RouterLink>
         </section>
         <section class="px-4 grid grid-cols-2 gap-x-3">
           <RouterLink
@@ -178,18 +167,6 @@ const hotCouponList = computed(() => couponList.value?.filter((item) => item.is_
             class="search-button"
           >
             <img src="@/assets/images/search-icon.svg" alt="搜尋" />
-          </RouterLink>
-          <RouterLink
-            :to="{
-              name: 'coupon-list',
-              query: {
-                tab: '2',
-                isFilter: 'Y'
-              }
-            }"
-            class="search-button ml-2"
-          >
-            <img src="@/assets/images/icon-filter-white.svg" alt="篩選" />
           </RouterLink>
         </section>
         <section class="px-4 mt-5">
