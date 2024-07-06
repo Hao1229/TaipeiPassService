@@ -11,7 +11,7 @@ import couponDataJson from '../../public/mock/coupon_data.json';
 export interface HotSpot {
   id: string;
   name: string;
-  explain: string;
+  introduce: string;
   business_hours: string[];
   address: {
     text: string;
@@ -31,6 +31,16 @@ export interface Ticket {
   discount_text: string;
   is_hot: boolean;
   img_url: string;
+  detail_price: string[];
+  address: {
+    text: string;
+    map: string;
+  };
+  activity_date: string;
+  ticket_illustrate: string[];
+  spot_introduce: string;
+  instructions: string[];
+  purchase_link: string;
 }
 
 export interface Coupon {
@@ -43,6 +53,18 @@ export interface Coupon {
   remaining: string;
   is_hot: boolean;
   img_url: string;
+  activity_date: string;
+  rule: string;
+  coupon_illustrate: string;
+  store_info: {
+    img_url: string;
+    name: string;
+    introduce: string[];
+    address: {
+      text: string;
+      map: string;
+    };
+  };
 }
 
 const route = useRoute();
@@ -96,23 +118,13 @@ const hotCouponList = computed(() => couponList.value?.filter((item) => item.is_
             :to="{
               name: 'coupon-list',
               query: {
-                tab: '1'
+                tab: '1',
+                isSearch: 'Y'
               }
             }"
             class="search-button"
           >
             <img src="@/assets/images/search-icon.svg" alt="搜尋" />
-          </RouterLink>
-          <RouterLink
-            :to="{
-              name: 'coupon-list',
-              query: {
-                tab: '1'
-              }
-            }"
-            class="search-button ml-2"
-          >
-            <img src="@/assets/images/icon-filter-white.svg" alt="篩選" />
           </RouterLink>
         </section>
         <section class="px-4 grid grid-cols-2 gap-x-3">
@@ -170,24 +182,13 @@ const hotCouponList = computed(() => couponList.value?.filter((item) => item.is_
             :to="{
               name: 'coupon-list',
               query: {
-                tab: '2'
+                tab: '2',
+                isSearch: 'Y'
               }
             }"
             class="search-button"
           >
             <img src="@/assets/images/search-icon.svg" alt="搜尋" />
-          </RouterLink>
-          <RouterLink
-            :to="{
-              name: 'coupon-list',
-              query: {
-                tab: '2',
-                isFilter: 'Y'
-              }
-            }"
-            class="search-button ml-2"
-          >
-            <img src="@/assets/images/icon-filter-white.svg" alt="篩選" />
           </RouterLink>
         </section>
         <section class="px-4 mt-5">

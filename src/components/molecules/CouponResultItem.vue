@@ -8,7 +8,13 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="grid grid-cols-3">
+  <RouterLink
+    :to="{
+      name: 'type' in props.item ? 'ticket-detail' : 'coupon-detail',
+      params: { id: props.item.id }
+    }"
+    class="grid grid-cols-3"
+  >
     <img :src="props.item.img_url" :alt="props.item.name" class="w-full object-contain" />
     <div class="col-span-2 pl-3">
       <p
@@ -42,5 +48,5 @@ const props = defineProps<{
         </span>
       </div>
     </div>
-  </div>
+  </RouterLink>
 </template>

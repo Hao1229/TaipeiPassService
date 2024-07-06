@@ -12,14 +12,15 @@ const props = withDefaults(defineProps<TabsProps>(), {
       id: 2,
       title: '查詢'
     }
-  ]
+  ],
+  contentType: false
 });
 
 const activeTab = defineModel({ default: 0 });
 </script>
 
 <template>
-  <ServiceTabs v-model="activeTab" :tab-list="props.tabList" />
+  <ServiceTabs v-model="activeTab" :tab-list="props.tabList" :contentType="props.contentType" />
   <section class="tab-view-container">
     <div
       v-for="(item, index) in props.tabList"
@@ -38,7 +39,7 @@ const activeTab = defineModel({ default: 0 });
 }
 
 .tab-view {
-  @apply flex-[0_0_100vw];
+  @apply flex-[0_0_100%];
   @apply transition-transform duration-300;
 }
 </style>
