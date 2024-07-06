@@ -15,7 +15,8 @@ const textContentMaxWidth = computed(() => (window ? window.innerWidth - 32 : '0
   <RouterLink
     :to="{
       name: 'type' in props.item ? 'ticket-detail' : 'coupon-detail',
-      params: { id: props.item.id }
+      params: { id: props.item.id },
+      query: { tab: 'type' in props.item ? '1' : '2' }
     }"
     class="block"
   >

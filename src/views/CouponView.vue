@@ -53,6 +53,18 @@ export interface Coupon {
   remaining: string;
   is_hot: boolean;
   img_url: string;
+  activity_date: string;
+  rule: string;
+  coupon_illustrate: string;
+  store_info: {
+    img_url: string;
+    name: string;
+    introduce: string[];
+    address: {
+      text: string;
+      map: string;
+    };
+  };
 }
 
 const route = useRoute();

@@ -87,7 +87,7 @@ const onPurchaseClick = () => {
           </div>
         </div>
         <div class="grid grid-cols-9 mb-2">
-          <img src="@/assets/images/introduce-icon.svg" />
+          <img src="@/assets/images/ticket-content-icon.svg" />
           <div class="col-span-8">
             <div class="flex justify-between">
               <span class="font-bold">票券說明</span>
@@ -118,7 +118,7 @@ const onPurchaseClick = () => {
           </div>
         </div>
         <div class="grid grid-cols-9">
-          <img src="@/assets/images/introduce-icon.svg" />
+          <img src="@/assets/images/site-icon.svg" />
           <div class="col-span-8">
             <div class="flex justify-between">
               <span class="font-bold">場館簡介</span>

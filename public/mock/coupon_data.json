@@ -126,7 +126,22 @@
         "deadline": "2024/06/30",
         "remaining": "",
         "is_hot": true,
-        "img_url": "https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        "img_url": "https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "activity_date": "2024/06/10~2024/08/10",
+        "rule": "每會員限領1份",
+        "coupon_illustrate": "住宿9折 不限平假日\n注意事項：\n每人當天限用一次",
+        "store_info": {
+          "img_url": "https://plus.unsplash.com/premium_photo-1661964205360-b0621b5a9366?q=80&w=2038&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          "name": "沃田旅店",
+          "introduce": [
+            "由全臺灣302家農會與40家漁會所共同支持成立，",
+            "孕育以農漁會為主題風格的旅店。\n我們願意肩負農漁會文化的創新，勾勒臺灣地區風土時尚的樣貌，\n創造一畝心靈田園與旅客共享。"
+          ],
+          "address": {
+            "text": "台北市士林區中山北路七段127號",
+            "map": "https://maps.app.goo.gl/jN5AyYmkmDsmYX547"
+          }
+        }
       },
       {
         "id": "c-2",
@@ -137,7 +152,22 @@
         "deadline": "2024/06/30",
         "remaining": "158",
         "is_hot": true,
-        "img_url": "https://images.unsplash.com/photo-1454873019514-eae2f086587a?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        "img_url": "https://images.unsplash.com/photo-1454873019514-eae2f086587a?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "activity_date": "2024/06/10~2024/08/10",
+        "rule": "",
+        "coupon_illustrate": "住宿9折 不限平假日\n注意事項：\n每人當天限用一次",
+        "store_info": {
+          "img_url": "https://plus.unsplash.com/premium_photo-1661964205360-b0621b5a9366?q=80&w=2038&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          "name": "阿爸手工皂",
+          "introduce": [
+            "由全臺灣302家農會與40家漁會所共同支持成立，",
+            "孕育以農漁會為主題風格的旅店。\n我們願意肩負農漁會文化的創新，勾勒臺灣地區風土時尚的樣貌，\n創造一畝心靈田園與旅客共享。"
+          ],
+          "address": {
+            "text": "台北市士林區中山北路七段127號",
+            "map": "https://maps.app.goo.gl/jN5AyYmkmDsmYX547"
+          }
+        }
       },
       {
         "id": "c-3",
@@ -148,7 +178,22 @@
         "deadline": "2024/12/31",
         "remaining": "",
         "is_hot": true,
-        "img_url": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        "img_url": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "activity_date": "2024/06/10~2024/08/10",
+        "rule": "每會員限領1份",
+        "coupon_illustrate": "住宿9折 不限平假日\n注意事項：\n每人當天限用一次",
+        "store_info": {
+          "img_url": "https://plus.unsplash.com/premium_photo-1661964205360-b0621b5a9366?q=80&w=2038&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          "name": "沃田旅店",
+          "introduce": [
+            "由全臺灣302家農會與40家漁會所共同支持成立，",
+            "孕育以農漁會為主題風格的旅店。\n我們願意肩負農漁會文化的創新，勾勒臺灣地區風土時尚的樣貌，\n創造一畝心靈田園與旅客共享。"
+          ],
+          "address": {
+            "text": "台北市士林區中山北路七段127號",
+            "map": "https://maps.app.goo.gl/jN5AyYmkmDsmYX547"
+          }
+        }
       }
     ]
   }
