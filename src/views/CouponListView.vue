@@ -62,7 +62,7 @@ onMounted(() => {
       <h1 v-if="route.query?.isList === 'Y'" class="font-bold text-lg">
         {{ route.query?.tab === '1' ? '入場券' : '優惠券' }}列表
       </h1>
-      <h1 v-else-if="route.query?.isHot === 'Y'" class="font-bold text-lg">熱門場館</h1>
+      <h1 v-else-if="route.query?.hotSpot === 'Y'" class="font-bold text-lg">熱門場館</h1>
       <h1 v-else-if="route.query?.isFilter === 'Y'" class="font-bold text-lg">優惠券篩選</h1>
       <h1 v-else class="font-bold text-lg">
         {{ route.query?.tab === '1' ? '入場券' : '優惠券' }}搜尋
