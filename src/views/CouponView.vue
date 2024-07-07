@@ -148,7 +148,6 @@ const hotCouponList = computed(() => couponList.value?.filter((item) => item.is_
               name: 'coupon-list',
               query: {
                 tab: '1',
-                isHot: 'Y',
                 hotSpot: 'Y'
               }
             }"

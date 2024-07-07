@@ -41,7 +41,6 @@ const isIntroduceExpand = ref(false);
           name: 'coupon-list',
           query: {
             tab: '1',
-            isHot: 'Y',
             hotSpot: 'Y'
           }
         }"
