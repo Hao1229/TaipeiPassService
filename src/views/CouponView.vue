@@ -107,7 +107,8 @@ const hotCouponList = computed(() => couponList.value?.filter((item) => item.is_
             :to="{
               name: 'coupon-list',
               query: {
-                tab: '1'
+                tab: '1',
+                isSearch: 'Y'
               }
             }"
             class="flex-grow"
@@ -170,7 +171,7 @@ const hotCouponList = computed(() => couponList.value?.filter((item) => item.is_
               name: 'coupon-list',
               query: {
                 tab: '2',
-                search: 'Y'
+                isSearch: 'Y'
               }
             }"
             class="flex-grow"
