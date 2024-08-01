@@ -48,40 +48,38 @@ const scrollToTop = () => {
         <span>{{ spot.address }}</span>
       </div>
       <!-- custom template -->
-      <template v-if="selectedSearchData.id === 'pa-1'">
-        <div class="flex text-grey-500">
-          <span>{{ spot.distance }}公里</span>
-          <span class="mx-2">|</span>
-          <span class="flex">
-            <template v-if="spot.available_rent_bikes !== 0 && spot.available_return_bikes !== 0">
-              <img src="@/assets/images/map/youbike/icon-info-ubike-green.svg" alt="" />
-              <span class="ml-1 text-[#76A732]">正常租借</span>
-            </template>
-            <template v-if="spot.available_rent_bikes === 0">
-              <img src="@/assets/images/map/youbike/icon-info-ubike-yellow.svg" alt="" />
-              <span class="ml-1 text-secondary-500">無車可借</span>
-            </template>
-            <template v-if="spot.available_return_bikes === 0">
-              <img src="@/assets/images/map/youbike/icon-info-ubike-red.svg" alt="" />
-              <span class="ml-1 text-[#E5464B]"> 車位滿載</span>
-            </template>
+      <div class="flex text-grey-500">
+        <span>{{ spot.distance }}公里</span>
+        <!-- <span class="mx-2">|</span>
+        <span class="flex">
+          <template v-if="spot.available_rent_bikes !== 0 && spot.available_return_bikes !== 0">
+            <img src="/public/images/map/youbike/icon-info-ubike-green.svg" alt="" />
+            <span class="ml-1 text-[#76A732]">正常租借</span>
+          </template>
+          <template v-if="spot.available_rent_bikes === 0">
+            <img src="/public/images/map/youbike/icon-info-ubike-yellow.svg" alt="" />
+            <span class="ml-1 text-secondary-500">無車可借</span>
+          </template>
+          <template v-if="spot.available_return_bikes === 0">
+            <img src="/public/images/map/youbike/icon-info-ubike-red.svg" alt="" />
+            <span class="ml-1 text-[#E5464B]"> 車位滿載</span>
+          </template>
+        </span>
+        <span class="mx-2">|</span>
+        <span>
+          <span class="text-grey-500 mr-1">可借</span>
+          <span
+            class="mr-1"
+            :class="spot.available_rent_bikes === 0 ? 'text-secondary-500' : 'text-[#76A732]'"
+          >
+            {{ spot.available_rent_bikes }}
           </span>
-          <span class="mx-2">|</span>
-          <span>
-            <span class="text-grey-500 mr-1">可借</span>
-            <span
-              class="mr-1"
-              :class="spot.available_rent_bikes === 0 ? 'text-secondary-500' : 'text-[#76A732]'"
-            >
-              {{ spot.available_rent_bikes }}
-            </span>
-            <span class="text-grey-500 mr-1">可停</span>
-            <span :class="spot.available_return_bikes === 0 ? 'text-[#E5464B]' : 'text-grey-950'">
-              {{ spot.available_return_bikes }}
-            </span>
+          <span class="text-grey-500 mr-1">可停</span>
+          <span :class="spot.available_return_bikes === 0 ? 'text-[#E5464B]' : 'text-grey-950'">
+            {{ spot.available_return_bikes }}
           </span>
-        </div>
-      </template>
+        </span> -->
+      </div>
     </div>
     <div v-if="!filteredSpotList.length" class="flex-1 flex justify-center items-center">
       <div class="text-center">

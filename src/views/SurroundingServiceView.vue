@@ -7,13 +7,14 @@ import { useGoogleMapsStore } from '@/stores/googleMaps';
 import axios from 'axios';
 import { computed, onMounted, ref, watch } from 'vue';
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer';
-import greenDotIconUrl from '@/assets/images/map/youbike/mappin-green.svg';
-import yellowDotIconUrl from '@/assets/images/map/youbike/mappin-yellow.svg';
-import redDotIconUrl from '@/assets/images/map/youbike/mappin-red.svg';
-import greenFocusIconUrl from '@/assets/images/map/youbike/icon_mappin-ubike-green-pressed.svg';
-import yellowFocusIconUrl from '@/assets/images/map/youbike/icon_mappin-ubike-yellow-pressed.svg';
-import redFocusIconUrl from '@/assets/images/map/youbike/icon_mappin-ubike-red-pressed.svg';
-import { youBikeFormatter } from '@/utils/spot-formatter';
+import greenDotIconUrl from '/public/images/map/youbike/mappin-green.svg';
+import yellowDotIconUrl from '/public/images/map/youbike/mappin-yellow.svg';
+import redDotIconUrl from '/public/images/map/youbike/mappin-red.svg';
+import defaultFocusIconUrl from '/public/images/map/icon_mappin-garbagetruck-green-pressed.svg';
+import greenFocusIconUrl from '/public/images/map/youbike/icon_mappin-ubike-green-pressed.svg';
+import yellowFocusIconUrl from '/public/images/map/youbike/icon_mappin-ubike-yellow-pressed.svg';
+import redFocusIconUrl from '/public/images/map/youbike/icon_mappin-ubike-red-pressed.svg';
+import { mappingFormatter } from '@/utils/spot-formatter';
 
 export interface Spot {
   id: string;
@@ -28,7 +29,12 @@ export interface Spot {
   /** 緯度 */
   lng: number;
   /** 距離 */
-  distance: number;
+  distance?: number;
+  /** 詳細資訊 */
+  service_infos?: {
+    title: string;
+    value: { title: string; value: string }[] | string;
+  }[];
 
   /** 其餘詳細資訊 */
   [key: string]: any;
@@ -41,7 +47,8 @@ const selectedSearchData = ref<Place>({
   name: '',
   icon: '',
   agency: '',
-  type: ''
+  type: '',
+  request_url: ''
 });
 
 /** 搜尋結果 */
@@ -87,7 +94,7 @@ const handleExpandChange = (newValue: boolean) => {
   isExpand.value = newValue;
 };
 
-const handleSearchChange = (data: Place) => {
+const handleSearchChange = async (data: Place) => {
   if (!data) {
     return;
   }
@@ -95,14 +102,23 @@ const handleSearchChange = (data: Place) => {
   searchSpotList.value = [];
   selectedSearchData.value = data;
 
-  switch (data.id) {
-    case 'pa-1':
-      fetchYouBikeData();
+  switch (data.data_type) {
+    case 'api':
+    case 'json':
+      searchSpotList.value = await fetchAndFormatData(
+        data.request_url,
+        mappingFormatter,
+        data.format_fields,
+        data.service_infos
+      );
+      break;
+    case 'csv':
       break;
     default:
-      clearMarkers();
       break;
   }
+
+  console.log('searchSpotList:', searchSpotList.value);
 };
 
 const setMapHeight = () => {
@@ -196,16 +212,6 @@ const successCallback = (position: GeolocationPosition) => {
   // 使用者目前位置
   initMap(currentLocation.value.lat, currentLocation.value.lng);
   // loadingStore.loading(false, '');
-
-  // 定義兩個點的經緯度
-  const pointA = new google.maps.LatLng(24.5492903, 120.9731761); // 台北101
-  const pointB = new google.maps.LatLng(25.02055, 121.52855); // 台北故宮
-
-  // 計算距離
-  const distanceInMeters = google.maps.geometry.spherical.computeDistanceBetween(pointA, pointB);
-  const distanceInKilometers = distanceInMeters / 1000;
-
-  console.log(`Distance between points: ${distanceInKilometers} km`);
 };
 const errorCallback = (error: any) => {
   console.log(error);
@@ -217,26 +223,28 @@ const errorCallback = (error: any) => {
   }
 };
 
-const fetchAndFormatData = async (url: string, formatter: (item: any) => Spot) => {
+const fetchAndFormatData = async (
+  url: string,
+  formatter: (item: any, formatFields: any, serviceInfos: any[]) => Spot,
+  formatFields: any,
+  serviceInfos: any
+) => {
   try {
     const response = await axios.get(url);
-    return formatSpotData(response.data, formatter);
+    return formatSpotData(response.data, formatter, formatFields, serviceInfos);
   } catch (error) {
     console.error(`Failed to fetch data from ${url}:`, error);
     return [];
   }
 };
 
-const formatSpotData = (data: any, formatter: (item: any) => Spot): Spot[] => {
-  return data.map(formatter);
-};
-
-const fetchYouBikeData = async () => {
-  searchSpotList.value = await fetchAndFormatData(
-    'https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json',
-    youBikeFormatter
-  );
-  console.log('searchSpotList:', searchSpotList.value);
+const formatSpotData = (
+  data: any,
+  formatter: (item: any, formatFields: any, serviceInfos: any[]) => Spot,
+  formatFields: any,
+  serviceInfos: any
+): Spot[] => {
+  return data.map((item: any) => formatter(item, formatFields, serviceInfos));
 };
 
 const updateMarkers = async () => {
@@ -265,6 +273,8 @@ const updateMarkers = async () => {
         ).toFixed(1)
       )
     }));
+
+  console.log('filteredSpotList:', filteredSpotList.value);
 
   // Clear existing markers
   clearMarkers();
@@ -302,7 +312,7 @@ const updateMarkers = async () => {
             ? yellowFocusIconUrl
             : spot.available_return_bikes === 0
               ? redFocusIconUrl
-              : greenFocusIconUrl, // 點擊後聚焦圖標的路徑
+              : defaultFocusIconUrl, // 點擊後聚焦圖標的路徑
         scaledSize: new google.maps.Size(100, 100), // 設置圖標的大小
         anchor: new google.maps.Point(50, 100) // 設置圖標的錨點，使其中心對齊底部
       };
@@ -410,53 +420,51 @@ watch(searchSpotList, updateMarkers);
             <span class="underline">{{ selectedSpot.address }}</span>
           </div>
           <!-- custom template -->
-          <template v-if="selectedSearchData.id === 'pa-1'">
-            <div class="flex text-grey-500">
-              <span>{{ selectedSpot.distance }}公里</span>
-              <span class="mx-2">|</span>
-              <span class="flex">
-                <template
-                  v-if="
-                    selectedSpot.available_rent_bikes !== 0 &&
-                    selectedSpot.available_return_bikes !== 0
-                  "
-                >
-                  <img src="@/assets/images/map/youbike/icon-info-ubike-green.svg" alt="" />
-                  <span class="ml-1 text-[#76A732]">正常租借</span>
-                </template>
-                <template v-if="selectedSpot.available_rent_bikes === 0">
-                  <img src="@/assets/images/map/youbike/icon-info-ubike-yellow.svg" alt="" />
-                  <span class="ml-1 text-secondary-500">無車可借</span>
-                </template>
-                <template v-if="selectedSpot.available_return_bikes === 0">
-                  <img src="@/assets/images/map/youbike/icon-info-ubike-red.svg" alt="" />
-                  <span class="ml-1 text-[#E5464B]"> 車位滿載</span>
-                </template>
+          <div class="flex text-grey-500">
+            <span>{{ selectedSpot.distance }}公里</span>
+            <!-- <span class="mx-2">|</span>
+            <span class="flex">
+              <template
+                v-if="
+                  selectedSpot.available_rent_bikes !== 0 &&
+                  selectedSpot.available_return_bikes !== 0
+                "
+              >
+                <img src="/public/images/map/youbike/icon-info-ubike-green.svg" alt="" />
+                <span class="ml-1 text-[#76A732]">正常租借</span>
+              </template>
+              <template v-if="selectedSpot.available_rent_bikes === 0">
+                <img src="/public/images/map/youbike/icon-info-ubike-yellow.svg" alt="" />
+                <span class="ml-1 text-secondary-500">無車可借</span>
+              </template>
+              <template v-if="selectedSpot.available_return_bikes === 0">
+                <img src="/public/images/map/youbike/icon-info-ubike-red.svg" alt="" />
+                <span class="ml-1 text-[#E5464B]"> 車位滿載</span>
+              </template>
+            </span>
+            <span class="mx-2">|</span>
+            <span>
+              <span class="text-grey-500 mr-1">可借</span>
+              <span
+                class="mr-1"
+                :class="
+                  selectedSpot.available_rent_bikes === 0
+                    ? 'text-secondary-500'
+                    : 'text-[#76A732]'
+                "
+              >
+                {{ selectedSpot.available_rent_bikes }}
               </span>
-              <span class="mx-2">|</span>
-              <span>
-                <span class="text-grey-500 mr-1">可借</span>
-                <span
-                  class="mr-1"
-                  :class="
-                    selectedSpot.available_rent_bikes === 0
-                      ? 'text-secondary-500'
-                      : 'text-[#76A732]'
-                  "
-                >
-                  {{ selectedSpot.available_rent_bikes }}
-                </span>
-                <span class="text-grey-500 mr-1">可停</span>
-                <span
-                  :class="
-                    selectedSpot.available_return_bikes === 0 ? 'text-[#E5464B]' : 'text-grey-950'
-                  "
-                >
-                  {{ selectedSpot.available_return_bikes }}
-                </span>
+              <span class="text-grey-500 mr-1">可停</span>
+              <span
+                :class="
+                  selectedSpot.available_return_bikes === 0 ? 'text-[#E5464B]' : 'text-grey-950'
+                "
+              >
+                {{ selectedSpot.available_return_bikes }}
               </span>
-            </div>
-          </template>
+            </span> -->
+          </div>
         </div>
         <img src="@/assets/images/down-icon.svg" class="-rotate-90" alt="" />
       </div>
@@ -522,6 +530,7 @@ watch(searchSpotList, updateMarkers);
   width: 100%;
   height: 400px;
 }
+
 .marker {
   position: absolute;
   top: 50%;
@@ -529,6 +538,7 @@ watch(searchSpotList, updateMarkers);
   transform: translate(-50%, -50%);
   width: 60px;
 }
+
 .gps {
   position: absolute;
   right: 10px;
@@ -546,15 +556,8 @@ watch(searchSpotList, updateMarkers);
 }
 
 .floating-box {
-  @apply absolute;
-  @apply flex;
-  @apply items-center;
-  @apply justify-between;
-  @apply bg-white;
-  @apply px-4;
-  @apply py-6;
-  @apply rounded-xl;
-  @apply shadow-[0_-4px_10px_0_rgba(0,0,0,0.04)];
+  @apply absolute flex items-center justify-between bg-white px-4 py-6 rounded-xl;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px -4px 10px;
 }
 
 .btn {

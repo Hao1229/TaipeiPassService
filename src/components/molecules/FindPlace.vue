@@ -9,6 +9,20 @@ export interface Place {
   icon: string;
   agency: string;
   type: string;
+  data_type?: 'api' | 'json' | 'csv';
+  request_url: string;
+  format_fields?: {
+    id: string;
+    name: string;
+    area: string;
+    address: string;
+    lat: string;
+    lng: string;
+  };
+  service_infos?: {
+    title: string;
+    value: { title: string; value: string }[] | string;
+  }[];
 }
 
 const emit = defineEmits(['onSearchChange', 'update:isExpand']);
@@ -25,7 +39,8 @@ const searchHistoryList = ref<{ name: string; places: Place[] }[]>([
         name: '微笑單車 2.0',
         icon: '',
         agency: '',
-        type: '搜尋紀錄'
+        type: '搜尋紀錄',
+        request_url: ''
       }
     ]
   }

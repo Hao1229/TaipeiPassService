@@ -8,7 +8,36 @@
           "name": "微笑單車 2.0",
           "icon": "",
           "agency": "台北市政府交通局",
-          "type": "交通運輸、停車場、充電站"
+          "type": "交通運輸、停車場、充電站",
+          "data_type": "api",
+          "request_url": "https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json",
+          "format_fields": {
+            "id": "sno",
+            "name": "sna",
+            "area": "sarea",
+            "address": "ar",
+            "lat": "latitude",
+            "lng": "longitude"
+          },
+          "service_infos": [
+            {
+              "title": "備註",
+              "value_fields": [
+                {
+                  "title": "可借車輛",
+                  "value_field": "available_rent_bikes"
+                },
+                {
+                  "title": "可停空位",
+                  "value_field": "available_return_bikes"
+                }
+              ]
+            },
+            {
+              "title": "更新時間",
+              "value_field": "updateTime"
+            }
+          ]
         },
         {
           "id": "pa-2",
@@ -16,6 +45,33 @@
           "icon": "",
           "agency": "台北市政府環境保護局",
           "type": "交通運輸、停車場、充電站"
+        },
+        {
+          "id": "pa-3",
+          "name": "停車場",
+          "icon": "",
+          "agency": "台北市停車管理工程處",
+          "type": "交通運輸、停車場、充電站",
+          "data_type": "json",
+          "request_url": "/public/mock/find-place/TCMSV_alldesc.json",
+          "format_fields": {
+            "id": "id",
+            "name": "name",
+            "area": "area",
+            "address": "address",
+            "lat": "EntranceCoord.EntrancecoordInfo[0]?.Xcod",
+            "lng": "EntranceCoord.EntrancecoordInfo[0]?.Ycod"
+          },
+          "service_infos": [
+            {
+              "title": "概況",
+              "value_field": "summary"
+            },
+            {
+              "title": "費率",
+              "value_field": "payex"
+            }
+          ]
         }
       ]
     },
