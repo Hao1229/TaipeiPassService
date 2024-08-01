@@ -38,26 +38,32 @@ export const useGoogleMapsStore = defineStore('googleMaps', () => {
    * @param location
    * @param handleGeocodeFilteredResponse
    */
-  const getFullAddress = (geocoder: any, location: any, handleGeocodeFilteredResponse: Function) => {
+  const getFullAddress = (
+    geocoder: any,
+    location: any,
+    handleGeocodeFilteredResponse: Function
+  ) => {
     geocoder.geocode({ location }, (results: any, status: any) => {
       handleGeocodeResponse(results, status, handleGeocodeFilteredResponse);
     });
   };
-
 
   /**
    * 定義一個函數用於處理地理編碼的響應
    * @param results
    * @param status
    */
-  const handleGeocodeResponse = (results: any, status: any, handleGeocodeFilteredResponse: Function) => {
+  const handleGeocodeResponse = (
+    results: any,
+    status: any,
+    handleGeocodeFilteredResponse: Function
+  ) => {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       console.log('Geocoder found: ', results);
 
       const addressArray = results.filter(
         (item: any) =>
-          item.formatted_address.includes('號') ||
-          item.formatted_address.includes('No.')
+          item.formatted_address.includes('號') || item.formatted_address.includes('No.')
       );
 
       if (results[0]) {
@@ -72,15 +78,26 @@ export const useGoogleMapsStore = defineStore('googleMaps', () => {
   };
 
   const displayAddress = (array: any[]) => {
-    let filterArray = array.filter((item: any) => item.address_components.filter((item: any) => item.types.includes('route') || item.types.includes('premise') || item.types.includes('street_address') || item.types.includes('street_number')).length > 0);
+    const filterArray = array.filter(
+      (item: any) =>
+        item.address_components.filter(
+          (item: any) =>
+            item.types.includes('route') ||
+            item.types.includes('premise') ||
+            item.types.includes('street_address') ||
+            item.types.includes('street_number')
+        ).length > 0
+    );
     // || item.types.includes('point_of_interest')
-    if (filterArray.length == 0) { return; }
+    if (filterArray.length == 0) {
+      return;
+    }
 
-    let firstResult = filterArray[0];
+    const firstResult = filterArray[0];
     console.log('firstResult', firstResult);
-    let address_components = firstResult.address_components;
-    let prefixAddress: any[] = []; // 市,區; 縣,市,鄉,鎮
-    let suffixAddress: any[] = []; // 路,段,號
+    const address_components = firstResult.address_components;
+    const prefixAddress: any[] = []; // 市,區; 縣,市,鄉,鎮
+    const suffixAddress: any[] = []; // 路,段,號
     let city = '';
     let district = '';
     let road = '';
@@ -90,14 +107,18 @@ export const useGoogleMapsStore = defineStore('googleMaps', () => {
     let no = '';
     address_components.forEach((element: any) => {
       if (element.types.includes('street_number')) {
-        const componentNo = element.long_name.includes('號') ? `${element.long_name}` : `${element.long_name}號`;
+        const componentNo = element.long_name.includes('號')
+          ? `${element.long_name}`
+          : `${element.long_name}號`;
         suffixAddress.push(componentNo);
         no = componentNo;
       } else if (element.types.includes('route')) {
-        suffixAddress.push(`${element.long_name}`)
+        suffixAddress.push(`${element.long_name}`);
 
-        // 使用正则表达式进行切分
-        const parts = element.long_name.match(/(.*?路|.*?街|.*?大道|.*?段|.*?巷|.*?弄)/g) || [element.long_name];
+        // 使用正則表達式來切分
+        const parts = element.long_name.match(/(.*?路|.*?街|.*?大道|.*?段|.*?巷|.*?弄)/g) || [
+          element.long_name
+        ];
         // console.log('parts', parts);
         parts.forEach((part: string) => {
           if (part.includes('路') || part.includes('街') || part.includes('大道')) {
@@ -114,13 +135,16 @@ export const useGoogleMapsStore = defineStore('googleMaps', () => {
         });
       } else if (element.types.includes('administrative_area_level_4')) {
         // prefixAddress.push(`${element.long_name}`)
-      } else if (element.types.includes('administrative_area_level_3')) { // 里
-        prefixAddress.push(`${element.long_name}`)
-      } else if (element.types.includes('administrative_area_level_2')) { // 區
-        prefixAddress.push(`${element.long_name}`)
+      } else if (element.types.includes('administrative_area_level_3')) {
+        // 里
+        prefixAddress.push(`${element.long_name}`);
+      } else if (element.types.includes('administrative_area_level_2')) {
+        // 區
+        prefixAddress.push(`${element.long_name}`);
         district = element.long_name;
-      } else if (element.types.includes('administrative_area_level_1')) { // 縣市
-        prefixAddress.push(`${element.long_name}`)
+      } else if (element.types.includes('administrative_area_level_1')) {
+        // 縣市
+        prefixAddress.push(`${element.long_name}`);
         city = element.long_name;
       }
     });
@@ -140,8 +164,8 @@ export const useGoogleMapsStore = defineStore('googleMaps', () => {
         alley,
         no
       }
-    }
-  }
+    };
+  };
 
   return {
     loader,
@@ -151,5 +175,4 @@ export const useGoogleMapsStore = defineStore('googleMaps', () => {
     handleGeocodeResponse,
     displayAddress
   };
-
 });
