@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import FormView from '../views/FormView.vue';
 import SurroundingServiceView from '../views/SurroundingServiceView.vue';
+import TopQnAListView from '../views/TopQnAListView.vue';
+import QnAListView from '../views/QnAListView.vue';
 import CouponView from '../views/CouponView.vue';
 import CouponListView from '../views/CouponListView.vue';
 import HotSpotView from '../views/HotSpotView.vue';
@@ -25,6 +27,16 @@ const router = createRouter({
       path: '/surrounding-service',
       name: 'surrounding-service',
       component: SurroundingServiceView
+    },
+    {
+      path: '/qna',
+      name: 'top-qna-list',
+      component: TopQnAListView
+    },
+    {
+      path: '/qna/categories',
+      name: 'qna-list',
+      component: QnAListView
     },
     {
       path: '/coupon',
