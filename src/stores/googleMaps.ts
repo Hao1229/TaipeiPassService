@@ -4,7 +4,8 @@ import { Loader } from '@googlemaps/js-api-loader';
 
 export const useGoogleMapsStore = defineStore('googleMaps', () => {
   const loader = new Loader({
-    apiKey: 'AIzaSyCocXKpChBFYrx1pEzPQGatIBrZ4KbwKbk',
+    // 替換成您的 API KEY
+    apiKey: '',
     version: 'weekly',
     libraries: ['places', 'geometry']
   });
