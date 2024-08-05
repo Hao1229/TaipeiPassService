@@ -152,8 +152,7 @@ const initMap = (lat: number, lng: number) => {
       mapTypeControl: false,
       fullscreenControl: false,
       zoomControl: false,
-      // 替換成您的 mapId
-      mapId: ''
+      mapId: 'fc1ec68c1093dea4'
     });
 
     new google.maps.Marker({
