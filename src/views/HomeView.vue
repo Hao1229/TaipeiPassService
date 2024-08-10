@@ -49,7 +49,7 @@ if (route.query.isSearch) {
  * @see https://inappwebview.dev/docs/webview/javascript/communication#web-message-listeners
  */
 
-if (userInfo) {
+if (typeof userInfo !== 'undefined' && userInfo) {
   userInfo.postMessage('created');
   userInfo.onmessage = (event) => {
     if (event && event.data) {
