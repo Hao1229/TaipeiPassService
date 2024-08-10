@@ -23,27 +23,6 @@ if (route.query.isSearch) {
   activeTab.value = 1;
 }
 
-// if (route.query.userName) {
-//   userName.value = route.query.userName as string;
-// } else {
-//   // TODO: 跟 APP 對接後移除
-//   userName.value = 'XXX';
-// }
-
-// if (route.query.userPhone) {
-//   userPhone.value = route.query.userPhone as string;
-// } else {
-//   // TODO: 跟 APP 對接後移除
-//   userPhone.value = 'A111111111';
-// }
-
-// if (route.query.userTaxID) {
-//   userTaxID.value = route.query.userTaxID as string;
-// } else {
-//   // TODO: 跟 APP 對接後移除
-//   userTaxID.value = '0900000000';
-// }
-
 /**
  * use flutter_inappwebview's Web Message Listeners to get user info from app
  * @see https://inappwebview.dev/docs/webview/javascript/communication#web-message-listeners
