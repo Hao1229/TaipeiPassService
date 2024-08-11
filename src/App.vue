@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
@@ -17,9 +18,11 @@ const { user } = storeToRefs(store);
 
 const { data } = useConnectionMessage('userinfo', null);
 
-if (data) {
-  user.value = data;
-}
+watchEffect(() => {
+  if (data) {
+    user.value = data;
+  }
+});
 </script>
 
 <template>
