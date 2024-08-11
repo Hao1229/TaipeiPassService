@@ -18,11 +18,14 @@ const { user } = storeToRefs(store);
 useConnectionMessage('userinfo', null);
 
 // @ts-ignore
-flutterObject.onmessage = (event: any) => {
-  if (event && event.data) {
-    user.value = JSON.parse(event.data);
-  }
-};
+if (typeof flutterObject !== 'undefined' && flutterObject) {
+  // @ts-ignore
+  flutterObject.onmessage = (event: any) => {
+    if (event && event.data) {
+      user.value = JSON.parse(event.data);
+    }
+  };
+}
 </script>
 
 <template>
