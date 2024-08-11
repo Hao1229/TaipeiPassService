@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
@@ -16,13 +15,14 @@ const { user } = storeToRefs(store);
  * @see https://inappwebview.dev/docs/webview/javascript/communication#web-message-listeners
  */
 
-const { data } = useConnectionMessage('userinfo', null);
+useConnectionMessage('userinfo', null);
 
-watchEffect(() => {
-  if (data) {
-    user.value = data;
+// @ts-ignore
+flutterObject.onmessage = (event: any) => {
+  if (event && event.data) {
+    user.value = JSON.parse(event.data);
   }
-});
+};
 </script>
 
 <template>

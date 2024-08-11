@@ -12,25 +12,5 @@ export const useConnectionMessage = (
     const postInfo = JSON.stringify({ name, data });
     // @ts-ignore
     flutterObject.postMessage(postInfo);
-    // @ts-ignore
-    flutterObject.onmessage = (event: any) => {
-      if (event && event.data) {
-        return {
-          data: JSON.parse(event.data)
-        };
-      } else {
-        return {
-          data: null
-        };
-      }
-    };
-
-    return {
-      data: null
-    };
-  } else {
-    return {
-      data: null
-    };
   }
 };
