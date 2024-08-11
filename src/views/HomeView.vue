@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { useFormStore } from '@/stores/form';
-import { storeToRefs } from 'pinia';
 import ServiceTabsView from '@/components/organisms/ServiceTabsView.vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import ServiceStep from '@/components/molecules/ServiceStep.vue';
@@ -13,31 +12,12 @@ const store = useFormStore();
 
 store.reset();
 
-const { userName, userPhone, userTaxID } = storeToRefs(store);
-
 const route = useRoute();
 
 const activeTab = ref(0);
 
 if (route.query.isSearch) {
   activeTab.value = 1;
-}
-
-/**
- * use flutter_inappwebview's Web Message Listeners to get user info from app
- * @see https://inappwebview.dev/docs/webview/javascript/communication#web-message-listeners
- */
-
-if (typeof userInfo !== 'undefined' && userInfo) {
-  userInfo.postMessage('created');
-  userInfo.onmessage = (event) => {
-    if (event && event.data) {
-      const info = JSON.parse(event.data);
-      userName.value = info.username ?? '';
-      userPhone.value = info.phoneNo ?? '';
-      userTaxID.value = info.idNo ?? '';
-    }
-  };
 }
 
 /**
