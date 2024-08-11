@@ -22,7 +22,14 @@ if (typeof flutterObject !== 'undefined' && flutterObject) {
   // @ts-ignore
   flutterObject.onmessage = (event: any) => {
     if (event && event.data) {
-      user.value = JSON.parse(event.data);
+      const result = JSON.parse(event.data);
+      switch (result.name) {
+        case 'userinfo':
+          user.value = result.data;
+          break;
+        default:
+          break;
+      }
     }
   };
 }
