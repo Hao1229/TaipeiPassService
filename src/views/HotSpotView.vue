@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useCouponStore } from '@/stores/coupon';
+import { useConnectionMessage } from '@/composables/useConnectionMessage';
 import BaseDialog from '@/components/atoms/BaseDialog.vue';
 import CouponResultItem from '@/components/molecules/CouponResultItem.vue';
 
@@ -27,7 +28,7 @@ if (!activeItem.value?.id) {
 const isMapDialogOpen = ref(false);
 
 const onMapOpenClick = () => {
-  window.open(activeItem.value?.address.map, '_blank', 'noopener,noreferrer');
+  useConnectionMessage('launch_map', activeItem.value?.address.map);
 };
 
 const isIntroduceExpand = ref(false);

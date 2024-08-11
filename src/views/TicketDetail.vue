@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useCouponStore } from '@/stores/coupon';
+import { useConnectionMessage } from '@/composables/useConnectionMessage';
 import BaseCardlabel from '@/components/atoms/BaseCardlabel.vue';
 import { CardLabelType } from '@/components/atoms/BaseCardlabel.vue';
 import BaseDialog from '@/components/atoms/BaseDialog.vue';
@@ -21,7 +22,7 @@ const isIntroduceExpand = ref(false);
 const isIllustrateExpand = ref(false);
 
 const onMapOpenClick = () => {
-  window.open(ticketItem.value?.address.map, '_blank', 'noopener,noreferrer');
+  useConnectionMessage('launch_map', ticketItem.value?.address.map);
 };
 
 const onPurchaseClick = () => {
