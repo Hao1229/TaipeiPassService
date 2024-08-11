@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useFormStore } from '@/stores/form';
+import { useUserStore } from '@/stores/user';
 import BaseRadio from '@/components/atoms/BaseRadio.vue';
 import BaseButton from '@/components/atoms/BaseButton.vue';
 import BaseDialog from '@/components/atoms/BaseDialog.vue';
@@ -15,7 +16,11 @@ const emit = defineEmits(['onModify']);
 
 const store = useFormStore();
 
-const { formFormat, userName, userPhone, userTaxID } = storeToRefs(store);
+const { formFormat } = storeToRefs(store);
+
+const userStore = useUserStore();
+
+const { user } = storeToRefs(userStore);
 
 const router = useRouter();
 
@@ -47,9 +52,9 @@ const applyFieldTextHandle = (field: string) => {
   }
 };
 
-const createImgPreviewUrl = (img: File) => {
-  return URL.createObjectURL(img);
-};
+// const createImgPreviewUrl = (img: File) => {
+//   return URL.createObjectURL(img);
+// };
 
 const isAgree = ref('Y');
 
@@ -111,15 +116,15 @@ const onNegativeClick = () => {
     <ul class="px-4 py-2 flex flex-col gap-y-4">
       <li class="preview-item">
         <span class="field-name">姓名</span>
-        <span>{{ userName }}</span>
+        <span>{{ user?.username }}</span>
       </li>
       <li class="preview-item">
         <span class="field-name">身分證字號</span>
-        <span>{{ userTaxID }}</span>
+        <span>{{ user?.idNo }}</span>
       </li>
       <li class="preview-item">
         <span class="field-name">手機號碼</span>
-        <span>{{ userPhone }}</span>
+        <span>{{ user?.phoneNo }}</span>
       </li>
       <li class="preview-item">
         <span class="field-name">電子信箱</span>
