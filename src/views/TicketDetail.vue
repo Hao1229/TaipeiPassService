@@ -21,8 +21,14 @@ const isMapDialogOpen = ref(false);
 const isIntroduceExpand = ref(false);
 const isIllustrateExpand = ref(false);
 
+const handleLaunchMap = (res: { name: string; data: boolean }) => {
+  if (!res.data) {
+    window.open(ticketItem.value?.address.map, '_blank', 'noopener,noreferrer');
+  }
+};
+
 const onMapOpenClick = () => {
-  useConnectionMessage('launch_map', ticketItem.value?.address.map);
+  useConnectionMessage('launch_map', ticketItem.value?.address.map, handleLaunchMap);
 };
 
 const onPurchaseClick = () => {

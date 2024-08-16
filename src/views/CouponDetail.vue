@@ -41,8 +41,14 @@ const isMapDialogOpen = ref(false);
 const isUseDialogOpen = ref(false);
 const isExchangeDialogOpen = ref(false);
 
+const handleLaunchMap = (res: { name: string; data: boolean }) => {
+  if (!res.data) {
+    window.open(couponItem.value?.store_info.address.map, '_blank', 'noopener,noreferrer');
+  }
+};
+
 const onMapOpenClick = () => {
-  useConnectionMessage('launch_map', couponItem.value?.store_info.address.map);
+  useConnectionMessage('launch_map', couponItem.value?.store_info.address.map, handleLaunchMap);
 };
 </script>
 
