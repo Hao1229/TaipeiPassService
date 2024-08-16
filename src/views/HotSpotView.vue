@@ -27,8 +27,14 @@ if (!activeItem.value?.id) {
 
 const isMapDialogOpen = ref(false);
 
+const handleLaunchMap = (res: { name: string; data: boolean }) => {
+  if (!res.data) {
+    window.open(activeItem.value?.address.map, '_blank', 'noopener,noreferrer');
+  }
+};
+
 const onMapOpenClick = () => {
-  useConnectionMessage('launch_map', activeItem.value?.address.map);
+  useConnectionMessage('launch_map', activeItem.value?.address.map, handleLaunchMap);
 };
 
 const isIntroduceExpand = ref(false);

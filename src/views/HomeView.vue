@@ -2,15 +2,44 @@
 import { computed, ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { useFormStore } from '@/stores/form';
+import { useUserStore } from '@/stores/user';
+import { storeToRefs } from 'pinia';
+import { useConnectionMessage } from '@/composables/useConnectionMessage';
 import ServiceTabsView from '@/components/organisms/ServiceTabsView.vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import ServiceStep from '@/components/molecules/ServiceStep.vue';
 import serviceListJson from '../../public/mock/service_list.json';
 import caseProgressJson from '../../public/mock/case_progress.json';
+import type { User } from '@/stores/user';
 
 const store = useFormStore();
 
 store.reset();
+
+const userStore = useUserStore();
+
+const { user } = storeToRefs(userStore);
+
+const handleUserInfo = (res: { name: string; data: User }) => {
+  if (res.name === 'userinfo') {
+    user.value = res.data;
+  }
+};
+
+useConnectionMessage('userinfo', null, handleUserInfo);
+
+// 交換資料測試
+const connectionTest = (res: { name: string; data: any }) => {
+  // @ts-ignore
+  if (typeof flutterObject !== 'undefined' && flutterObject) {
+    // @ts-ignore
+    flutterObject.postMessage(`${res.name} success!!!`);
+  }
+};
+
+useConnectionMessage('phone_call', null, connectionTest);
+useConnectionMessage('location', null, connectionTest);
+useConnectionMessage('deviceinfo', null, connectionTest);
 
 const route = useRoute();
 
