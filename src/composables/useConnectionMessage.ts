@@ -20,24 +20,25 @@ export const useConnectionMessage = <T>(
 ) => {
   // @ts-ignore
   if (typeof flutterObject !== 'undefined' && flutterObject) {
+    // @ts-ignore
+    const flutterObjectCopy = structuredClone(flutterObject);
+
     const postInfo = JSON.stringify({ name, data });
     // @ts-ignore
-    flutterObject.postMessage(postInfo);
+    flutterObjectCopy.postMessage(postInfo);
 
     if (cb) {
-      const handleData = (eventData: string) => {
-        const result = JSON.parse(eventData);
+      const handleData = (event: string) => {
+        const result: { name: string; data: any } = JSON.parse(event).data;
         cb(result);
       };
 
-      onMounted(() => {
-        // @ts-ignore
-        flutterObject.addEventListener('message', handleData);
-      });
+      // @ts-ignore
+      flutterObjectCopy.addEventListener('message', handleData);
 
       onUnmounted(() => {
         // @ts-ignore
-        flutterObject.removeEventListener('message', handleData);
+        flutterObjectCopy.removeEventListener('message', handleData);
       });
     }
   }
