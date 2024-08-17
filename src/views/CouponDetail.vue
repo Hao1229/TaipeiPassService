@@ -4,6 +4,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useCouponStore } from '@/stores/coupon';
 import { useConnectionMessage } from '@/composables/useConnectionMessage';
+import { useHandleConnectionData } from '@/composables/useHandleConnectionData';
 import ServiceTabsView from '@/components/organisms/ServiceTabsView.vue';
 import BaseDialog from '@/components/atoms/BaseDialog.vue';
 import BaseButton from '@/components/atoms/BaseButton.vue';
@@ -41,14 +42,18 @@ const isMapDialogOpen = ref(false);
 const isUseDialogOpen = ref(false);
 const isExchangeDialogOpen = ref(false);
 
-const handleLaunchMap = (res: { name: string; data: boolean }) => {
-  if (!res.data) {
+const handleLaunchMap = (event: { data: string }) => {
+  const result: { name: string; data: boolean } = JSON.parse(event.data);
+
+  if (!result.data) {
     window.open(couponItem.value?.store_info.address.map, '_blank', 'noopener,noreferrer');
   }
 };
 
+useHandleConnectionData(handleLaunchMap);
+
 const onMapOpenClick = () => {
-  useConnectionMessage('launch_map', couponItem.value?.store_info.address.map, handleLaunchMap);
+  useConnectionMessage('launch_map', couponItem.value?.store_info.address.map);
 };
 </script>
 
