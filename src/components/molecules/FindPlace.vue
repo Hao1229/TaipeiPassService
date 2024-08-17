@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
+import MessageModal from '@/components/molecules/MessageModal.vue';
 import placeListJson from '../../../public/mock/place_list.json';
 
 export interface Place {
@@ -60,6 +61,11 @@ const options = computed(() => {
 const expandList = ref<string[]>([]);
 const expandListSet = computed(() => new Set(expandList.value.map((name) => name)));
 
+/**
+ * 是否顯示清空歷史搜尋紀錄通知
+ */
+let isShowClearHistory = ref(false);
+
 const onPanelExpandClick = (name: string) => {
   if (expandListSet.value.has(name)) {
     const index = expandList.value.findIndex((el) => el === name);
@@ -72,6 +78,12 @@ const onPanelExpandClick = (name: string) => {
 const isExpand = ref(false);
 const toggleExpand = () => {
   isExpand.value = !isExpand.value;
+};
+
+const clearHistoryListClick = (e: any) => {
+  e.preventDefault();
+  isShowClearHistory.value = false;
+  searchHistoryList.value[0].places = [];
 };
 
 watch([isExpand, searchValue], ([newExpandValue, newSearchValue]) => {
@@ -138,7 +150,12 @@ const onSelect = (place: Place) => {
                     href="javascript:void(0)"
                     v-if="expandListSet.has(item.name)"
                     class="mr-2 underline text-primary-500"
-                    @click="() => (searchHistoryList[0].places = [])"
+                    @click="
+                      (event: any) => {
+                        event.stopPropagation();
+                        isShowClearHistory = true;
+                      }
+                    "
                   >
                     清空
                   </a>
@@ -225,6 +242,35 @@ const onSelect = (place: Place) => {
       </div>
     </template>
   </section>
+
+  <!-- clear search history modal -->
+  <MessageModal :is-show="isShowClearHistory">
+    <template #header>
+      <p>清空搜集紀錄</p>
+    </template>
+    <template #body>
+      <p class="text-grey-700">清空您的歷史搜尋紀錄</p>
+    </template>
+    <template #footer>
+      <button
+        class="text-gray-500 px-7 py-2 w-full border-r border-t-gray-200"
+        @click="isShowClearHistory = false"
+      >
+        取消
+      </button>
+      <button
+        class="text-primary-500 px-7 py-2 w-full"
+        @click="
+          () => {
+            isShowClearHistory = false;
+            searchHistoryList[0].places = [];
+          }
+        "
+      >
+        確認
+      </button>
+    </template>
+  </MessageModal>
 </template>
 <style lang="postcss" scoped>
 .base-select-wrapper {

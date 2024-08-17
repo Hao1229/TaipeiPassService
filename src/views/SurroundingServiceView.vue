@@ -443,7 +443,7 @@ watch(searchSpotList, updateMarkers);
     />
   </div>
 
-  <!-- modal -->
+  <!-- geo modal -->
   <MessageModal :is-show="isShowGeoError">
     <template #header>
       <p>請啟用定位服務</p>
@@ -452,7 +452,9 @@ watch(searchSpotList, updateMarkers);
       <p class="text-grey-700">打開定位服務來允許“台北通”確認您的位置</p>
     </template>
     <template #footer>
-      <button class="btn" @click="isShowGeoError = false">確認</button>
+      <button class="text-primary-500 px-7 py-2 w-full" @click="isShowGeoError = false">
+        確認
+      </button>
     </template>
   </MessageModal>
 </template>
@@ -490,11 +492,5 @@ watch(searchSpotList, updateMarkers);
 .floating-box {
   @apply absolute flex items-center justify-between bg-white px-4 py-6 rounded-xl;
   box-shadow: rgba(0, 0, 0, 0.04) 0px -4px 10px;
-}
-
-.btn {
-  @apply text-primary-500;
-  @apply w-full;
-  padding: 10px 30px;
 }
 </style>
