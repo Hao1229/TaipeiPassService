@@ -5,6 +5,7 @@ import { useFormStore } from '@/stores/form';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 import { useConnectionMessage } from '@/composables/useConnectionMessage';
+import { useHandleConnectionData } from '@/composables/useHandleConnectionData';
 import ServiceTabsView from '@/components/organisms/ServiceTabsView.vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import ServiceStep from '@/components/molecules/ServiceStep.vue';
@@ -20,26 +21,34 @@ const userStore = useUserStore();
 
 const { user } = storeToRefs(userStore);
 
-const handleUserInfo = (res: { name: string; data: User }) => {
-  if (res.name === 'userinfo') {
-    user.value = res.data;
-  }
+const handleUserInfo = (event: { data: string }) => {
+  const result: { name: string; data: User } = JSON.parse(event.data);
+
+  user.value = result.data;
 };
 
-useConnectionMessage('userinfo', null, handleUserInfo);
+/**
+ * 同頁面要處理多個雙向連結資料參考
+ */
+// const handleConnectionData = (event: { data: string }) => {
+//   const result: { name: string; data: any } = JSON.parse(event.data);
+//   const name = result.name;
 
-// 交換資料測試
-const connectionTest = (res: { name: string; data: any }) => {
-  // @ts-ignore
-  if (typeof flutterObject !== 'undefined' && flutterObject) {
-    // @ts-ignore
-    flutterObject.postMessage(`${res.name} success!!!`);
-  }
-};
+//   switch (name) {
+//     case 'userinfo':
+//       handleUserInfo(event);
+//       break;
+//     case 'phone_call':
+//       //....
+//       break;
+//     default:
+//       break;
+//   }
+// };
 
-useConnectionMessage('phone_call', null, connectionTest);
-useConnectionMessage('location', null, connectionTest);
-useConnectionMessage('deviceinfo', null, connectionTest);
+useConnectionMessage('userinfo', null);
+
+useHandleConnectionData(handleUserInfo);
 
 const route = useRoute();
 
