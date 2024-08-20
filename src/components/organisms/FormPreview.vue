@@ -133,7 +133,7 @@ const onNegativeClick = () => {
       <li class="preview-item">
         <span class="field-name">聯絡地址</span>
         <span>
-          {{ `${props.submitForm?.city}${props.submitForm?.county}${props.submitForm?.address}` }}
+          {{ `${props.submitForm?.county}${props.submitForm?.city}${props.submitForm?.address}` }}
         </span>
       </li>
     </ul>
