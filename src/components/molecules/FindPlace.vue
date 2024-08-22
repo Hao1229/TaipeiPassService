@@ -11,6 +11,7 @@ export interface Place {
   type: string;
   data_type?: 'api' | 'json' | 'csv';
   request_url: string;
+  data_path: string;
   format_fields?: {
     id: string;
     name: string;
@@ -230,6 +231,7 @@ const onSelect = (place: Place) => {
                     class="flex items-center py-5 px-4 border-b border-grey-200"
                     @click="onSelect(place)"
                   >
+                    <img v-if="place.icon" :src="place.icon" class="w-6 h-6 mr-2" />
                     <span class="text-grey-700">
                       {{ place.name }}
                     </span>

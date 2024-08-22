@@ -9,7 +9,7 @@ import { onMounted, ref, watch } from 'vue';
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer';
 import greenDotIconUrl from '/public/images/map/youbike/mappin-green.svg';
 import defaultFocusIconUrl from '/public/images/map/icon_mappin-garbagetruck-green-pressed.svg';
-import { mappingFormatter } from '@/utils/spot-formatter';
+import { mappingFormatter, getNestedValue } from '@/utils/spot-formatter';
 
 export interface Spot {
   id: string;
@@ -43,7 +43,8 @@ const selectedSearchData = ref<Place>({
   icon: '',
   agency: '',
   type: '',
-  request_url: ''
+  request_url: '',
+  data_path: ''
 });
 
 /** 搜尋結果 */
@@ -106,7 +107,8 @@ const handleSearchChange = async (data: Place) => {
         data.request_url,
         mappingFormatter,
         data.format_fields,
-        data.service_infos
+        data.service_infos,
+        data.data_path
       );
       break;
     case 'csv':
@@ -217,11 +219,12 @@ const fetchAndFormatData = async (
   url: string,
   formatter: (item: any, formatFields: any, serviceInfos: any[]) => Spot,
   formatFields: any,
-  serviceInfos: any
+  serviceInfos: any,
+  dataPath: string
 ) => {
   try {
     const response = await axios.get(url);
-    return formatSpotData(response.data, formatter, formatFields, serviceInfos);
+    return formatSpotData(response.data, formatter, formatFields, serviceInfos, dataPath);
   } catch (error) {
     console.error(`Failed to fetch data from ${url}:`, error);
     return [];
@@ -232,9 +235,12 @@ const formatSpotData = (
   data: any,
   formatter: (item: any, formatFields: any, serviceInfos: any[]) => Spot,
   formatFields: any,
-  serviceInfos: any
+  serviceInfos: any,
+  dataPath: string
 ): Spot[] => {
-  return data.map((item: any) => formatter(item, formatFields, serviceInfos));
+  // 動態解析 dataPath，如果沒有提供 dataPath，默認使用 response
+  const targetData = dataPath ? getNestedValue(data, dataPath) : data;
+  return targetData.map((item: any) => formatter(item, formatFields, serviceInfos));
 };
 
 const updateMarkers = async () => {
