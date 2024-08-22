@@ -152,7 +152,7 @@ const initMap = (lat: number, lng: number) => {
       fullscreenControl: false,
       zoomControl: false,
       // 替換成您的 MAP ID
-      mapId: ''
+      mapId: 'fc1ec68c1093dea4'
     });
 
     // init marker
