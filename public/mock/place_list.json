@@ -108,7 +108,7 @@
           "agency": "",
           "type": "飲水機、公廁、哺集乳室、AED場所",
           "data_type": "json",
-          "request_url": "./mock/find-place._toilet_taipei.json",
+          "request_url": "./mock/find-place/public_toilet_taipei.json",
           "data_path": "",
           "format_fields": {
             "id": "id",
