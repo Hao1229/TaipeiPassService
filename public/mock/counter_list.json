@@ -1,0 +1,30 @@
+{
+  "//": "臨櫃叫號-列表",
+  "data": [
+    {
+      "id": "c-1",
+      "name": "地政事務所",
+      "icon": "/images/icon_toilet.svg"
+    },
+    {
+      "id": "c-2",
+      "name": "戶政事務所",
+      "icon": "/images/icon_toilet.svg"
+    },
+    {
+      "id": "c-3",
+      "name": "區公所",
+      "icon": "/images/icon_toilet.svg"
+    },
+    {
+      "id": "c-4",
+      "name": "稅捐處",
+      "icon": "/images/icon_toilet.svg"
+    },
+    {
+      "id": "c-5",
+      "name": "就業服務站",
+      "icon": "/images/icon_toilet.svg"
+    }
+  ]
+}

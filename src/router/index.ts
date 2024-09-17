@@ -4,6 +4,7 @@ import FormView from '../views/FormView.vue';
 import SurroundingServiceView from '../views/SurroundingServiceView.vue';
 import TopQnAListView from '../views/TopQnAListView.vue';
 import QnAListView from '../views/QnAListView.vue';
+import CounterCallingView from '../views/CounterCallingView.vue';
 import CouponView from '../views/CouponView.vue';
 import CouponListView from '../views/CouponListView.vue';
 import HotSpotView from '../views/HotSpotView.vue';
@@ -67,6 +68,11 @@ const router = createRouter({
           component: CouponDetail
         }
       ]
+    },
+    {
+      path: '/counter-calling',
+      name: 'counter-calling',
+      component: () => CounterCallingView
     }
   ]
 });
