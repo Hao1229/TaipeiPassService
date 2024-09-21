@@ -10,6 +10,7 @@ import HotSpotView from '../views/HotSpotView.vue';
 import TicketDetail from '../views/TicketDetail.vue';
 import CouponDetail from '../views/CouponDetail.vue';
 import TicketWallet from '@/views/TicketWallet.vue';
+import TicketExchange from '@/views/TicketExchange.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -76,6 +77,11 @@ const router = createRouter({
           path: '',
           name: 'ticket-wallet',
           component: TicketWallet
+        },
+        {
+          path: 'exchange/:id',
+          name: 'ticket-exchange',
+          component: TicketExchange
         }
       ]
     }
