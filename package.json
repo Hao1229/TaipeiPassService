@@ -20,6 +20,7 @@
     "@types/google.maps": "^3.55.10",
     "axios": "^1.7.2",
     "pinia": "2.1.7",
+    "qrcode.vue": "3.4.1",
     "v-calendar": "3.1.2",
     "vue": "3.4.21",
     "vue-router": "4.3.0"
