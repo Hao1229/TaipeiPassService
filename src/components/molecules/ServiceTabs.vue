@@ -62,7 +62,7 @@ const activeTab = defineModel({ default: 0 });
 }
 
 .tab-label {
-  @apply text-grey-700 font-bold mb-2;
+  @apply text-grey-700 bg-white font-bold mb-2;
 
   &__content-type {
     @apply rounded-t-[10px] border-x border-t border-grey-200;
