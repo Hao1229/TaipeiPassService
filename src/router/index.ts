@@ -5,11 +5,13 @@ import SurroundingServiceView from '../views/SurroundingServiceView.vue';
 import TopQnAListView from '../views/TopQnAListView.vue';
 import QnAListView from '../views/QnAListView.vue';
 import CounterCallingView from '../views/CounterCallingView.vue';
+import CounterCallingDetailView from '../views/CounterCallingDetailView.vue';
 import CouponView from '../views/CouponView.vue';
 import CouponListView from '../views/CouponListView.vue';
 import HotSpotView from '../views/HotSpotView.vue';
 import TicketDetail from '../views/TicketDetail.vue';
 import CouponDetail from '../views/CouponDetail.vue';
+import CounterRegularlyUsedEditView from '@/views/CounterRegularlyUsedEditView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,8 +73,23 @@ const router = createRouter({
     },
     {
       path: '/counter-calling',
-      name: 'counter-calling',
-      component: () => CounterCallingView
+      children: [
+        {
+          path: '',
+          name: 'counter-calling',
+          component: CounterCallingView
+        },
+        {
+          path: ':id',
+          name: 'counter-calling-detail',
+          component: CounterCallingDetailView
+        },
+        {
+          path: 'edit',
+          name: 'counter-calling-edit',
+          component: CounterRegularlyUsedEditView
+        }
+      ]
     }
   ]
 });
