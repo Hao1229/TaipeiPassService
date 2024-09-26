@@ -13,7 +13,6 @@ import TicketDetail from '../views/TicketDetail.vue';
 import CouponDetail from '../views/CouponDetail.vue';
 import TicketWallet from '@/views/TicketWallet.vue';
 import TicketExchange from '@/views/TicketExchange.vue';
-import CounterRegularlyUsedEditView from '@/views/CounterRegularlyUsedEditView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -100,11 +99,6 @@ const router = createRouter({
           path: ':id',
           name: 'counter-calling-detail',
           component: CounterCallingDetailView
-        },
-        {
-          path: 'edit',
-          name: 'counter-calling-edit',
-          component: CounterRegularlyUsedEditView
         }
       ]
     }
