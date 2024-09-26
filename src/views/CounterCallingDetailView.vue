@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import BaseSelect from '@/components/atoms/BaseSelect.vue';
 import { useRoute } from 'vue-router';
+import BaseSelect from '@/components/atoms/BaseSelect.vue';
 import BaseDialog from '@/components/atoms/BaseDialog.vue';
 import { useConnectionMessage } from '@/composables/useConnectionMessage';
-import { type CounterItem } from '@/views/CounterCallingView.vue';
+import { type SubCounter } from '@/views/CounterCallingView.vue';
 import { useCounterStore } from '@/stores/counter';
 import { storeToRefs } from 'pinia';
 
@@ -14,32 +14,46 @@ const counterStore = useCounterStore();
 const { counterList } = storeToRefs(counterStore);
 
 const counterItem = computed(() => counterList.value.find((item) => item.id === route.params.id)!);
+
+const subCounterList = ref<SubCounter[]>([]);
+
 const counterOptions = computed(() => {
   return (
-    counterItem.value?.list?.map((item) => ({
+    subCounterList.value.map((item) => ({
       label: item.name,
       value: item.id
     })) || []
   );
 });
+const selectedSubCounterId = ref('');
 
-const selectedSubCounter = ref(route.query.subId || counterOptions.value[0].value);
 const subCounterItem = computed(
-  () => counterItem.value?.list?.find((item) => item.id === selectedSubCounter.value)!
+  () => subCounterList.value.find((item) => item.id === selectedSubCounterId.value)!
 );
 
 const isMapDialogOpen = ref(false);
 
 onMounted(() => {
-  console.log('counterItem:', counterItem.value);
-  console.log('counterOptions:', counterOptions.value);
+  getSubCounterList();
 });
+
+const getSubCounterList = () => {
+  if (counterItem.value?.list) {
+    subCounterList.value = counterItem.value.list;
+
+    if (route.query.subId as string) {
+      selectedSubCounterId.value = route.query.subId as string;
+    } else {
+      selectedSubCounterId.value = subCounterList.value[0]?.id;
+    }
+  }
+};
 
 const onMapOpenClick = () => {
   useConnectionMessage('launch_map', subCounterItem.value?.info.address);
 };
 
-const toggleRegularlyUsedItem = (counterItem: CounterItem) => {
+const toggleRegularlyUsedItem = (counterItem: SubCounter) => {
   counterItem.is_regularly_used = !counterItem.is_regularly_used;
 };
 </script>
@@ -48,14 +62,15 @@ const toggleRegularlyUsedItem = (counterItem: CounterItem) => {
   <div class="px-5 py-8 bg-grey-50">
     <h5 class="font-bold mb-3">選擇地點</h5>
     <BaseSelect
-      v-model="selectedSubCounter"
+      v-model="selectedSubCounterId"
       :selectId="counterItem.id"
       :options="counterOptions"
       :customClass="'bg-white border border-grey-600'"
+      default-selected="請選擇地點"
       class="w-full"
     />
   </div>
-  <div class="px-5 py-8">
+  <div class="px-5 py-8" v-if="subCounterItem">
     <div class="mb-8">
       <div class="flex justify-between mb-4">
         <h5 class="font-bold">{{ counterItem.name }}</h5>
@@ -123,9 +138,17 @@ const toggleRegularlyUsedItem = (counterItem: CounterItem) => {
           }"
           class="link-wrapper"
         >
-          <img src="@/assets/images/icon_tel.svg" class="icon" alt="icon_map" />
+          <img src="@/assets/images/icon_fax.svg" class="icon" alt="icon_map" />
           <span class="mx-1">{{ subCounterItem.info.fax }}</span>
         </RouterLink>
+      </div>
+    </div>
+  </div>
+  <div class="px-5 py-16" v-if="!subCounterItem">
+    <div class="flex items-center justify-center">
+      <div class="text-center">
+        <img src="@/assets/images/illustrations_no_data.svg" alt="illustrations_no_data" />
+        <p>目前無選擇地區</p>
       </div>
     </div>
   </div>

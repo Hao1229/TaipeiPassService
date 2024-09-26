@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import type { Counter, CounterItem } from '@/views/CounterCallingView.vue';
+import type { Counter } from '@/views/CounterCallingView.vue';
 import counterListJson from '../../public/mock/counter_list.json';
 
 export const useCounterStore = defineStore('counter', () => {
