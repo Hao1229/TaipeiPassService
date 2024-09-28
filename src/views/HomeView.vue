@@ -275,13 +275,6 @@ const activeRecord = computed(() =>
 </template>
 
 <style lang="postcss">
-.search-button {
-  @apply bg-primary-500 p-1 rounded-lg;
-  @apply h-11 w-11;
-  @apply flex justify-center items-center;
-  @apply -translate-x-1;
-}
-
 .option-title {
   @apply relative;
   @apply before:content-[''];
