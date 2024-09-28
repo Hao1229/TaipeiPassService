@@ -24,11 +24,13 @@ const onCategoryClick = (id: string) => {
 <template>
   <div class="citizen-report-list">
     <FixedTitleSection title="有話要說">
-      <div class="flex my-3">
-        <BaseInput readonly placeholder="您遇到哪些問題?" class="flex-grow" />
-        <button class="search-button">
-          <img src="@/assets/images/search-icon.svg" alt="搜尋" />
-        </button>
+      <div class="my-3">
+        <RouterLink :to="{ name: 'citizen-report-search' }" class="flex">
+          <BaseInput readonly placeholder="您遇到哪些問題?" class="flex-grow" />
+          <button class="search-button">
+            <img src="@/assets/images/search-icon.svg" alt="搜尋" />
+          </button>
+        </RouterLink>
       </div>
     </FixedTitleSection>
     <div class="px-4 py-3 min-h-[calc(100vh-108px)]" :class="{ 'bg-grey-100': activeCategory }">

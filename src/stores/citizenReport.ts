@@ -25,23 +25,31 @@ export interface CitizenReportData {
 export const useCitizenReportStore = defineStore('citizenReport', () => {
   const citizenReport = ref<CitizenReportData>();
 
+  const concatData = computed(() => {
+    if (!citizenReport.value) {
+      return [];
+    }
+
+    const problemReporting = citizenReport.value.all_report
+      .map((item) => item.problem_reporting)
+      .flat();
+
+    const serviceRequesting = citizenReport.value.all_report
+      .map((item) => item.service_requesting)
+      .flat();
+
+    const concatData = [...problemReporting, ...serviceRequesting];
+
+    return concatData;
+  });
+
   const reportItemMap = computed(() => {
     if (!citizenReport.value || !citizenReport.value.all_report) {
       return new Map([]);
     } else {
-      const problemReporting = citizenReport.value.all_report
-        .map((item) => item.problem_reporting)
-        .flat();
-
-      const serviceRequesting = citizenReport.value.all_report
-        .map((item) => item.service_requesting)
-        .flat();
-
-      const concatData = [...problemReporting, ...serviceRequesting];
-
-      return new Map(concatData.map((item) => [item.id, item]));
+      return new Map(concatData.value.map((item) => [item.id, item]));
     }
   });
 
-  return { citizenReport, reportItemMap };
+  return { citizenReport, reportItemMap, concatData };
 });

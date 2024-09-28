@@ -39,11 +39,13 @@ const onServicePhoneClick = () => {
       <template #tab0>
         <div class="bg-grey-100 pt-[18px] px-4 min-h-[calc(100vh-43px)] pb-4">
           <p class="text-grey-700 font-semibold">選擇要通報項目</p>
-          <div class="flex my-3">
-            <BaseInput readonly placeholder="您遇到哪些問題?" class="flex-grow" />
-            <button class="search-button">
-              <img src="@/assets/images/search-icon.svg" alt="搜尋" />
-            </button>
+          <div class="my-3">
+            <RouterLink :to="{ name: 'citizen-report-search' }" class="flex">
+              <BaseInput readonly placeholder="您遇到哪些問題?" class="flex-grow" />
+              <button class="search-button">
+                <img src="@/assets/images/search-icon.svg" alt="搜尋" />
+              </button>
+            </RouterLink>
           </div>
           <ul v-if="citizenReport" class="grid grid-cols-2 gap-x-3 gap-y-2">
             <li v-for="item in citizenReport.hot_report" :key="item.id">

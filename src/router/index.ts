@@ -16,6 +16,7 @@ import TicketExchange from '@/views/TicketExchange.vue';
 import CitizenReportView from '@/views/CitizenReportView.vue';
 import CitizenReportListView from '@/views/CitizenReportListView.vue';
 import CitizenReportFormView from '@/views/CitizenReportFormView.vue';
+import CitizenReportSearchView from '@/views/CitizenReportSearchView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -125,6 +126,11 @@ const router = createRouter({
           path: 'form/:id',
           name: 'citizen-report-form',
           component: CitizenReportFormView
+        },
+        {
+          path: 'report-search',
+          name: 'citizen-report-search',
+          component: CitizenReportSearchView
         }
       ]
     }
