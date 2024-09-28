@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useCitizenReportStore } from '@/stores/citizenReport';
+import { useConnectionMessage } from '@/composables/useConnectionMessage';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import ServiceTabsView from '@/components/organisms/ServiceTabsView.vue';
 import ReportExpressButton from '@/components/molecules/ReportExpressButton.vue';
@@ -26,6 +27,10 @@ const tabList = [
 ];
 
 const activeTab = ref(0);
+
+const onServicePhoneClick = () => {
+  useConnectionMessage('1999agree', null);
+};
 </script>
 
 <template>
@@ -52,6 +57,14 @@ const activeTab = ref(0);
             <img src="@/assets/images/other-icon.svg" width="20" height="20" class="size-5 mr-2" />
             <span>更多項目</span>
           </RouterLink>
+          <p class="text-grey-700 font-semibold mt-1 mb-2">語音通報</p>
+          <button
+            class="flex justify-center items-center bg-white rounded-lg border border-grey-200 py-4 text-sm w-full"
+            @click="onServicePhoneClick"
+          >
+            <img src="@/assets/images/icon_tel.svg" width="20" height="20" class="size-5 mr-2" />
+            <span>撥打1999專線</span>
+          </button>
         </div>
       </template>
       <template #tab1>test2</template>
