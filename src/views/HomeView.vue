@@ -260,7 +260,7 @@ const activeRecord = computed(() =>
                     <p>申報日期：{{ item.date }}</p>
                   </div>
                   <div class="flex flex-col items-center">
-                    <img src="@/assets/images/review-icon.svg" />
+                    <img src="@/assets/images/rule-icon.svg" />
                     <span class="text-sm">{{ item.status }}</span>
                   </div>
                 </div>

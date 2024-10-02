@@ -10,6 +10,7 @@ import BaseRadio from '@/components/atoms/BaseRadio.vue';
 import BaseButton from '@/components/atoms/BaseButton.vue';
 import BaseDialog from '@/components/atoms/BaseDialog.vue';
 import UploadSection from '@/components/molecules/UploadSection.vue';
+import LocationModal from '@/components/organisms/LocationModal.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -50,6 +51,8 @@ const onSubmitClick = () => {
 const onPositiveClick = () => {
   router.push({ name: 'citizen-report' });
 };
+
+const isShowLocaionModal = ref(false);
 </script>
 
 <template>
@@ -65,7 +68,20 @@ const onPositiveClick = () => {
 
       <div class="citizen-report-form__form-group">
         <label for="location" class="font-semibold text-grey-700">發生地點</label>
-        <BaseInput v-model="reportForm.location" id="location" placeholder="請輸入完整地址" />
+        <div class="relative">
+          <BaseInput
+            v-model="reportForm.location"
+            id="location"
+            placeholder="請輸入完整地址"
+            class="w-full !pr-10"
+          />
+          <button
+            class="absolute top-1/2 -translate-y-1/2 right-2"
+            @click.prevent="isShowLocaionModal = true"
+          >
+            <img src="@/assets/images/icon-map-dark.svg" alt="開啟地圖" />
+          </button>
+        </div>
       </div>
 
       <div class="citizen-report-form__form-group">
@@ -125,6 +141,11 @@ const onPositiveClick = () => {
       content=""
       positiveText="確認"
       @onPositiveClick="onPositiveClick"
+    />
+    <LocationModal
+      v-model="isShowLocaionModal"
+      :form-address="reportForm.location"
+      @positionConfirm="(val) => (reportForm.location = val)"
     />
   </div>
 </template>
