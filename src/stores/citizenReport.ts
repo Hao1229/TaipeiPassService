@@ -22,8 +22,19 @@ export interface CitizenReportData {
   }[];
 }
 
+export interface CitizenResultData {
+  '1999': {
+    id: string;
+    title: string;
+    date: string;
+    status: string;
+  }[];
+  disaster: never[];
+}
+
 export const useCitizenReportStore = defineStore('citizenReport', () => {
   const citizenReport = ref<CitizenReportData>();
+  const citizenResult = ref<CitizenResultData>();
 
   const concatData = computed(() => {
     if (!citizenReport.value) {
@@ -51,5 +62,5 @@ export const useCitizenReportStore = defineStore('citizenReport', () => {
     }
   });
 
-  return { citizenReport, reportItemMap, concatData };
+  return { citizenReport, citizenResult, reportItemMap, concatData };
 });

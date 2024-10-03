@@ -17,6 +17,7 @@ import CitizenReportView from '@/views/CitizenReportView.vue';
 import CitizenReportListView from '@/views/CitizenReportListView.vue';
 import CitizenReportFormView from '@/views/CitizenReportFormView.vue';
 import CitizenReportSearchView from '@/views/CitizenReportSearchView.vue';
+import CitizenReportSearchDetailView from '@/views/CitizenReportSearchDetailView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -128,9 +129,14 @@ const router = createRouter({
           component: CitizenReportFormView
         },
         {
-          path: 'report-search',
+          path: 'search',
           name: 'citizen-report-search',
           component: CitizenReportSearchView
+        },
+        {
+          path: 'search-detail/:id',
+          name: 'citizen-report-search-detail',
+          component: CitizenReportSearchDetailView
         }
       ]
     }
