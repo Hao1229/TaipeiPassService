@@ -14,9 +14,17 @@ import CouponDetail from '../views/CouponDetail.vue';
 import TicketWallet from '@/views/TicketWallet.vue';
 import TicketExchange from '@/views/TicketExchange.vue';
 import SubscriptionView from '@/views/SubscriptionView.vue';
+import CitizenReportView from '@/views/CitizenReportView.vue';
+import CitizenReportListView from '@/views/CitizenReportListView.vue';
+import CitizenReportFormView from '@/views/CitizenReportFormView.vue';
+import CitizenReportSearchView from '@/views/CitizenReportSearchView.vue';
+import CitizenReportSearchDetailView from '@/views/CitizenReportSearchDetailView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior() {
+    return { top: 0 };
+  },
   routes: [
     {
       path: '/',
@@ -100,6 +108,36 @@ const router = createRouter({
           path: ':id',
           name: 'counter-calling-detail',
           component: CounterCallingDetailView
+        }
+      ]
+    },
+    {
+      path: '/citizen-report',
+      children: [
+        {
+          path: '',
+          name: 'citizen-report',
+          component: CitizenReportView
+        },
+        {
+          path: 'list',
+          name: 'citizen-report-list',
+          component: CitizenReportListView
+        },
+        {
+          path: 'form/:id',
+          name: 'citizen-report-form',
+          component: CitizenReportFormView
+        },
+        {
+          path: 'search',
+          name: 'citizen-report-search',
+          component: CitizenReportSearchView
+        },
+        {
+          path: 'search-detail/:id',
+          name: 'citizen-report-search-detail',
+          component: CitizenReportSearchDetailView
         }
       ]
     },

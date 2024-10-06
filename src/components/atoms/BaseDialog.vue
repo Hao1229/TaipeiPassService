@@ -31,7 +31,7 @@ const onNegativeClick = () => {
 
 <template>
   <TransitionRoot appear :show="isOpen" as="template">
-    <Dialog as="div" :open="isOpen" @close="setIsOpen" class="relative z-30">
+    <Dialog as="div" :open="isOpen" @close="setIsOpen" class="relative z-[9999]">
       <div class="fixed inset-0 bg-black/25">
         <div class="min-h-full flex justify-center items-center">
           <TransitionChild
