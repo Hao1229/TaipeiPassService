@@ -120,7 +120,7 @@ const onSubmitClick = async (subscription: Subscription) => {
   @apply relative p-5 mb-3 bg-white rounded-md shadow-md;
 
   .icon {
-    @apply w-10 h-10 mr-3 p-2;
+    @apply w-12 h-12 mr-3 p-2;
   }
 
   &.active {
