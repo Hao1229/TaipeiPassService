@@ -3,20 +3,49 @@ import { computed, ref } from 'vue';
 import subscriptionListJson from '../../public/mock/subscription_list.json';
 import BaseButton from '@/components/atoms/BaseButton.vue';
 
-const subscriptionList = ref<
-  {
-    id: string;
-    name: string;
-    is_subscribed: boolean;
-    is_expand: boolean;
-    icon: string;
-    description?: string;
-  }[]
->(subscriptionListJson.data);
+export interface Subscription {
+  id: string;
+  name: string;
+  is_subscribed: boolean;
+  is_expand: boolean;
+  icon: string;
+  description?: string;
+}
+
+const subscriptionList = ref<Subscription[]>(subscriptionListJson.data.data);
 
 const subscriptionCount = computed(() => {
   return subscriptionList.value.filter((item) => item.is_subscribed).length;
 });
+
+/**
+ * 點擊訂閱/取消訂閱
+ */
+const onSubmitClick = async (subscription: Subscription) => {
+  subscription.is_subscribed = !subscription.is_subscribed;
+  /**
+   * 註解區塊是串接訂閱通知 API 的範例
+   * 透過 JS 原生 fetch 做串接
+   * 開發者可以用自己習慣的方式去做 API 串接
+   * 例如：axios 等
+   */
+  // try {
+  //   const response = await fetch(subscriptionListJson.data.submit_target.url, {
+  //     method: subscriptionListJson.data.submit_target.method,
+  //     headers: {
+  //       'Content-Type': subscriptionListJson.data.submit_target.content_type
+  //     },
+  //     body: JSON.stringify(subscription)
+  //   });
+  //   if (!response.ok) {
+  //     throw new Error(`request error: ${response.status}!!`);
+  //   }
+  //   const responseData = await response.json();
+  //   console.log('responseData: ', responseData);
+  // } catch (error) {
+  //   console.log('error:', error);
+  // }
+};
 </script>
 
 <template>
@@ -49,7 +78,7 @@ const subscriptionCount = computed(() => {
             <BaseButton
               :shape="'rounded'"
               class="w-full card-button"
-              @click="subscription.is_subscribed = !subscription.is_subscribed"
+              @click="onSubmitClick(subscription)"
               v-if="!subscription.is_subscribed"
             >
               訂閱
@@ -58,7 +87,7 @@ const subscriptionCount = computed(() => {
               outline
               :shape="'rounded'"
               class="w-full card-button"
-              @click="subscription.is_subscribed = !subscription.is_subscribed"
+              @click="onSubmitClick(subscription)"
               v-if="subscription.is_subscribed"
             >
               取消訂閱
