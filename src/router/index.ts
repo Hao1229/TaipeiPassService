@@ -13,6 +13,7 @@ import TicketDetail from '../views/TicketDetail.vue';
 import CouponDetail from '../views/CouponDetail.vue';
 import TicketWallet from '@/views/TicketWallet.vue';
 import TicketExchange from '@/views/TicketExchange.vue';
+import SubscriptionView from '@/views/SubscriptionView.vue';
 import CitizenReportView from '@/views/CitizenReportView.vue';
 import CitizenReportListView from '@/views/CitizenReportListView.vue';
 import CitizenReportFormView from '@/views/CitizenReportFormView.vue';
@@ -139,6 +140,11 @@ const router = createRouter({
           component: CitizenReportSearchDetailView
         }
       ]
+    },
+    {
+      path: '/subscription',
+      name: 'subscription',
+      component: SubscriptionView
     }
   ]
 });
