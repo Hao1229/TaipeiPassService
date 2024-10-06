@@ -84,23 +84,22 @@ watch(activeResultTab, () => {
 const onSearchButtonClick = () => {
   if (!resultSearchText.value) {
     resultSearchList.value = activeResultList.value;
+    resultSearchDate.value = undefined;
+    return;
   }
 
-  if (activeResultTab.value === 0) {
-    resultSearchList.value = resultSearchList.value.filter(
-      (item) =>
-        item.title.includes(resultSearchText.value) || item.id.includes(resultSearchText.value)
-    );
-  } else {
-    resultSearchList.value = activeResultList.value;
-  }
+  resultSearchList.value = resultSearchList.value.filter(
+    (item) =>
+      item.title.includes(resultSearchText.value) || item.id.includes(resultSearchText.value)
+  );
 };
 
 watch(
   () => resultSearchDate,
   () => {
     if (resultSearchDate.value && resultSearchDate.value.start && resultSearchDate.value.end) {
-      resultSearchList.value = resultSearchList.value.filter((item) => {
+      const targetList = resultSearchText.value ? resultSearchList.value : activeResultList.value;
+      resultSearchList.value = targetList.filter((item) => {
         const timestamp = getUnixTime(new Date(item.date));
 
         return (
