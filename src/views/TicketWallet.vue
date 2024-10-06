@@ -153,7 +153,7 @@ const activeData = computed(() => {
               </li>
             </ul>
             <div v-else class="flex flex-col justify-center items-center pt-28">
-              <img src="@/assets/images/sales-icon.svg" />
+              <img src="@/assets/images/admission-icon.svg" />
               <span class="text-[#5AB4C5] font-semibold text-lg my-5">目前無入場券</span>
             </div>
           </template>
@@ -169,7 +169,7 @@ const activeData = computed(() => {
               </li>
             </ul>
             <div v-else class="flex flex-col justify-center items-center pt-28">
-              <img src="@/assets/images/sales-icon.svg" />
+              <img src="@/assets/images/admission-icon.svg" />
               <span class="text-[#5AB4C5] font-semibold text-lg my-5">目前無入場券</span>
             </div>
           </template>
