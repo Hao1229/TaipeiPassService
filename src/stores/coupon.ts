@@ -7,7 +7,7 @@ export const useCouponStore = defineStore('coupon', () => {
   const ticketList = ref<Ticket[] | []>();
   const couponList = ref<Coupon[] | []>();
   const hotSpotList = ref<HotSpot[] | []>();
-  const walletData = ref<Wallet[] | []>();
+  const walletData = ref<Wallet>();
 
   const ticketListMap = computed(() => new Map(ticketList.value?.map((item) => [item.id, item])));
   const couponListMap = computed(() => new Map(couponList.value?.map((item) => [item.id, item])));

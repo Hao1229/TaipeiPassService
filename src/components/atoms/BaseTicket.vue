@@ -6,7 +6,7 @@ const props = defineProps<{
   name: string;
   img: string;
   date: string;
-  type: TicketStatusType;
+  type: TicketStatusType | '';
 }>();
 
 const dateText = computed(() => {

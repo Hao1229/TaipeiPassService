@@ -4,7 +4,6 @@ import { storeToRefs } from 'pinia';
 import { useRouter, useRoute } from 'vue-router';
 import QrcodeVue from 'qrcode.vue';
 import { useCouponStore } from '@/stores/coupon';
-import { TicketStatusType } from '@/views/TicketWallet.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -19,54 +18,11 @@ const onBackButtonClick = () => {
   });
 };
 
-const walletDataMap = computed(() => {
-  const flatData =
-    walletData.value
-      ?.reduce(
-        (
-          acc: {
-            type: TicketStatusType;
-            list: {
-              id: string;
-              name: string;
-              img_url: string;
-              date: string;
-              qrcode?: string;
-            }[];
-          }[],
-          current
-        ) => {
-          return [...acc, ...current.data];
-        },
-        []
-      )
-      .reduce(
-        (
-          acc: {
-            id: string;
-            name: string;
-            img_url: string;
-            date: string;
-            qrcode?: string;
-          }[],
-          current
-        ) => {
-          return [...acc, ...current.list];
-        },
-        []
-      ) ?? [];
+const orderMap = computed(
+  () => new Map(walletData.value?.admission.my_order.map((item) => [item.id, item]))
+);
 
-  return new Map(
-    flatData.map(
-      (item: { id: string; name: string; img_url: string; date: string; qrcode?: string }) => [
-        item.id,
-        item
-      ]
-    )
-  );
-});
-
-const activeData = computed(() => walletDataMap.value.get(route.params.id as string));
+const activeData = computed(() => orderMap.value.get(route.params.id as string));
 </script>
 
 <template>
