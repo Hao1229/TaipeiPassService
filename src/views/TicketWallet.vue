@@ -5,10 +5,10 @@ export enum TicketType {
 }
 
 export enum TicketStatusType {
-  NOTREDEEMED = 'not-redeemed',
+  NOTREDEEMED = 'not_redeemed',
   REDEEMED = 'redeemed',
   EXPIRED = 'expired',
-  MYORDER = 'my-order',
+  MYORDER = 'my_order',
   FINISHED = 'finished'
 }
 </script>
@@ -25,17 +25,42 @@ import couponDataJson from '../../public/mock/coupon_data.json';
 import ticketWalletJson from '../../public/mock/ticket_wallet.json';
 
 export interface Wallet {
-  ticket_type: TicketType;
-  data: {
-    type: TicketStatusType;
-    list: {
+  admission: {
+    my_order: {
       id: string;
       name: string;
       img_url: string;
       date: string;
-      qrcode?: string;
+      qrcode: string;
     }[];
-  }[];
+    finished: {
+      id: string;
+      name: string;
+      img_url: string;
+      date: string;
+      qrcode: string;
+    }[];
+  };
+  coupon: {
+    not_redeemed: {
+      id: string;
+      name: string;
+      img_url: string;
+      date: string;
+    }[];
+    redeemed: {
+      id: string;
+      name: string;
+      img_url: string;
+      date: string;
+    }[];
+    expired: {
+      id: string;
+      name: string;
+      img_url: string;
+      date: string;
+    }[];
+  };
 }
 
 const route = useRoute();
@@ -46,7 +71,7 @@ const { ticketList, couponList, walletData } = storeToRefs(store);
 
 ticketList.value = couponDataJson.data.ticket_list;
 couponList.value = couponDataJson.data.coupon_list;
-walletData.value = ticketWalletJson.data as Wallet[];
+walletData.value = ticketWalletJson.data;
 
 const activeTab = ref(0);
 
@@ -97,30 +122,39 @@ watch(activeTab, () => {
   activeTicketStatus.value = 0;
 });
 
+const activeTicketStatusType = computed(() => {
+  if (activeTab.value === 0 && activeTicketStatus.value === 0) {
+    return TicketStatusType.MYORDER;
+  } else if (activeTab.value === 0 && activeTicketStatus.value === 1) {
+    return TicketStatusType.FINISHED;
+  } else if (activeTab.value === 1 && activeTicketStatus.value === 0) {
+    return TicketStatusType.NOTREDEEMED;
+  } else if (activeTab.value === 1 && activeTicketStatus.value === 1) {
+    return TicketStatusType.REDEEMED;
+  } else if (activeTab.value === 1 && activeTicketStatus.value === 2) {
+    return TicketStatusType.EXPIRED;
+  } else {
+    return '';
+  }
+});
+
 const activeData = computed(() => {
   if (!walletData.value) {
     return null;
   }
 
-  const data =
-    activeTab.value === 0
-      ? walletData.value.find((item) => item.ticket_type === TicketType.ADMISSION)
-      : walletData.value.find((item) => item.ticket_type === TicketType.COUPON);
-
-  if (activeTab.value === 0) {
-    if (activeTicketStatus.value === 0) {
-      return data?.data.find((item) => item.type === TicketStatusType.MYORDER);
-    } else {
-      return data?.data.find((item) => item.type === TicketStatusType.FINISHED);
-    }
+  if (activeTab.value === 0 && activeTicketStatus.value === 0) {
+    return walletData.value[TicketType.ADMISSION][TicketStatusType.MYORDER];
+  } else if (activeTab.value === 0 && activeTicketStatus.value === 1) {
+    return walletData.value[TicketType.ADMISSION][TicketStatusType.FINISHED];
+  } else if (activeTab.value === 1 && activeTicketStatus.value === 0) {
+    return walletData.value[TicketType.COUPON][TicketStatusType.NOTREDEEMED];
+  } else if (activeTab.value === 1 && activeTicketStatus.value === 1) {
+    return walletData.value[TicketType.COUPON][TicketStatusType.REDEEMED];
+  } else if (activeTab.value === 1 && activeTicketStatus.value === 2) {
+    return walletData.value[TicketType.COUPON][TicketStatusType.EXPIRED];
   } else {
-    if (activeTicketStatus.value === 0) {
-      return data?.data.find((item) => item.type === TicketStatusType.NOTREDEEMED);
-    } else if (activeTicketStatus.value === 1) {
-      return data?.data.find((item) => item.type === TicketStatusType.REDEEMED);
-    } else {
-      return data?.data.find((item) => item.type === TicketStatusType.EXPIRED);
-    }
+    return [];
   }
 });
 </script>
@@ -131,7 +165,7 @@ const activeData = computed(() => {
       <div
         class="pt-[18px] min-h-[calc(100vh-43px)]"
         :class="{
-          'bg-grey-100': activeData && activeData.list.length
+          'bg-grey-100': activeData && activeData.length
         }"
       >
         <ServiceTabsView
@@ -140,14 +174,14 @@ const activeData = computed(() => {
           :contentType="true"
         >
           <template #tab0>
-            <ul v-if="activeData && activeData.list.length" class="p-4 flex flex-col gap-y-3">
-              <li v-for="item in activeData?.list" :key="item.id">
+            <ul v-if="activeData && activeData.length" class="p-4 flex flex-col gap-y-3">
+              <li v-for="item in activeData" :key="item.id">
                 <RouterLink :to="{ name: 'ticket-exchange', params: { id: item.id } }">
                   <BaseTicket
                     :name="item.name"
                     :img="item.img_url"
                     :date="item.date"
-                    :type="activeData.type"
+                    :type="activeTicketStatusType"
                   />
                 </RouterLink>
               </li>
@@ -158,13 +192,13 @@ const activeData = computed(() => {
             </div>
           </template>
           <template #tab1>
-            <ul v-if="activeData && activeData.list.length" class="p-4 flex flex-col gap-y-3">
-              <li v-for="item in activeData?.list" :key="item.id">
+            <ul v-if="activeData && activeData.length" class="p-4 flex flex-col gap-y-3">
+              <li v-for="item in activeData" :key="item.id">
                 <BaseTicket
                   :name="item.name"
                   :img="item.img_url"
                   :date="item.date"
-                  :type="activeData.type"
+                  :type="activeTicketStatusType"
                 />
               </li>
             </ul>
@@ -180,7 +214,7 @@ const activeData = computed(() => {
       <div
         class="pt-[18px] min-h-[calc(100vh-43px)]"
         :class="{
-          'bg-grey-100': activeData && activeData.list.length
+          'bg-grey-100': activeData && activeData.length
         }"
       >
         <ServiceTabsView
@@ -189,8 +223,8 @@ const activeData = computed(() => {
           :contentType="true"
         >
           <template #tab0>
-            <ul v-if="activeData && activeData.list.length" class="p-4 flex flex-col gap-y-3">
-              <li v-for="item in activeData?.list" :key="item.id">
+            <ul v-if="activeData && activeData.length" class="p-4 flex flex-col gap-y-3">
+              <li v-for="item in activeData" :key="item.id">
                 <RouterLink
                   :to="{
                     name: 'coupon-detail',
@@ -202,7 +236,7 @@ const activeData = computed(() => {
                     :name="item.name"
                     :img="item.img_url"
                     :date="item.date"
-                    :type="activeData.type"
+                    :type="activeTicketStatusType"
                   />
                 </RouterLink>
               </li>
@@ -220,13 +254,13 @@ const activeData = computed(() => {
             </div>
           </template>
           <template #tab1>
-            <ul v-if="activeData && activeData.list.length" class="p-4 flex flex-col gap-y-3">
-              <li v-for="item in activeData?.list" :key="item.id">
+            <ul v-if="activeData && activeData.length" class="p-4 flex flex-col gap-y-3">
+              <li v-for="item in activeData" :key="item.id">
                 <BaseTicket
                   :name="item.name"
                   :img="item.img_url"
                   :date="item.date"
-                  :type="activeData.type"
+                  :type="activeTicketStatusType"
                 />
               </li>
             </ul>
@@ -243,13 +277,13 @@ const activeData = computed(() => {
             </div>
           </template>
           <template #tab2>
-            <ul v-if="activeData && activeData.list.length" class="p-4 flex flex-col gap-y-3">
-              <li v-for="item in activeData?.list" :key="item.id">
+            <ul v-if="activeData && activeData.length" class="p-4 flex flex-col gap-y-3">
+              <li v-for="item in activeData" :key="item.id">
                 <BaseTicket
                   :name="item.name"
                   :img="item.img_url"
                   :date="item.date"
-                  :type="activeData.type"
+                  :type="activeTicketStatusType"
                 />
               </li>
             </ul>
