@@ -13,12 +13,14 @@ import TicketDetail from '../views/TicketDetail.vue';
 import CouponDetail from '../views/CouponDetail.vue';
 import TicketWallet from '@/views/TicketWallet.vue';
 import TicketExchange from '@/views/TicketExchange.vue';
-import SubscriptionView from '@/views/SubscriptionView.vue';
 import CitizenReportView from '@/views/CitizenReportView.vue';
 import CitizenReportListView from '@/views/CitizenReportListView.vue';
 import CitizenReportFormView from '@/views/CitizenReportFormView.vue';
 import CitizenReportSearchView from '@/views/CitizenReportSearchView.vue';
 import CitizenReportSearchDetailView from '@/views/CitizenReportSearchDetailView.vue';
+import SubscriptionView from '@/views/SubscriptionView.vue';
+import SubscriptionItemListView from '@/views/SubscriptionItemListView.vue';
+import SubscriptionItemDetailView from '@/views/SubscriptionItemDetailView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -143,8 +145,23 @@ const router = createRouter({
     },
     {
       path: '/subscription',
-      name: 'subscription',
-      component: SubscriptionView
+      children: [
+        {
+          path: '',
+          name: 'subscription',
+          component: SubscriptionView
+        },
+        {
+          path: 'item-list',
+          name: 'item-list',
+          component: SubscriptionItemListView
+        },
+        {
+          path: 'item-detail/:id',
+          name: 'item-detail',
+          component: SubscriptionItemDetailView
+        }
+      ]
     }
   ]
 });
