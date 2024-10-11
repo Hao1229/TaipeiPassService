@@ -19,7 +19,6 @@ import CitizenReportListView from '@/views/CitizenReportListView.vue';
 import CitizenReportFormView from '@/views/CitizenReportFormView.vue';
 import CitizenReportSearchView from '@/views/CitizenReportSearchView.vue';
 import CitizenReportSearchDetailView from '@/views/CitizenReportSearchDetailView.vue';
-import SubscriptionView from '@/views/SubscriptionView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
