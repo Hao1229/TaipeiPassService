@@ -15,7 +15,7 @@ const counterItem = computed(
 
 <template>
   <div class="h-screen px-5 py-8 bg-grey-50 overflow-y-auto">
-    <p>{{ counterItem.type_name }}</p>
+    <p class="mb-2 font-bold text-lg">{{ counterItem.type_name }}</p>
     <p :innerHTML="counterItem.description" class="break-words sub-item-description"></p>
     <p class="mt-4 text-grey-400">{{ counterItem.date }}</p>
   </div>
