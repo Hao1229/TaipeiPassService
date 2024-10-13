@@ -31,30 +31,48 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
+      meta: {
+        title: '申辦服務'
+      },
       component: HomeView
     },
     {
       path: '/form/:id',
       name: 'form',
+      meta: {
+        title: '申辦服務'
+      },
       component: FormView
     },
     {
       path: '/surrounding-service',
       name: 'surrounding-service',
+      meta: {
+        title: '周邊服務'
+      },
       component: SurroundingServiceView
     },
     {
       path: '/qna',
       name: 'top-qna-list',
+      meta: {
+        title: '功能教學 • 城市通'
+      },
       component: TopQnAListView
     },
     {
       path: '/qna/categories',
       name: 'qna-list',
+      meta: {
+        title: '常見問題 • 城市通'
+      },
       component: QnAListView
     },
     {
       path: '/coupon',
+      meta: {
+        title: '優惠'
+      },
       children: [
         {
           path: '',
@@ -85,6 +103,9 @@ const router = createRouter({
     },
     {
       path: '/ticket-wallet',
+      meta: {
+        title: '票夾'
+      },
       children: [
         {
           path: '',
@@ -100,6 +121,9 @@ const router = createRouter({
     },
     {
       path: '/counter-calling',
+      meta: {
+        title: '臨櫃叫號'
+      },
       children: [
         {
           path: '',
@@ -115,6 +139,9 @@ const router = createRouter({
     },
     {
       path: '/citizen-report',
+      meta: {
+        title: '有話要說'
+      },
       children: [
         {
           path: '',
@@ -145,6 +172,9 @@ const router = createRouter({
     },
     {
       path: '/subscription',
+      meta: {
+        title: '訂閱'
+      },
       children: [
         {
           path: '',
@@ -164,6 +194,13 @@ const router = createRouter({
       ]
     }
   ]
+});
+
+// 導航守衛，用來動態修改標題
+router.beforeEach((to, from, next) => {
+  const defaultTitle = '城市通'; // 預設標題
+  document.title = (to.meta.title as string) || defaultTitle;
+  next();
 });
 
 export default router;
