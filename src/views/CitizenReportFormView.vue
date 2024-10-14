@@ -110,7 +110,7 @@ const isShowLocaionModal = ref(false);
       </div>
 
       <div>
-        <UploadSection :file-max="10" title="新增附件" />
+        <UploadSection :file-max="10" :is-report="true" title="新增附件" />
       </div>
     </form>
 

@@ -10,9 +10,11 @@ const props = withDefaults(
     title?: string;
     required?: boolean;
     triggerValidate?: boolean;
+    isReport?: boolean;
   }>(),
   {
-    fileMax: 1
+    fileMax: 1,
+    isReport: false
   }
 );
 
@@ -41,7 +43,7 @@ const onFileUpload = (event: Event) => {
 
     const sizeMB = bytesToMB(file.size);
 
-    if (sizeMB > 20) {
+    if (sizeMB > 20 && !props.isReport) {
       isShowSizeError.value = true;
     } else {
       isShowSizeError.value = false;
@@ -77,8 +79,8 @@ watch(
       <div>
         <p class="font-bold text-gray-800">{{ props.title || '新增附件' }}</p>
         <p class="text-sm text-gray-500">
-          容量限制為20MB
-          <span v-if="props.fileMax > 1">，最多{{ props.fileMax }}個檔案</span>
+          <span v-if="!props.isReport">容量限制為20MB，</span>
+          <span v-if="props.fileMax > 1">最多{{ props.fileMax }}個檔案</span>
         </p>
       </div>
       <button @click.prevent="isOpen = true">
@@ -107,7 +109,7 @@ watch(
             type="file"
             name="photo"
             :id="`upload-file-${count}`"
-            accept=".jpg, .jpeg, .gif, .bmp, .png, .tif, .tiff, .doc, .docx, .xls, .xlsx, .txt, .pdf, .odf, .odg, .odp, .ods, .odt"
+            :accept="`.jpg, .jpeg, .gif, .bmp, .png, .tif, .tiff, .doc, .docx, .xls, .xlsx, .txt, .pdf, .odf, .odg, .odp, .ods, .odt${props.isReport ? ', video/*, .m4a, .aac, .flac, .alac, .wma, .opus, audio/*' : ''}`"
             class="absolute opacity-0 -z-10"
             @change="onFileUpload"
           />
@@ -147,14 +149,23 @@ watch(
             <DialogPanel
               class="w-4/5 max-w-screen-md flex flex-col transform overflow-y-auto bg-white transition-all rounded pt-4"
             >
-              <DialogTitle class="text-lg text-center font-extrabold">
+              <DialogTitle v-if="!props.isReport" class="text-lg text-center font-extrabold">
                 上傳檔案格式限制
               </DialogTitle>
 
-              <div class="px-4 text-sm my-5">
-                <p class="text-center font-bold">jpg,jpeg,gif,bmp,png,tif,tiff,doc,</p>
-                <p class="text-center font-bold">docx,xls,xlsx,txt,pdf,odf,odg,odp,ods,odt</p>
-                <p class="text-center font-extrabold">檔案大小：20MB</p>
+              <div class="px-4 text-sm my-5" :class="{ 'mb-5 mt-0': props.isReport }">
+                <ul v-if="props.isReport" class="flex flex-col gap-y-5 list-disc pl-2">
+                  <li>
+                    如欲檢舉違規事件，上傳之照片需含有拍攝日期資訊，請透過手機內建相機功能後，再透過本
+                    APP 新增附件之「相簿」功能進行上傳。
+                  </li>
+                  <li>另 iOS 系統請確認「設定」> 照片 > 傳到 MAC 或 PC 是否設定為「自動」。</li>
+                </ul>
+                <template v-else>
+                  <p class="text-center font-bold">jpg,jpeg,gif,bmp,png,tif,tiff,doc,</p>
+                  <p class="text-center font-bold">docx,xls,xlsx,txt,pdf,odf,odg,odp,ods,odt</p>
+                  <p class="text-center font-extrabold">檔案大小：20MB</p>
+                </template>
               </div>
 
               <div class="mt-auto py-1 border-t-gray-200 border-t">
