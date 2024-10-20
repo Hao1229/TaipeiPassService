@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import subscriptionListJson from '../../public/mock/subscription_list.json';
 import BaseButton from '@/components/atoms/BaseButton.vue';
+import { useConnectionMessage } from '@/composables/useConnectionMessage';
 
 export interface Subscription {
   id: string;
@@ -23,6 +24,10 @@ const subscriptionCount = computed(() => {
  */
 const onSubmitClick = async (subscription: Subscription) => {
   subscription.is_subscribed = !subscription.is_subscribed;
+  useConnectionMessage('notify', {
+    title: '訂閱通知',
+    content: `已${subscription.is_subscribed ? '訂閱' : '取消訂閱'}${subscription.name}`
+  });
   /**
    * 註解區塊是串接訂閱通知 API 的範例
    * 透過 JS 原生 fetch 做串接
