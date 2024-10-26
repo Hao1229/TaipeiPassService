@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import subscriptionListJson from '../../public/mock/subscription_list.json';
 import BaseButton from '@/components/atoms/BaseButton.vue';
 import { useConnectionMessage } from '@/composables/useConnectionMessage';
@@ -19,6 +19,16 @@ const subscriptionCount = computed(() => {
   return subscriptionList.value.filter((item) => item.is_subscribed).length;
 });
 
+onMounted(() => {
+  subscriptionList.value = localStorage.getItem('subscriptionList')
+    ? JSON.parse(localStorage.getItem('subscriptionList')!)
+    : subscriptionListJson.data.data;
+
+  subscriptionList.value.forEach((item) => {
+    item.is_expand = false;
+  });
+});
+
 /**
  * 點擊訂閱/取消訂閱
  */
@@ -28,6 +38,9 @@ const onSubmitClick = async (subscription: Subscription) => {
     title: '訂閱通知',
     content: `已${subscription.is_subscribed ? '訂閱' : '取消訂閱'}${subscription.name}`
   });
+
+  localStorage.setItem('subscriptionList', JSON.stringify(subscriptionList.value));
+
   /**
    * 註解區塊是串接訂閱通知 API 的範例
    * 透過 JS 原生 fetch 做串接
