@@ -11,10 +11,12 @@ const props = withDefaults(
     required?: boolean;
     triggerValidate?: boolean;
     isReport?: boolean;
+    isDisaster?: boolean;
   }>(),
   {
     fileMax: 1,
-    isReport: false
+    isReport: false,
+    isDisaster: false
   }
 );
 
@@ -43,7 +45,9 @@ const onFileUpload = (event: Event) => {
 
     const sizeMB = bytesToMB(file.size);
 
-    if (sizeMB > 20 && !props.isReport) {
+    if (sizeMB > 10 && props.isDisaster) {
+      isShowSizeError.value = true;
+    } else if (sizeMB > 20 && !props.isReport) {
       isShowSizeError.value = true;
     } else {
       isShowSizeError.value = false;
@@ -79,8 +83,8 @@ watch(
       <div>
         <p class="font-bold text-gray-800">{{ props.title || '新增附件' }}</p>
         <p class="text-sm text-gray-500">
-          <span v-if="!props.isReport">容量限制為20MB，</span>
           <span v-if="props.isReport">上傳附件(照片、錄影、錄音)總容量限制為40MB，</span>
+          <span v-if="!props.isReport">容量限制為{{ props.isDisaster ? 10 : 20 }}MB，</span>
           <span v-if="props.fileMax > 1">最多{{ props.fileMax }}個檔案</span>
         </p>
       </div>
@@ -110,7 +114,11 @@ watch(
             type="file"
             name="photo"
             :id="`upload-file-${count}`"
-            :accept="`.jpg, .jpeg, .gif, .bmp, .png, .tif, .tiff, .doc, .docx, .xls, .xlsx, .txt, .pdf, .odf, .odg, .odp, .ods, .odt${props.isReport ? ', video/*, .m4a, .aac, .flac, .alac, .wma, .opus, audio/*' : ''}`"
+            :accept="
+              props.isDisaster
+                ? '.jpg, .jpeg, .gif, .bmp, .png,'
+                : `.jpg, .jpeg, .gif, .bmp, .png, .tif, .tiff, .doc, .docx, .xls, .xlsx, .txt, .pdf, .odf, .odg, .odp, .ods, .odt${props.isReport ? ', video/*, .m4a, .aac, .flac, .alac, .wma, .opus, audio/*' : ''}`
+            "
             class="absolute opacity-0 -z-10"
             @change="onFileUpload"
           />
@@ -155,7 +163,10 @@ watch(
               </DialogTitle>
 
               <div class="px-4 text-sm my-5" :class="{ 'mb-5 mt-0': props.isReport }">
-                <ul v-if="props.isReport" class="flex flex-col gap-y-5 list-disc pl-2">
+                <ul
+                  v-if="props.isReport || props.isDisaster"
+                  class="flex flex-col gap-y-5 list-disc pl-2"
+                >
                   <li>
                     如欲檢舉違規事件，上傳之照片需含有拍攝日期資訊，請透過手機內建相機功能後，再透過本
                     APP 新增附件之「相簿」功能進行上傳。
