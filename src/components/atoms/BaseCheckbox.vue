@@ -38,7 +38,7 @@ watch(
 </script>
 
 <template>
-  <label :for="props.option.label" class="flex items-center">
+  <label :for="props.option.value" class="flex items-center">
     <input
       type="checkbox"
       name=""
