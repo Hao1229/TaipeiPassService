@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { computed, reactive, ref, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useDisasterReportStore } from '@/stores/disasterReport';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import BaseTextarea from '@/components/atoms/BaseTextarea.vue';
 import BaseCheckbox from '@/components/atoms/BaseCheckbox.vue';
 import BaseButton from '@/components/atoms/BaseButton.vue';
+import BaseDialog from '@/components/atoms/BaseDialog.vue';
 import UploadSection from '@/components/molecules/UploadSection.vue';
 import LocationModal from '@/components/organisms/LocationModal.vue';
 
 const route = useRoute();
+const router = useRouter();
 
 const store = useDisasterReportStore();
 const { disasterReportMap } = storeToRefs(store);
@@ -78,6 +80,9 @@ onMounted(() => {
 
 const isAgree = ref([]);
 
+const isSubmitSuccess = ref(false);
+const isSubmitDialogOpen = ref(false);
+
 const onSubmitClick = () => {
   triggerCustomFormValidate();
 
@@ -91,6 +96,9 @@ const onSubmitClick = () => {
     };
 
     console.log('submit:', submitForm);
+
+    isSubmitSuccess.value = true;
+    isSubmitDialogOpen.value = true;
   }
 };
 
@@ -101,6 +109,12 @@ const isSubmitDisabled = computed(() => {
     return false;
   }
 });
+
+const onSubmitDialogPositiveClick = () => {
+  if (isSubmitSuccess.value) {
+    router.push({ name: 'disaster-report' });
+  }
+};
 </script>
 
 <template>
@@ -232,6 +246,16 @@ const isSubmitDisabled = computed(() => {
       v-model="isShowLocaionModal"
       :form-address="disasterForm.location"
       @positionConfirm="(val) => (disasterForm.location = val)"
+    />
+
+    <BaseDialog
+      v-model="isSubmitDialogOpen"
+      :is-check="isSubmitSuccess"
+      :is-alert="!isSubmitSuccess"
+      :title="isSubmitSuccess ? '通報成功' : '無法通報'"
+      :content="isSubmitSuccess ? '感謝您提供寶貴資訊' : '僅能通報台北市內資訊'"
+      positiveText="確認"
+      @on-positive-click="onSubmitDialogPositiveClick"
     />
   </div>
 </template>
