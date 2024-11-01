@@ -41,7 +41,7 @@ const onServicePhoneClick = () => {
 const resultTabList = [
   {
     id: 1,
-    title: '1999'
+    title: '有話要說'
   },
   {
     id: 2,
@@ -57,7 +57,9 @@ const resultSearchDate = ref<{ start: Date; end: Date }>();
 
 const activeResultList = computed(() => {
   if (citizenResult.value) {
-    return activeResultTab.value === 0 ? citizenResult.value['1999'] : citizenResult.value.disaster;
+    return activeResultTab.value === 0
+      ? citizenResult.value['citizen']
+      : citizenResult.value.disaster;
   } else {
     return [];
   }
@@ -157,7 +159,7 @@ watch(
         <div class="p-4">
           <ServiceTabs v-model="activeResultTab" :tab-list="resultTabList" :contentType="true" />
           <div class="mt-3 flex gap-x-2">
-            <div class="flex flex-grow">
+            <div v-show="activeResultTab === 0" class="flex flex-grow">
               <BaseInput
                 v-model="resultSearchText"
                 placeholder="搜尋案號關鍵字"
@@ -167,8 +169,21 @@ watch(
                 <img src="@/assets/images/search-icon.svg" alt="搜尋" />
               </button>
             </div>
-            <DatePicker v-model.range="resultSearchDate">
+            <DatePicker v-if="activeResultTab === 0" v-model.range="resultSearchDate">
               <template #default="{ togglePopover }">
+                <button class="search-button" @click="togglePopover">
+                  <img src="@/assets/images/calendar-white-icon.svg" width="24" height="24" />
+                </button>
+              </template>
+            </DatePicker>
+            <DatePicker v-else v-model.range="resultSearchDate">
+              <template #default="{ inputValue, togglePopover }">
+                <BaseInput
+                  :model-value="inputValue.start ? `${inputValue.start} - ${inputValue.end}` : ''"
+                  placeholder="日期篩選"
+                  readonly
+                  class="flex-grow"
+                />
                 <button class="search-button" @click="togglePopover">
                   <img src="@/assets/images/calendar-white-icon.svg" width="24" height="24" />
                 </button>
