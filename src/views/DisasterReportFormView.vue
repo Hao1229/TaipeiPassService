@@ -3,6 +3,7 @@ import { computed, reactive, ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useDisasterReportStore } from '@/stores/disasterReport';
+import { useFormStore } from '@/stores/form';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import BaseTextarea from '@/components/atoms/BaseTextarea.vue';
 import BaseCheckbox from '@/components/atoms/BaseCheckbox.vue';
@@ -13,6 +14,9 @@ import LocationModal from '@/components/organisms/LocationModal.vue';
 
 const route = useRoute();
 const router = useRouter();
+
+const formStore = useFormStore();
+formStore.reset();
 
 const store = useDisasterReportStore();
 const { disasterReportMap } = storeToRefs(store);
