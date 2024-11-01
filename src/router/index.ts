@@ -21,6 +21,8 @@ import CitizenReportSearchDetailView from '@/views/CitizenReportSearchDetailView
 import SubscriptionView from '@/views/SubscriptionView.vue';
 import SubscriptionItemListView from '@/views/SubscriptionItemListView.vue';
 import SubscriptionItemDetailView from '@/views/SubscriptionItemDetailView.vue';
+import DisasterReportView from '@/views/DisasterReportView.vue';
+import DisasterReportFormView from '@/views/DisasterReportFormView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -190,6 +192,24 @@ const router = createRouter({
           path: 'item-detail/:id',
           name: 'item-detail',
           component: SubscriptionItemDetailView
+        }
+      ]
+    },
+    {
+      path: '/disaster-report',
+      meta: {
+        title: '災防通報'
+      },
+      children: [
+        {
+          path: '',
+          name: 'disaster-report',
+          component: DisasterReportView
+        },
+        {
+          path: 'form/:id',
+          name: 'disaster-report-form',
+          component: DisasterReportFormView
         }
       ]
     }
