@@ -23,7 +23,7 @@ export interface CitizenReportData {
 }
 
 export interface CitizenResultData {
-  '1999': {
+  citizen: {
     id: string;
     title: string;
     date: string;
