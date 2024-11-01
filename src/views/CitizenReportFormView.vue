@@ -3,6 +3,7 @@ import { computed, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useCitizenReportStore } from '@/stores/citizenReport';
+import { useFormStore } from '@/stores/form';
 import FixedTitleSection from '@/components/molecules/FixedTitleSection.vue';
 import BaseInput from '@/components/atoms/BaseInput.vue';
 import BaseTextarea from '@/components/atoms/BaseTextarea.vue';
@@ -14,6 +15,9 @@ import LocationModal from '@/components/organisms/LocationModal.vue';
 
 const route = useRoute();
 const router = useRouter();
+
+const formStore = useFormStore();
+formStore.reset();
 
 const store = useCitizenReportStore();
 
