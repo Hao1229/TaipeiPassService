@@ -31,6 +31,7 @@ export interface Wallet {
       name: string;
       img_url: string;
       date: string;
+      total: string;
       qrcode: string;
     }[];
     finished: {
@@ -38,6 +39,7 @@ export interface Wallet {
       name: string;
       img_url: string;
       date: string;
+      total: string;
       qrcode: string;
     }[];
   };
@@ -47,18 +49,21 @@ export interface Wallet {
       name: string;
       img_url: string;
       date: string;
+      total: string;
     }[];
     redeemed: {
       id: string;
       name: string;
       img_url: string;
       date: string;
+      total: string;
     }[];
     expired: {
       id: string;
       name: string;
       img_url: string;
       date: string;
+      total: string;
     }[];
   };
 }
@@ -181,6 +186,7 @@ const activeData = computed(() => {
                     :name="item.name"
                     :img="item.img_url"
                     :date="item.date"
+                    :total="item.total"
                     :type="activeTicketStatusType"
                   />
                 </RouterLink>
@@ -198,6 +204,7 @@ const activeData = computed(() => {
                   :name="item.name"
                   :img="item.img_url"
                   :date="item.date"
+                  :total="item.total"
                   :type="activeTicketStatusType"
                 />
               </li>
@@ -260,6 +267,7 @@ const activeData = computed(() => {
                   :name="item.name"
                   :img="item.img_url"
                   :date="item.date"
+                  :total="item.total"
                   :type="activeTicketStatusType"
                 />
               </li>
@@ -283,6 +291,7 @@ const activeData = computed(() => {
                   :name="item.name"
                   :img="item.img_url"
                   :date="item.date"
+                  :total="item.total"
                   :type="activeTicketStatusType"
                 />
               </li>
