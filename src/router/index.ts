@@ -13,6 +13,9 @@ import TicketDetail from '../views/TicketDetail.vue';
 import CouponDetail from '../views/CouponDetail.vue';
 import TicketWallet from '@/views/TicketWallet.vue';
 import TicketExchange from '@/views/TicketExchange.vue';
+import BuyTicketView from '@/views/BuyTicketView.vue';
+import TicketPayment from '@/views/TicketPayment.vue';
+import PaymentFinishedView from '@/views/PaymentFinishedView.vue';
 import CitizenReportView from '@/views/CitizenReportView.vue';
 import CitizenReportListView from '@/views/CitizenReportListView.vue';
 import CitizenReportFormView from '@/views/CitizenReportFormView.vue';
@@ -100,6 +103,21 @@ const router = createRouter({
           path: 'coupon-detail/:id',
           name: 'coupon-detail',
           component: CouponDetail
+        },
+        {
+          path: 'buy-ticket/:id',
+          name: 'buy-ticket',
+          component: BuyTicketView
+        },
+        {
+          path: 'ticket-payment',
+          name: 'ticket-payment',
+          component: TicketPayment
+        },
+        {
+          path: 'payment-finished',
+          name: 'payment-finished',
+          component: PaymentFinishedView
         }
       ]
     },
