@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 import MessageModal from '@/components/molecules/MessageModal.vue';
 import BaseButton from '@/components/atoms/BaseButton.vue';
 import ServiceStep from '@/components/molecules/ServiceStep.vue';
+import { usePaymentStore } from '@/stores/payment';
 
 const router = useRouter();
+
+const store = usePaymentStore();
+
+const { paymentInfo } = storeToRefs(store);
+
+store.reset();
 
 const ticketCounts = reactive({
   adult: 0,
@@ -23,6 +31,19 @@ const totalPrice = computed(
 );
 
 const isUsagePeriodInformationModalOpen = ref(false);
+
+const onPaymentButtonClick = () => {
+  paymentInfo.value.adult = ticketCounts.adult;
+  paymentInfo.value.concession = ticketCounts.concession;
+  paymentInfo.value.citizen = ticketCounts.citizen;
+  paymentInfo.value.group = ticketCounts.group;
+  paymentInfo.value.total = totalPrice.value;
+  paymentInfo.value.ticketName = '掘光而行：洪瑞麟';
+
+  router.push({
+    name: 'ticket-payment'
+  });
+};
 </script>
 
 <template>
@@ -181,7 +202,9 @@ const isUsagePeriodInformationModalOpen = ref(false);
         </p>
         <span class="text-primary-500 font-semibold text-2xl">${{ totalPrice }}</span>
       </div>
-      <BaseButton :disabled="totalPrice === 0" class="w-full mt-1"> 前往付款 </BaseButton>
+      <BaseButton :disabled="totalPrice === 0" class="w-full mt-1" @click="onPaymentButtonClick">
+        前往付款
+      </BaseButton>
     </div>
     <MessageModal :is-show="isUsagePeriodInformationModalOpen">
       <template #header>
