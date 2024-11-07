@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import ServiceTabs from '@/components/molecules/ServiceTabs.vue';
+import LibraryTabs from '@/components/molecules/LibraryTabs.vue';
 import type { TabsProps } from '@/interfaces/tab-props.interface';
 
 const props = withDefaults(defineProps<TabsProps>(), {
   tabList: () => [
     {
       id: 1,
-      title: '申辦'
+      title: '館藏查詢'
     },
     {
       id: 2,
-      title: '查詢'
+      title: '我的紀錄'
+    },
+    {
+      id: 3,
+      title: '分館地圖'
     }
   ],
   contentType: false
@@ -20,7 +24,7 @@ const activeTab = defineModel({ default: 0 });
 </script>
 
 <template>
-  <ServiceTabs v-model="activeTab" :tab-list="props.tabList" :contentType="props.contentType" />
+  <LibraryTabs v-model="activeTab" :tab-list="props.tabList" :contentType="props.contentType" />
   <section class="tab-view-container">
     <div
       v-for="(item, index) in props.tabList"

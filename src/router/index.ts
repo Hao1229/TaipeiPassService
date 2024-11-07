@@ -23,6 +23,9 @@ import SubscriptionItemListView from '@/views/SubscriptionItemListView.vue';
 import SubscriptionItemDetailView from '@/views/SubscriptionItemDetailView.vue';
 import DisasterReportView from '@/views/DisasterReportView.vue';
 import DisasterReportFormView from '@/views/DisasterReportFormView.vue';
+import LibraryServiceView from '@/views/LibraryServiceView.vue';
+import LibraryNoticeListView from '@/views/LibraryNoticeListView.vue';
+import LibraryNoticeDetailView from '@/views/LibraryNoticeDetailView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -210,6 +213,35 @@ const router = createRouter({
           path: 'form/:id',
           name: 'disaster-report-form',
           component: DisasterReportFormView
+        }
+      ]
+    },
+    {
+      path: '/library-service',
+      children: [
+        {
+          path: '',
+          name: 'library-service',
+          component: LibraryServiceView,
+          meta: {
+            title: '圖書館服務'
+          }
+        },
+        {
+          path: 'notice-list',
+          name: 'library-notice-list',
+          component: LibraryNoticeListView,
+          meta: {
+            title: '重要訊息'
+          }
+        },
+        {
+          path: 'notice-detail/:id',
+          name: 'library-notice-detail',
+          component: LibraryNoticeDetailView,
+          meta: {
+            title: '重要訊息'
+          }
         }
       ]
     }

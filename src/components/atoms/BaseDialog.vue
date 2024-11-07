@@ -57,7 +57,7 @@ const onNegativeClick = () => {
               </DialogTitle>
 
               <div class="px-4 my-5">
-                <p class="text-center font-bold">{{ props.content }}</p>
+                <p class="text-center font-bold whitespace-pre-line">{{ props.content }}</p>
               </div>
 
               <div
