@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import LibraryNoticeListJson from '../../public/mock/library/library_notice_list.json';
 import BaseDialog from '@/components/atoms/BaseDialog.vue';
 import { useLibraryStore } from '@/stores/library';
 import { storeToRefs } from 'pinia';
@@ -14,8 +13,8 @@ export interface LibraryNoticeItem {
   outer_link?: string;
 }
 
-const counterStore = useLibraryStore();
-const { libraryNoticeList } = storeToRefs(counterStore);
+const libraryStore = useLibraryStore();
+const { libraryNoticeList } = storeToRefs(libraryStore);
 
 const isDialogOpen = ref(false);
 

@@ -1,9 +1,17 @@
 <script setup lang="ts">
 import { useLibraryStore } from '@/stores/library';
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 
-const counterStore = useLibraryStore();
-const { libraryNoticeList } = storeToRefs(counterStore);
+const libraryStore = useLibraryStore();
+const { bookList, libraryNoticeList } = storeToRefs(libraryStore);
+
+const libraryRankingList = computed(() => {
+  return bookList.value
+    .filter((item) => item.click_count >= 0)
+    .sort((a, b) => b.click_count - a.click_count)
+    .slice(0, 5);
+});
 </script>
 
 <template>
@@ -27,7 +35,38 @@ const { libraryNoticeList } = storeToRefs(counterStore);
   <div class="p-4">
     <div class="flex items-center">
       <h5 class="section-title">點閱排行</h5>
-      <a href="" class="ml-auto text-primary-500">更多</a>
+      <router-link :to="{ name: 'library-ranking-list' }" class="ml-auto text-primary-500">
+        更多
+      </router-link>
+    </div>
+    <div v-if="libraryRankingList.length">
+      <div v-for="(item, index) in libraryRankingList" :key="index">
+        <router-link :to="{ name: 'library-book-detail', params: { id: item.id } }" class="item">
+          <div class="py-4 grid grid-cols-10 gap-2">
+            <span class="flex items-center justify-center">{{ index + 1 }}</span>
+            <div class="thumbnail col-span-2">
+              <img :src="item.thumbnail" v-if="item.thumbnail" alt="thumbnail" />
+              <div v-else class="bg-grey-100 w-full h-full"></div>
+            </div>
+            <div class="col-span-7 flex items-center">
+              <div>
+                <h5 class="clamp-2-lines mb-1">{{ item.book_name }}</h5>
+                <p class="text-grey-400">點閱次數：{{ item.click_count }}</p>
+              </div>
+            </div>
+          </div>
+        </router-link>
+      </div>
+    </div>
+    <div v-else class="flex items-center justify-center mt-16">
+      <div class="text-grey-400">
+        <img
+          src="@/assets/images/illustrations_no_data.svg"
+          alt="illustrations_no_data"
+          class="mx-auto"
+        />
+        <p class="text-center mb-2">目前無點閱排行</p>
+      </div>
     </div>
   </div>
   <!-- 重要訊息 -->
@@ -83,6 +122,12 @@ const { libraryNoticeList } = storeToRefs(counterStore);
 
 .section-title {
   @apply font-bold text-grey-900;
+}
+
+.thumbnail {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
 }
 
 .clamp-2-lines {

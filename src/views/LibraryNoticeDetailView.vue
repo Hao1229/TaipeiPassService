@@ -7,8 +7,8 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
-const counterStore = useLibraryStore();
-const { libraryNoticeList } = storeToRefs(counterStore);
+const libraryStore = useLibraryStore();
+const { libraryNoticeList } = storeToRefs(libraryStore);
 
 const noticeItem = computed(
   () => libraryNoticeList.value.find((item) => item.id === route.params.id)!

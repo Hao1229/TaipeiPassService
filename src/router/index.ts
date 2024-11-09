@@ -24,6 +24,8 @@ import SubscriptionItemDetailView from '@/views/SubscriptionItemDetailView.vue';
 import DisasterReportView from '@/views/DisasterReportView.vue';
 import DisasterReportFormView from '@/views/DisasterReportFormView.vue';
 import LibraryServiceView from '@/views/LibraryServiceView.vue';
+import LibraryRankingListView from '@/views/LibraryRankingListView.vue';
+import LibraryBookDetailView from '@/views/LibraryBookDetailView.vue';
 import LibraryNoticeListView from '@/views/LibraryNoticeListView.vue';
 import LibraryNoticeDetailView from '@/views/LibraryNoticeDetailView.vue';
 
@@ -225,6 +227,22 @@ const router = createRouter({
           component: LibraryServiceView,
           meta: {
             title: '圖書館服務'
+          }
+        },
+        {
+          path: 'ranking-list',
+          name: 'library-ranking-list',
+          component: LibraryRankingListView,
+          meta: {
+            title: '點閱排行'
+          }
+        },
+        {
+          path: 'book-detail/:id',
+          name: 'library-book-detail',
+          component: LibraryBookDetailView,
+          meta: {
+            title: '詳細內容'
           }
         },
         {
