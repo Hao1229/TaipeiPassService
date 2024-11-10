@@ -37,7 +37,7 @@ const onNegativeClick = () => {
         <template v-if="item.is_open_outer_link">
           <a :href="item.outer_link" target="_blank" rel="noopener noreferrer">
             <div class="py-4 border-b border-grey-200">
-              <h5 class="clamp-2-lines mb-1">{{ item.title }}</h5>
+              <h5 class="ine-clamp-2 mb-1">{{ item.title }}</h5>
               <p class="text-grey-400 text-sm">
                 {{ item.date }}
               </p>
@@ -50,7 +50,7 @@ const onNegativeClick = () => {
             class="item"
           >
             <div class="py-4 border-b border-grey-200">
-              <h5 class="clamp-2-lines mb-1">{{ item.title }}</h5>
+              <h5 class="ine-clamp-2 mb-1">{{ item.title }}</h5>
               <p class="text-grey-400 text-sm">
                 {{ item.date }}
               </p>

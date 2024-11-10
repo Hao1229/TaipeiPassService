@@ -36,7 +36,7 @@ const subscriptionItemList = ref<SubscriptionItem[]>(subscriptionItemListJson.da
         </h5>
         <span :class="item.is_read ? 'text-grey-200' : 'text-grey-400'">{{ item.date }}</span>
       </div>
-      <p class="clamp-2-lines" :class="{ 'text-grey-400': item.is_read }">{{ item.description }}</p>
+      <p class="ine-clamp-2" :class="{ 'text-grey-400': item.is_read }">{{ item.description }}</p>
     </div>
   </router-link>
 </template>
@@ -62,12 +62,5 @@ const subscriptionItemList = ref<SubscriptionItem[]>(subscriptionItemListJson.da
     background-color: theme('colors.primary.500');
     border-radius: 50%; /* 圓形 */
   }
-}
-.clamp-2-lines {
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* 限制顯示兩行 */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 </style>

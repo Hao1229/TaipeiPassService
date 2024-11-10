@@ -6,6 +6,15 @@ import { computed } from 'vue';
 const libraryStore = useLibraryStore();
 const { bookList, libraryNoticeList } = storeToRefs(libraryStore);
 
+/** 新書介紹 */
+const libraryNewBookList = computed(() => {
+  return bookList.value
+    .filter((item) => item.click_count >= 0)
+    .sort((a, b) => new Date(b.publish_date).valueOf() - new Date(a.publish_date).valueOf())
+    .slice(0, 20);
+});
+
+/** 點閱排行 */
 const libraryRankingList = computed(() => {
   return bookList.value
     .filter((item) => item.click_count >= 0)
@@ -30,6 +39,18 @@ const libraryRankingList = computed(() => {
   <!-- 新書介紹 -->
   <div class="p-4">
     <h5 class="section-title">新書介紹</h5>
+    <div class="flex overflow-x-auto space-x-6 py-4">
+      <div class="flex-shrink-0 w-1/3" v-for="(item, index) in libraryNewBookList" :key="index">
+        <router-link :to="{ name: 'library-book-detail', params: { id: item.id } }">
+          <div class="thumbnail">
+            <img :src="item.thumbnail" v-if="item.thumbnail" alt="thumbnail" />
+            <div v-else class="bg-grey-100 w-full h-full"></div>
+          </div>
+          <p class="line-clamp-2">{{ item.book_name }}</p>
+          <p class="line-clamp-2 text-grey-400">著者：{{ item.author }}</p>
+        </router-link>
+      </div>
+    </div>
   </div>
   <!-- 點閱排行 -->
   <div class="p-4">
@@ -50,7 +71,7 @@ const libraryRankingList = computed(() => {
             </div>
             <div class="col-span-7 flex items-center">
               <div>
-                <h5 class="clamp-2-lines mb-1">{{ item.book_name }}</h5>
+                <h5 class="ine-clamp-2 mb-1">{{ item.book_name }}</h5>
                 <p class="text-grey-400">點閱次數：{{ item.click_count }}</p>
               </div>
             </div>
@@ -82,7 +103,7 @@ const libraryRankingList = computed(() => {
         <template v-if="item.is_open_outer_link">
           <a :href="item.outer_link" target="_blank" rel="noopener noreferrer">
             <div class="py-4 border-b border-grey-200">
-              <h5 class="clamp-2-lines mb-1">{{ item.title }}</h5>
+              <h5 class="ine-clamp-2 mb-1">{{ item.title }}</h5>
               <p class="text-grey-400 text-sm">
                 {{ item.date }}
               </p>
@@ -95,7 +116,7 @@ const libraryRankingList = computed(() => {
             class="item"
           >
             <div class="py-4 border-b border-grey-200">
-              <h5 class="clamp-2-lines mb-1">{{ item.title }}</h5>
+              <h5 class="ine-clamp-2 mb-1">{{ item.title }}</h5>
               <p class="text-grey-400 text-sm">
                 {{ item.date }}
               </p>
@@ -128,13 +149,5 @@ const libraryRankingList = computed(() => {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-}
-
-.clamp-2-lines {
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* 限制顯示兩行 */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 </style>

@@ -6,6 +6,8 @@ export interface LibraryBook {
   author: string;
   /** 出版商 */
   publisher: string;
+  /** 出版日期 **/
+  publish_date: string;
   /** 主題 */
   subject: string;
   /** ISBN */

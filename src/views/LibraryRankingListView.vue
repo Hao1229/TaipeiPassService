@@ -41,7 +41,7 @@ const onNegativeClick = () => {
             </div>
             <div class="col-span-7 flex items-center">
               <div>
-                <h5 class="clamp-2-lines mb-1">{{ item.book_name }}</h5>
+                <h5 class="ine-clamp-2 mb-1">{{ item.book_name }}</h5>
                 <p class="text-grey-400">點閱次數：{{ item.click_count }}</p>
               </div>
             </div>

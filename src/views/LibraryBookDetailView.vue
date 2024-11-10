@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import BaseCheckbox from '@/components/atoms/BaseCheckbox.vue';
 import BaseSelect from '@/components/atoms/BaseSelect.vue';
 import BaseDialog from '@/components/atoms/BaseDialog.vue';
@@ -34,6 +34,12 @@ const libraryOptions = computed(() => {
 
 const isDialogOpen = ref(false);
 const isLibrarySelectDialogOpen = ref(false);
+
+onMounted(() => {
+  if (bookItem.value.series.length === 1) {
+    seriesModel.value.push(bookItem.value.series[0].id);
+  }
+});
 
 const checkLimit = (id: string) => {
   // 檢查當前選中的數量是否超出限制
@@ -83,7 +89,11 @@ const onSubmitClick = async () => {
         >
           <label
             :for="seriesItem.id"
-            :class="seriesModel.includes(seriesItem.id) ? 'text-primary-500' : ''"
+            :class="
+              seriesModel.includes(seriesItem.id) && bookItem.series.length > 1
+                ? 'text-primary-500'
+                : ''
+            "
             class="flex-grow"
             @click.prevent="checkLimit(seriesItem.id)"
           >
@@ -125,7 +135,11 @@ const onSubmitClick = async () => {
           @click.stop="isLibrarySelectDialogOpen = true"
         />
       </div>
-      <BaseButton class="w-full" :disabled="!selectedLibraryId" @click="onSubmitClick()">
+      <BaseButton
+        class="w-full"
+        :disabled="!selectedLibraryId || seriesModel.length === 0"
+        @click="onSubmitClick()"
+      >
         預約
       </BaseButton>
     </div>
