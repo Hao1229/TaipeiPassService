@@ -24,6 +24,7 @@ import SubscriptionItemDetailView from '@/views/SubscriptionItemDetailView.vue';
 import DisasterReportView from '@/views/DisasterReportView.vue';
 import DisasterReportFormView from '@/views/DisasterReportFormView.vue';
 import LibraryServiceView from '@/views/LibraryServiceView.vue';
+import LibraryKeywordSearchView from '@/views/LibraryKeywordSearchView.vue';
 import LibraryRankingListView from '@/views/LibraryRankingListView.vue';
 import LibraryBookDetailView from '@/views/LibraryBookDetailView.vue';
 import LibraryNoticeListView from '@/views/LibraryNoticeListView.vue';
@@ -227,6 +228,14 @@ const router = createRouter({
           component: LibraryServiceView,
           meta: {
             title: '圖書館服務'
+          }
+        },
+        {
+          path: 'keyword-search',
+          name: 'library-keyword-search',
+          component: LibraryKeywordSearchView,
+          meta: {
+            title: '關鍵字搜尋'
           }
         },
         {

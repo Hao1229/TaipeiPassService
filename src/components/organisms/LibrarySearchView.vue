@@ -26,7 +26,7 @@ const libraryRankingList = computed(() => {
 <template>
   <!-- 關鍵字搜尋 -->
   <div class="p-4">
-    <a href="" class="search-bar">
+    <router-link :to="{ name: 'library-keyword-search' }" class="search-bar">
       <img
         src="@/assets/images/search-icon-dark.svg"
         width="24"
@@ -34,7 +34,7 @@ const libraryRankingList = computed(() => {
         alt="search-icon-dark"
       />
       <span>關鍵字搜尋</span>
-    </a>
+    </router-link>
   </div>
   <!-- 新書介紹 -->
   <div class="p-4">
