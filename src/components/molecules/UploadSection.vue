@@ -12,11 +12,13 @@ const props = withDefaults(
     triggerValidate?: boolean;
     isReport?: boolean;
     isDisaster?: boolean;
+    isPoliceReport?: boolean;
   }>(),
   {
     fileMax: 1,
     isReport: false,
-    isDisaster: false
+    isDisaster: false,
+    isPoliceReport: false
   }
 );
 
@@ -84,8 +86,8 @@ watch(
         <p class="font-bold text-gray-800">{{ props.title || '新增附件' }}</p>
         <p class="text-sm text-gray-500">
           <span v-if="props.isReport">上傳附件(照片、錄影、錄音)總容量限制為40MB，</span>
-          <span v-if="!props.isReport">容量限制為{{ props.isDisaster ? 10 : 20 }}MB，</span>
-          <span v-if="props.fileMax > 1">最多{{ props.fileMax }}個檔案</span>
+          <span v-if="!props.isReport">容量限制為{{ props.isDisaster ? 10 : 20 }}MB</span>
+          <span v-if="props.fileMax > 1">，最多{{ props.fileMax }}個檔案</span>
         </p>
       </div>
       <button @click.prevent="isOpen = true">
@@ -111,6 +113,17 @@ watch(
           <p v-else class="mt-3">上傳附件</p>
 
           <input
+            v-if="props.isPoliceReport"
+            type="file"
+            name="photo"
+            :id="`upload-file-${count}`"
+            accept=".pdf, .png, .jpg, .jpeg, .tif, .tiff, .bmp, .avi, .flv, .wma, .wmv, .mov, .mp4"
+            class="absolute opacity-0 -z-10"
+            @change="onFileUpload"
+          />
+
+          <input
+            v-else
             type="file"
             name="photo"
             :id="`upload-file-${count}`"
@@ -174,8 +187,14 @@ watch(
                   <li>另 iOS 系統請確認「設定」> 照片 > 傳到 MAC 或 PC 是否設定為「自動」。</li>
                 </ul>
                 <template v-else>
-                  <p class="text-center font-bold">jpg,jpeg,gif,bmp,png,tif,tiff,doc,</p>
-                  <p class="text-center font-bold">docx,xls,xlsx,txt,pdf,odf,odg,odp,ods,odt</p>
+                  <template v-if="props.isPoliceReport">
+                    <p class="text-center font-bold">pdf, png, jpg, jpeg, tif, tiff, bmp,</p>
+                    <p class="text-center font-bold">avi, flv, wma, wmv, mov, mp4</p>
+                  </template>
+                  <template v-else>
+                    <p class="text-center font-bold">jpg,jpeg,gif,bmp,png,tif,tiff,doc,</p>
+                    <p class="text-center font-bold">docx,xls,xlsx,txt,pdf,odf,odg,odp,ods,odt</p>
+                  </template>
                   <p class="text-center font-extrabold">檔案大小：20MB</p>
                 </template>
               </div>
