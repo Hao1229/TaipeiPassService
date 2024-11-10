@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import BaseCheckbox from '@/components/atoms/BaseCheckbox.vue';
 import BaseButton from '@/components/atoms/BaseButton.vue';
+
+const router = useRouter();
 
 const isAgree = ref([]);
 
 const onAgreeClick = () => {
-  console.log('agree');
+  router.push({
+    name: 'police-report-form'
+  });
 };
 </script>
 

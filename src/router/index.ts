@@ -24,6 +24,7 @@ import SubscriptionItemDetailView from '@/views/SubscriptionItemDetailView.vue';
 import DisasterReportView from '@/views/DisasterReportView.vue';
 import DisasterReportFormView from '@/views/DisasterReportFormView.vue';
 import PoliceReportView from '@/views/PoliceReportView.vue';
+import PoliceReportFormView from '@/views/PoliceReportFormView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -224,6 +225,11 @@ const router = createRouter({
           path: '',
           name: 'police-report',
           component: PoliceReportView
+        },
+        {
+          path: 'form',
+          name: 'police-report-form',
+          component: PoliceReportFormView
         }
       ]
     }
