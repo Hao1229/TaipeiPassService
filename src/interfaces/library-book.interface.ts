@@ -2,7 +2,7 @@ export interface LibraryBook {
   id: string;
   /** 書名 */
   book_name: string;
-  /** 作者 */
+  /** 著者 */
   author: string;
   /** 出版商 */
   publisher: string;

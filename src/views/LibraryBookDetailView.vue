@@ -162,12 +162,6 @@ const onSubmitClick = async () => {
 </template>
 
 <style lang="postcss" scoped>
-.thumbnail {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-}
-
 .tag {
   @apply bg-[#65A91E] text-white text-sm px-2 py-1 rounded-lg;
 }

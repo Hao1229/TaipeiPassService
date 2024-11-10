@@ -134,7 +134,7 @@ const libraryRankingList = computed(() => {
   </div>
 </template>
 
-<style lang="postcss" scoped>
+<style lang="postcss">
 .search-bar {
   @apply flex items-center;
   @apply rounded-lg bg-gray-100 text-grey-400;

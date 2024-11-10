@@ -73,10 +73,4 @@ const onNegativeClick = () => {
   />
 </template>
 
-<style lang="postcss" scoped>
-.thumbnail {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-}
-</style>
+<style lang="postcss" scoped></style>
