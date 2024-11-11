@@ -7,6 +7,7 @@ import { useFormStore } from '@/stores/form';
 const props = withDefaults(
   defineProps<{
     fileMax?: number;
+    fileUnLimit?: boolean;
     title?: string;
     required?: boolean;
     triggerValidate?: boolean;
@@ -16,6 +17,7 @@ const props = withDefaults(
   }>(),
   {
     fileMax: 1,
+    fileUnLimit: false,
     isReport: false,
     isDisaster: false,
     isPoliceReport: false
@@ -54,6 +56,7 @@ const onFileUpload = (event: Event) => {
     } else {
       isShowSizeError.value = false;
       fileList.value.push(file);
+      console.log('fileList:', fileList.value);
       validate();
       // TODO: 將 file 傳給 API，並將 API 的 response 向外拋出給外面表單提交，API 可能會回傳檔案編號之類
     }
@@ -87,7 +90,9 @@ watch(
         <p class="text-sm text-gray-500">
           <span v-if="props.isReport">上傳附件(照片、錄影、錄音)總容量限制為40MB，</span>
           <span v-if="!props.isReport">容量限制為{{ props.isDisaster ? 10 : 20 }}MB</span>
-          <span v-if="props.fileMax > 1">，最多{{ props.fileMax }}個檔案</span>
+          <span v-if="props.fileMax > 1 && !props.fileUnLimit">
+            ，最多{{ props.fileMax }}個檔案
+          </span>
         </p>
       </div>
       <button @click.prevent="isOpen = true">
@@ -96,7 +101,11 @@ watch(
     </div>
 
     <div class="flex flex-wrap gap-x-4 gap-y-2">
-      <div v-for="count in props.fileMax" :key="count" class="mt-2">
+      <div
+        v-for="count in props.fileUnLimit ? fileList.length + 1 : props.fileMax"
+        :key="count"
+        class="mt-2"
+      >
         <label
           v-show="fileList.length === count - 1"
           :for="`upload-file-${count}`"
@@ -105,7 +114,7 @@ watch(
         >
           <img src="@/assets/images/add-icon.svg" class="w-6 h-6" />
 
-          <template v-if="props.fileMax > 1">
+          <template v-if="!props.fileUnLimit && props.fileMax > 1">
             <p>最多上傳</p>
             <p>{{ props.fileMax }}個檔案</p>
           </template>
