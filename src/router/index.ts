@@ -26,6 +26,10 @@ import SubscriptionItemListView from '@/views/SubscriptionItemListView.vue';
 import SubscriptionItemDetailView from '@/views/SubscriptionItemDetailView.vue';
 import DisasterReportView from '@/views/DisasterReportView.vue';
 import DisasterReportFormView from '@/views/DisasterReportFormView.vue';
+import PoliceReportView from '@/views/PoliceReportView.vue';
+import PoliceReportFormView from '@/views/PoliceReportFormView.vue';
+import PoliceReportRecordView from '@/views/PoliceReportRecordView.vue';
+import PoliceReportRecordDetailView from '@/views/PoliceReportRecordDetailView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -228,6 +232,34 @@ const router = createRouter({
           path: 'form/:id',
           name: 'disaster-report-form',
           component: DisasterReportFormView
+        }
+      ]
+    },
+    {
+      path: '/police-report',
+      meta: {
+        title: '警政報案'
+      },
+      children: [
+        {
+          path: '',
+          name: 'police-report',
+          component: PoliceReportView
+        },
+        {
+          path: 'form',
+          name: 'police-report-form',
+          component: PoliceReportFormView
+        },
+        {
+          path: 'record',
+          name: 'police-report-record',
+          component: PoliceReportRecordView
+        },
+        {
+          path: 'record/:id',
+          name: 'police-report-record-detail',
+          component: PoliceReportRecordDetailView
         }
       ]
     }
