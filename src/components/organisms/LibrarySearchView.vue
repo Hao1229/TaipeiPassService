@@ -39,7 +39,7 @@ const libraryRankingList = computed(() => {
   <!-- 新書介紹 -->
   <div class="p-4">
     <h5 class="section-title">新書介紹</h5>
-    <div class="flex overflow-x-auto space-x-6 py-4">
+    <div class="flex overflow-x-auto py-4">
       <div class="flex-shrink-0 w-1/3" v-for="(item, index) in libraryNewBookList" :key="index">
         <router-link :to="{ name: 'library-book-detail', params: { id: item.id } }">
           <div class="thumbnail">

@@ -16,6 +16,8 @@ export interface LibraryBook {
   thumbnail: string;
   /** 點閱次數 */
   click_count: number;
+  /** 索書號 */
+  call_number: string;
   /** 書本集數 */
   series: BookSeries[];
   /** 取書館 */

@@ -7,12 +7,15 @@ import BaseButton from '@/components/atoms/BaseButton.vue';
 import LibrarySelectDialog from '@/components/molecules/LibrarySelectDialog.vue';
 import { useLibraryStore } from '@/stores/library';
 import { storeToRefs } from 'pinia';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import type { LibraryRecords } from '@/interfaces/library-records.interface';
+import type { BookSeries, Library } from '@/interfaces/library-book.interface';
 
+const router = useRouter();
 const route = useRoute();
 
 const libraryStore = useLibraryStore();
-const { bookList } = storeToRefs(libraryStore);
+const { bookList, libraryRecordsOrdering } = storeToRefs(libraryStore);
 
 const bookItem = computed(() => bookList.value.find((item) => item.id === route.params.id)!);
 
@@ -32,8 +35,16 @@ const libraryOptions = computed(() => {
   }));
 });
 
-const isDialogOpen = ref(false);
+const isAlertDialogOpen = ref(false);
+const isCheckDialogOpen = ref(false);
+const isErrorDialogOpen = ref(false);
+const isGoLibraryAlertDialogOpen = ref(false);
 const isLibrarySelectDialogOpen = ref(false);
+
+/** 預約成功數 */
+const successCount = ref(0);
+/** 預約失敗原因 */
+const errorMessage = ref('');
 
 onMounted(() => {
   if (bookItem.value.series.length === 1) {
@@ -44,7 +55,7 @@ onMounted(() => {
 const checkLimit = (id: string) => {
   // 檢查當前選中的數量是否超出限制
   if (seriesModel.value.length >= reservationLimit.value && !seriesModel.value.includes(id)) {
-    isDialogOpen.value = true; // 如果超出限制，打開對話框
+    isAlertDialogOpen.value = true; // 如果超出限制，打開對話框
   } else {
     // 如果未超出限制，繼續勾選
     const index = seriesModel.value.indexOf(id);
@@ -60,7 +71,101 @@ const checkLimit = (id: string) => {
  * 點擊預約
  */
 const onSubmitClick = async () => {
-  console.log(seriesModel.value);
+  const selectedLibrary: Library = bookItem.value.libraries.find(
+    (item) => item.id === selectedLibraryId.value
+  )!;
+  const selectedSeries: BookSeries[] = bookItem.value.series.filter((item) =>
+    seriesModel.value.includes(item.id)
+  );
+  const now = new Date();
+
+  // 檢查每一個 seriesItem 是否已預約，並將未重複的項目存入新陣列
+  const newReservations = selectedSeries.filter((seriesItem) => {
+    return !libraryRecordsOrdering.value.some((existingitem: LibraryRecords) => {
+      return existingitem.record_id === seriesItem.book_id + seriesItem.id;
+    });
+  });
+  successCount.value = newReservations.length;
+
+  // 如果沒有新項目可預約，表示全部重複
+  if (newReservations.length === 0) {
+    isErrorDialogOpen.value = true;
+    errorMessage.value = '已預約相同卷期';
+    return;
+  } else if (newReservations.length <= seriesModel.value.length) {
+    // 如果部分預約成功，部分失敗 or 全部預約成功
+    isCheckDialogOpen.value = true;
+  }
+
+  // 準備存入的 body，僅包含不重複的預約項目
+  const body: LibraryRecords[] = newReservations.map((item) => ({
+    ...bookItem.value,
+    record_id: item.book_id + item.id,
+    call_number: bookItem.value.call_number + item.series＿name,
+    selected_library: selectedLibrary,
+    reservation_order: item.waiting_people + 1,
+    date: `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}` // 預約當下日期
+  }));
+
+  console.log('request body:', body);
+
+  /**
+   * 以下為展示用假資料，真正實作後可刪除
+   */
+  libraryRecordsOrdering.value = [...body, ...libraryRecordsOrdering.value];
+  // 從 localStorage 中獲取現有的 libraryRecordsOrdering
+  const existingRecords = localStorage.getItem('libraryRecordsOrdering');
+  // 檢查是否已有值
+  if (existingRecords) {
+    // 將現有資料解析為陣列
+    const recordsArray = JSON.parse(existingRecords);
+    // 將新的預約插入到陣列的前方
+    const updatedRecordsArray = [...body, ...recordsArray];
+
+    // 將更新後的陣列儲存回 localStorage
+    localStorage.setItem('libraryRecordsOrdering', JSON.stringify(updatedRecordsArray));
+  } else {
+    // 若沒有現有資料，直接將 body 存為陣列並存入 localStorage
+    localStorage.setItem('libraryRecordsOrdering', JSON.stringify(body));
+  }
+
+  isCheckDialogOpen.value = true;
+
+  // /**
+  //  * 註解區塊是串接提交表單 API 的範例
+  //  * 透過 JS 原生 fetch 做串接
+  //  * 開發者可以用自己習慣的方式去做 API 串接
+  //  * 例如：axios 等
+  //  */
+  // try {
+  //   const response = await fetch('url_custom_url', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify(body)
+  //   });
+
+  //   if (!response.ok) {
+  //     throw new Error(`request error: ${response.status}!!`);
+  //   }
+
+  //   const responseData = await response.json();
+  //   console.log('success:', responseData);
+  //   // isFinishDialogOpen.value = true;
+  // } catch (error) {
+  //   console.log('error:', error);
+  // }
+};
+
+/** 外連圖書館網站 */
+const goOuterLibrary = () => {
+  console.log('goOuterLibrary');
+
+  const a = document.createElement('a');
+  a.href = 'https://book.tpml.edu.tw/index';
+  a.target = '_blank';
+  a.click();
 };
 </script>
 
@@ -123,7 +228,7 @@ const onSubmitClick = async () => {
     <div
       class="bg-white fixed bottom-0 left-0 right-0 p-4 shadow-[0_-5px_10px_-8px_rgba(0,0,0,0.3)]"
     >
-      <div>
+      <div v-if="bookItem.series.length">
         <p class="font-bold mb-2">取書館</p>
         <BaseSelect
           v-model="selectedLibraryId"
@@ -151,12 +256,80 @@ const onSubmitClick = async () => {
     />
 
     <BaseDialog
-      v-model="isDialogOpen"
+      v-model="isAlertDialogOpen"
       title="提醒"
       :content="`您的已預約及預約冊數，已達上限${reservationLimit}冊`"
       :isAlert="true"
       positiveText="關閉"
-      @onPositiveClick="() => (isDialogOpen = false)"
+      @onPositiveClick="() => (isAlertDialogOpen = false)"
+    />
+    <BaseDialog
+      v-model="isCheckDialogOpen"
+      title="預約成功"
+      :isSlot="true"
+      content=""
+      :isCheck="true"
+      negativeText="返回首頁"
+      positiveText="查看預約清單"
+      @onNegativeClick="() => router.push({ name: 'library-service' })"
+      @onPositiveClick="() => router.push({ name: 'library-service', query: { type: 1 } })"
+    >
+      <template #content>
+        <div class="text-center">
+          <p>本次預約成功 {{ successCount }} 筆</p>
+          <p>
+            取書館：{{ bookItem.libraries.find((item) => item.id === selectedLibraryId)?.name }}
+          </p>
+          <p>
+            到館通知：目前無通知。可前往<a
+              href="javascript:void(0);"
+              @click.prevent="
+                isGoLibraryAlertDialogOpen = true;
+                isCheckDialogOpen = false;
+              "
+              target="_blank"
+              class="underline text-primary-500"
+              tabindex="0"
+              >圖書館</a
+            >
+            登入個人書房，設定通知方式。
+          </p>
+        </div>
+      </template>
+    </BaseDialog>
+    <BaseDialog
+      v-model="isErrorDialogOpen"
+      title="預約失敗"
+      :is-slot="true"
+      content=""
+      :is-error="true"
+      negativeText="返回首頁"
+      positiveText="查看預約清單"
+      @onNegativeClick="() => router.push({ name: 'library-service' })"
+      @onPositiveClick="() => router.push({ name: 'library-service', query: { type: 1 } })"
+    >
+      <template #content>
+        <div class="text-center">
+          <p>本次預約失敗 {{ seriesModel.length }} 筆</p>
+          <p>題名：{{ bookItem.book_name }}</p>
+          <p>原因：{{ errorMessage }}</p>
+        </div>
+      </template>
+    </BaseDialog>
+    <BaseDialog
+      v-model="isGoLibraryAlertDialogOpen"
+      title="提醒"
+      :content="'即將離開城市通\n前往圖書館藏查詢系統'"
+      :isAlert="true"
+      negativeText="取消"
+      positiveText="確認"
+      @onNegativeClick="
+        () => {
+          isGoLibraryAlertDialogOpen = false;
+          isCheckDialogOpen = true;
+        }
+      "
+      @onPositiveClick="() => goOuterLibrary()"
     />
   </div>
 </template>
