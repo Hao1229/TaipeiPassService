@@ -7,8 +7,9 @@ import libraryRecordsListJson from '../../public/mock/library/library_records_li
 import libraryRecordsNopickupListJson from '../../public/mock/library/library_records_nopickup_list.json';
 import libraryRecordsBorrowingListJson from '../../public/mock/library/library_records_borrowing_list.json';
 import libraryRecordsHistoryListJson from '../../public/mock/library/library_records_history_list.json';
+import libraryListJson from '../../public/mock/library/library_list.json';
 import type { LibraryNoticeItem } from '@/views/LibraryNoticeListView.vue';
-import type { LibraryBook } from '@/interfaces/library-book.interface';
+import type { Library, LibraryBook } from '@/interfaces/library-book.interface';
 import type { LibraryRecords } from '@/interfaces/library-records.interface';
 
 export const useLibraryStore = defineStore('library', () => {
@@ -43,6 +44,9 @@ export const useLibraryStore = defineStore('library', () => {
   /** 我的紀錄-借閱歷史紀錄 */
   const historyRecords = ref<LibraryRecords[]>(libraryRecordsHistoryListJson.data);
 
+  /** 分館地圖 */
+  const libraryList = ref<Library[]>(libraryListJson.data);
+
   return {
     bookList,
     hotKeywordList,
@@ -51,6 +55,7 @@ export const useLibraryStore = defineStore('library', () => {
     libraryRecordsOrdering,
     noPickupRecords,
     borrowingRecords,
-    historyRecords
+    historyRecords,
+    libraryList
   };
 });

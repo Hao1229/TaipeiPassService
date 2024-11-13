@@ -129,7 +129,7 @@ const toggleRegularlyUsedItem = (counterItem: SubCounter) => {
           <span class="mx-1">{{ subCounterItem.info.address }}</span>
         </a>
         <a :href="`tel://${subCounterItem.info.tel}`" class="link-wrapper right-arrow">
-          <img src="@/assets/images/icon_tel.svg" class="icon" alt="icon_map" />
+          <img src="@/assets/images/icon_tel.svg" class="icon" alt="icon_tel" />
           <span class="mx-1">{{ subCounterItem.info.tel }}</span>
         </a>
         <RouterLink

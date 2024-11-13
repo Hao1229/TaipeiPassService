@@ -53,10 +53,18 @@ export interface Library {
   area: string;
   /** 地址 */
   address: string;
+  /** 電話 */
+  phone: string;
   /** 經度 */
   lat: number;
   /** 緯度 */
   lng: number;
   /** 距離 */
   distance?: number;
+  service_infos?: ServiceInfo[];
+}
+
+export interface ServiceInfo {
+  title: string;
+  value?: string;
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import LibraryTabs from '@/components/molecules/LibraryTabs.vue';
 import type { TabsProps } from '@/interfaces/tab-props.interface';
+import { onMounted, watch } from 'vue';
 
 const props = withDefaults(defineProps<TabsProps>(), {
   tabList: () => [
@@ -40,6 +41,7 @@ const activeTab = defineModel({ default: 0 });
 <style lang="postcss">
 .tab-view-container {
   @apply flex flex-nowrap overflow-x-hidden;
+  height: calc(100vh - 43px);
 }
 
 .tab-view {

@@ -30,11 +30,11 @@ const listOptions = ref([
     value: 'reservation-not-take-records'
   },
   {
-    label: '借閱中',
+    label: `借閱中${borrowingRecords.value.length > 0 ? `(${borrowingRecords.value.length})` : ''}`,
     value: 'borrowing-list'
   },
   {
-    label: '借閱歷史紀錄',
+    label: `借閱歷史紀錄${historyRecords.value.length > 0 ? `(${historyRecords.value.length})` : ''}`,
     value: 'borrow-history-list'
   }
 ]);

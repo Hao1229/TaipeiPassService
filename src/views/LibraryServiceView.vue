@@ -12,7 +12,6 @@ const route = useRoute();
 const activeTab = ref(0);
 
 onMounted(() => {
-  console.log(route.query.type);
   if (route.query.type && Number(route.query.type) <= 2) {
     activeTab.value = Number(route.query.type as String);
   } else {

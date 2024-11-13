@@ -23,6 +23,8 @@ export interface LibraryRecords extends LibraryBook {
   pickup_end_date?: string;
   /** 應還日期 */
   return_end_date?: string;
+  /** 還書日期 */
+  return_date?: string;
   /** 取書編號 */
   pickup_number?: string;
 }
