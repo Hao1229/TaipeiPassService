@@ -4,6 +4,9 @@ import libraryBookListJson from '../../public/mock/library/library_book_list.jso
 import librarySearchHotKeywordsJson from '../../public/mock/library/library_search_hot_keywords.json';
 import libraryNoticeListJson from '../../public/mock/library/library_notice_list.json';
 import libraryRecordsListJson from '../../public/mock/library/library_records_list.json';
+import libraryRecordsNopickupListJson from '../../public/mock/library/library_records_nopickup_list.json';
+import libraryRecordsBorrowingListJson from '../../public/mock/library/library_records_borrowing_list.json';
+import libraryRecordsHistoryListJson from '../../public/mock/library/library_records_history_list.json';
 import type { LibraryNoticeItem } from '@/views/LibraryNoticeListView.vue';
 import type { LibraryBook } from '@/interfaces/library-book.interface';
 import type { LibraryRecords } from '@/interfaces/library-records.interface';
@@ -21,21 +24,33 @@ export const useLibraryStore = defineStore('library', () => {
   /** 我的紀錄-預約清單 */
   const reservationRecords = computed(() => {
     const storedData = libraryRecordsOrdering.value;
-    const data = { ...libraryRecordsListJson.data[0] }; // 創建一個淺拷貝，確保變更可追蹤
+    const data = { ...libraryRecordsListJson.data }; // 創建一個淺拷貝，確保變更可追蹤
     if (storedData) {
       // 將儲存的數據放入第三筆的 data 中
-      (data.data[2].data as LibraryRecords[]) = storedData;
+      (data[2].data as LibraryRecords[]) = storedData;
     }
     return data;
   });
-
+  /** 我的紀錄-預約清單-排序中 */
   const libraryRecordsOrdering = ref<LibraryRecords[]>([]);
+
+  /** 我的紀錄-預約未取紀錄 */
+  const noPickupRecords = ref<LibraryRecords[]>(libraryRecordsNopickupListJson.data);
+
+  /** 我的紀錄-借閱中 */
+  const borrowingRecords = ref<LibraryRecords[]>(libraryRecordsBorrowingListJson.data);
+
+  /** 我的紀錄-借閱歷史紀錄 */
+  const historyRecords = ref<LibraryRecords[]>(libraryRecordsHistoryListJson.data);
 
   return {
     bookList,
     hotKeywordList,
     libraryNoticeList,
     reservationRecords,
-    libraryRecordsOrdering
+    libraryRecordsOrdering,
+    noPickupRecords,
+    borrowingRecords,
+    historyRecords
   };
 });

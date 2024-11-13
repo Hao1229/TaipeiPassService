@@ -7,9 +7,17 @@ import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
 import { useConnectionMessage } from '@/composables/useConnectionMessage';
 import type { LibraryRecords } from '@/interfaces/library-records.interface';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const libraryStore = useLibraryStore();
-const { reservationRecords, libraryRecordsOrdering } = storeToRefs(libraryStore);
+const {
+  reservationRecords,
+  libraryRecordsOrdering,
+  borrowingRecords,
+  noPickupRecords,
+  historyRecords
+} = storeToRefs(libraryStore);
 
 /** 清單選項 */
 const listOptions = ref([
@@ -37,6 +45,8 @@ const expandList = ref<string[]>([]);
 const expandListSet = computed(() => new Set(expandList.value.map((name) => name)));
 
 const isMapDialogOpen = ref(false);
+const isExtensionDialogOpen = ref(false);
+const isExtensionSuccessDialogOpen = ref(false);
 const isCancelDialogOpen = ref(false);
 
 const onExpandClick = (name: string) => {
@@ -54,6 +64,20 @@ const onMapOpenClick = (subItem?: LibraryRecords) => {
 
 const selectedSubItem = ref<LibraryRecords>();
 
+/** 延長兩日 */
+const extendReservation = (subItem?: LibraryRecords) => {
+  console.log('extendReservation:', subItem);
+
+  if (subItem!.extend_count < 1) {
+    subItem!.extend_count = subItem!.extend_count + 1;
+    const extendDate = new Date(subItem!.pickup_end_date!).setDate(
+      new Date(subItem!.pickup_end_date!).getDate() + 2
+    );
+    subItem!.pickup_end_date = `${new Date(extendDate).getFullYear()}/${new Date(extendDate).getMonth() + 1}/${new Date(extendDate).getDate()}`;
+    isExtensionSuccessDialogOpen.value = true;
+  }
+};
+
 /** 取消預約 */
 const cancelReservation = (subItem?: LibraryRecords) => {
   libraryRecordsOrdering.value = libraryRecordsOrdering.value.filter(
@@ -63,7 +87,23 @@ const cancelReservation = (subItem?: LibraryRecords) => {
   localStorage.setItem('libraryRecordsOrdering', JSON.stringify(libraryRecordsOrdering.value));
 };
 
+/** 預設降冪排序 */
+const historyRecordsOrder = ref('desc');
+/** 排序借閱歷史紀錄 */
+const sortHistoryRecords = () => {
+  historyRecords.value.sort((a, b) => {
+    if (historyRecordsOrder.value === 'desc') {
+      return new Date(b.pickup_date!).valueOf() - new Date(a.pickup_date!).valueOf();
+    } else {
+      return new Date(a.pickup_date!).valueOf() - new Date(b.pickup_date!).valueOf();
+    }
+  });
+  historyRecordsOrder.value = historyRecordsOrder.value === 'desc' ? 'asc' : 'desc';
+};
+
 onMounted(() => {
+  // 歷史紀錄預設降冪排序
+  sortHistoryRecords();
   /**
    * 以下為展示用假資料，真正實作後可刪除
    */
@@ -89,7 +129,7 @@ onMounted(() => {
     />
     <template v-if="selectedListId === 'reservation-list'">
       <ul>
-        <li class="px-4 py-2" v-for="item in reservationRecords.data" :key="item.name">
+        <li class="px-4 py-2" v-for="item in reservationRecords" :key="item.name">
           <button class="w-full flex justify-between items-center mb-5">
             <div
               class="flex items-end"
@@ -139,7 +179,24 @@ onMounted(() => {
                             {{ subItem.selected_library.name }}
                           </a>
                         </p>
-                        <p v-if="item.name !== '排序中'">調出日期：{{ subItem.date }}</p>
+                        <template v-if="item.name === '可取書'">
+                          <p>取書編號：{{ subItem.pickup_number }}</p>
+                          <p>取書期限：{{ subItem.pickup_end_date }}</p>
+                          <a
+                            href=""
+                            class="underline text-primary-500"
+                            @click.prevent="
+                              isExtensionDialogOpen = true;
+                              selectedSubItem = subItem;
+                            "
+                            v-if="subItem.extend_count < 1"
+                            >延長兩日</a
+                          >
+                          <p class="text-grey-400" v-else>已延長兩日</p>
+                        </template>
+                        <template v-if="item.name === '處理中'">
+                          <p>調出日期：{{ subItem.processing_date }}</p>
+                        </template>
                         <template v-if="item.name === '排序中'">
                           <p>預約排序：{{ subItem.reservation_order }}</p>
                           <a
@@ -172,6 +229,30 @@ onMounted(() => {
         @onPositiveClick="onMapOpenClick(selectedSubItem)"
       />
       <BaseDialog
+        v-model="isExtensionDialogOpen"
+        title="延長兩日"
+        :content="`題名：${selectedSubItem?.book_name}\n索書號：${selectedSubItem?.call_number}\n\n預約圖書資料到館後於保留期限內，每件限延長1次，延長期限2日。`"
+        :isAlert="true"
+        negativeText="取消"
+        positiveText="確認"
+        @onNegativeClick="
+          selectedSubItem = undefined;
+          isExtensionDialogOpen = false;
+        "
+        @onPositiveClick="extendReservation(selectedSubItem)"
+      />
+      <BaseDialog
+        v-model="isExtensionSuccessDialogOpen"
+        title="延長兩日成功"
+        :content="`題名：${selectedSubItem?.book_name}\n索書號：${selectedSubItem?.call_number}`"
+        :is-check="true"
+        positiveText="關閉"
+        @onPositiveClick="
+          selectedSubItem = undefined;
+          isExtensionSuccessDialogOpen = false;
+        "
+      />
+      <BaseDialog
         v-model="isCancelDialogOpen"
         title="取消預約"
         :content="`題名：${selectedSubItem?.book_name}\n索書號：${selectedSubItem?.call_number}`"
@@ -185,9 +266,63 @@ onMounted(() => {
         @onPositiveClick="cancelReservation(selectedSubItem)"
       />
     </template>
-    <template v-else-if="selectedListId === 'reservation-not-take-records'"> 2 </template>
-    <template v-else-if="selectedListId === 'borrowing-list'"> 3 </template>
-    <template v-else-if="selectedListId === 'borrow-history-list'"> 4 </template>
+    <template v-else-if="selectedListId === 'reservation-not-take-records'">
+      <!-- TODO: 預約未取紀錄 list -->
+      <div v-if="!noPickupRecords.length">
+        <div class="text-grey-400">
+          <img src="@/assets/images/illustrations_no_data.svg" class="mx-auto" alt="nodata-icon" />
+          <p class="text-center mt-2">目前沒有預約未取紀錄</p>
+        </div>
+      </div>
+    </template>
+    <template v-else-if="selectedListId === 'borrowing-list'">
+      <div v-for="(item, index) in borrowingRecords" :key="index">
+        <p>{{ item.book_name }}</p>
+        <p>索書號：{{ item.call_number }}</p>
+        <p>借閱日期：{{ item.pickup_date }}</p>
+        <p>應還日期：{{ item.return_end_date }}</p>
+        <a
+          href=""
+          class="underline text-primary-500"
+          @click.prevent="
+            isExtensionDialogOpen = true;
+            router.push({ name: 'library-book-detail', params: { id: item.id } });
+          "
+          >續借</a
+        >
+        <hr class="my-4" />
+      </div>
+      <div v-if="!borrowingRecords.length">
+        <div class="text-grey-400">
+          <img src="@/assets/images/illustrations_no_data.svg" class="mx-auto" alt="nodata-icon" />
+          <p class="text-center mt-2">目前沒有借閱紀錄</p>
+        </div>
+      </div>
+    </template>
+    <template v-else-if="selectedListId === 'borrow-history-list'">
+      <template v-if="historyRecords.length">
+        <div class="flex justify-between">
+          <span>僅保留近1年內資料</span>
+          <a href="" class="flex items-center" @click.prevent="sortHistoryRecords">
+            <img src="@/assets/images/icon-order-arrows.png" width="30" alt="icon-order-arrows" />
+            <span>{{ historyRecordsOrder === 'asc' ? '由新到舊' : '由舊到新' }}</span>
+          </a>
+        </div>
+        <hr class="my-4" />
+        <div v-for="(item, index) in historyRecords" :key="index">
+          <p>{{ item.book_name }}</p>
+          <p class="text-grey-400">索書號：{{ item.call_number }}</p>
+          <p class="text-grey-400">借閱日期：{{ item.pickup_date }}~{{ item.return_date }}</p>
+          <hr class="my-4" />
+        </div>
+      </template>
+      <div v-else>
+        <div class="text-grey-400">
+          <img src="@/assets/images/illustrations_no_data.svg" class="mx-auto" alt="nodata-icon" />
+          <p class="text-center mt-2">目前沒有借閱紀錄</p>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 

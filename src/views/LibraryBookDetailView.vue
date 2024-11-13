@@ -103,8 +103,9 @@ const onSubmitClick = async () => {
     record_id: item.book_id + item.id,
     call_number: bookItem.value.call_number + item.series＿name,
     selected_library: selectedLibrary,
+    extend_count: 0,
     reservation_order: item.waiting_people + 1,
-    date: `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}` // 預約當下日期
+    reservation_date: `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}` // 預約當下日期
   }));
 
   console.log('request body:', body);
