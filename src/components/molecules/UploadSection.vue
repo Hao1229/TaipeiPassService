@@ -7,16 +7,20 @@ import { useFormStore } from '@/stores/form';
 const props = withDefaults(
   defineProps<{
     fileMax?: number;
+    fileUnLimit?: boolean;
     title?: string;
     required?: boolean;
     triggerValidate?: boolean;
     isReport?: boolean;
     isDisaster?: boolean;
+    isPoliceReport?: boolean;
   }>(),
   {
     fileMax: 1,
+    fileUnLimit: false,
     isReport: false,
-    isDisaster: false
+    isDisaster: false,
+    isPoliceReport: false
   }
 );
 
@@ -52,6 +56,7 @@ const onFileUpload = (event: Event) => {
     } else {
       isShowSizeError.value = false;
       fileList.value.push(file);
+      console.log('fileList:', fileList.value);
       validate();
       // TODO: 將 file 傳給 API，並將 API 的 response 向外拋出給外面表單提交，API 可能會回傳檔案編號之類
     }
@@ -84,8 +89,10 @@ watch(
         <p class="font-bold text-gray-800">{{ props.title || '新增附件' }}</p>
         <p class="text-sm text-gray-500">
           <span v-if="props.isReport">上傳附件(照片、錄影、錄音)總容量限制為40MB，</span>
-          <span v-if="!props.isReport">容量限制為{{ props.isDisaster ? 10 : 20 }}MB，</span>
-          <span v-if="props.fileMax > 1">最多{{ props.fileMax }}個檔案</span>
+          <span v-if="!props.isReport">容量限制為{{ props.isDisaster ? 10 : 20 }}MB</span>
+          <span v-if="props.fileMax > 1 && !props.fileUnLimit">
+            ，最多{{ props.fileMax }}個檔案
+          </span>
         </p>
       </div>
       <button @click.prevent="isOpen = true">
@@ -94,7 +101,11 @@ watch(
     </div>
 
     <div class="flex flex-wrap gap-x-4 gap-y-2">
-      <div v-for="count in props.fileMax" :key="count" class="mt-2">
+      <div
+        v-for="count in props.fileUnLimit ? fileList.length + 1 : props.fileMax"
+        :key="count"
+        class="mt-2"
+      >
         <label
           v-show="fileList.length === count - 1"
           :for="`upload-file-${count}`"
@@ -103,7 +114,7 @@ watch(
         >
           <img src="@/assets/images/add-icon.svg" class="w-6 h-6" />
 
-          <template v-if="props.fileMax > 1">
+          <template v-if="!props.fileUnLimit && props.fileMax > 1">
             <p>最多上傳</p>
             <p>{{ props.fileMax }}個檔案</p>
           </template>
@@ -111,6 +122,17 @@ watch(
           <p v-else class="mt-3">上傳附件</p>
 
           <input
+            v-if="props.isPoliceReport"
+            type="file"
+            name="photo"
+            :id="`upload-file-${count}`"
+            accept=".pdf, .png, .jpg, .jpeg, .tif, .tiff, .bmp, .avi, .flv, .wma, .wmv, .mov, .mp4"
+            class="absolute opacity-0 -z-10"
+            @change="onFileUpload"
+          />
+
+          <input
+            v-else
             type="file"
             name="photo"
             :id="`upload-file-${count}`"
@@ -174,8 +196,14 @@ watch(
                   <li>另 iOS 系統請確認「設定」> 照片 > 傳到 MAC 或 PC 是否設定為「自動」。</li>
                 </ul>
                 <template v-else>
-                  <p class="text-center font-bold">jpg,jpeg,gif,bmp,png,tif,tiff,doc,</p>
-                  <p class="text-center font-bold">docx,xls,xlsx,txt,pdf,odf,odg,odp,ods,odt</p>
+                  <template v-if="props.isPoliceReport">
+                    <p class="text-center font-bold">pdf, png, jpg, jpeg, tif, tiff, bmp,</p>
+                    <p class="text-center font-bold">avi, flv, wma, wmv, mov, mp4</p>
+                  </template>
+                  <template v-else>
+                    <p class="text-center font-bold">jpg,jpeg,gif,bmp,png,tif,tiff,doc,</p>
+                    <p class="text-center font-bold">docx,xls,xlsx,txt,pdf,odf,odg,odp,ods,odt</p>
+                  </template>
                   <p class="text-center font-extrabold">檔案大小：20MB</p>
                 </template>
               </div>

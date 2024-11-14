@@ -13,6 +13,9 @@ import TicketDetail from '../views/TicketDetail.vue';
 import CouponDetail from '../views/CouponDetail.vue';
 import TicketWallet from '@/views/TicketWallet.vue';
 import TicketExchange from '@/views/TicketExchange.vue';
+import BuyTicketView from '@/views/BuyTicketView.vue';
+import TicketPayment from '@/views/TicketPayment.vue';
+import PaymentFinishedView from '@/views/PaymentFinishedView.vue';
 import CitizenReportView from '@/views/CitizenReportView.vue';
 import CitizenReportListView from '@/views/CitizenReportListView.vue';
 import CitizenReportFormView from '@/views/CitizenReportFormView.vue';
@@ -23,6 +26,10 @@ import SubscriptionItemListView from '@/views/SubscriptionItemListView.vue';
 import SubscriptionItemDetailView from '@/views/SubscriptionItemDetailView.vue';
 import DisasterReportView from '@/views/DisasterReportView.vue';
 import DisasterReportFormView from '@/views/DisasterReportFormView.vue';
+import PoliceReportView from '@/views/PoliceReportView.vue';
+import PoliceReportFormView from '@/views/PoliceReportFormView.vue';
+import PoliceReportRecordView from '@/views/PoliceReportRecordView.vue';
+import PoliceReportRecordDetailView from '@/views/PoliceReportRecordDetailView.vue';
 import LibraryServiceView from '@/views/LibraryServiceView.vue';
 import LibraryKeywordSearchView from '@/views/LibraryKeywordSearchView.vue';
 import LibraryRankingListView from '@/views/LibraryRankingListView.vue';
@@ -106,6 +113,21 @@ const router = createRouter({
           path: 'coupon-detail/:id',
           name: 'coupon-detail',
           component: CouponDetail
+        },
+        {
+          path: 'buy-ticket/:id',
+          name: 'buy-ticket',
+          component: BuyTicketView
+        },
+        {
+          path: 'ticket-payment',
+          name: 'ticket-payment',
+          component: TicketPayment
+        },
+        {
+          path: 'payment-finished',
+          name: 'payment-finished',
+          component: PaymentFinishedView
         }
       ]
     },
@@ -216,6 +238,34 @@ const router = createRouter({
           path: 'form/:id',
           name: 'disaster-report-form',
           component: DisasterReportFormView
+        }
+      ]
+    },
+    {
+      path: '/police-report',
+      meta: {
+        title: '警政報案'
+      },
+      children: [
+        {
+          path: '',
+          name: 'police-report',
+          component: PoliceReportView
+        },
+        {
+          path: 'form',
+          name: 'police-report-form',
+          component: PoliceReportFormView
+        },
+        {
+          path: 'record',
+          name: 'police-report-record',
+          component: PoliceReportRecordView
+        },
+        {
+          path: 'record/:id',
+          name: 'police-report-record-detail',
+          component: PoliceReportRecordDetailView
         }
       ]
     },
