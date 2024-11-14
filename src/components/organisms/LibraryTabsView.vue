@@ -38,7 +38,7 @@ const activeTab = defineModel({ default: 0 });
   </section>
 </template>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .tab-view-container {
   @apply flex flex-nowrap overflow-x-hidden;
   height: calc(100vh - 43px);
