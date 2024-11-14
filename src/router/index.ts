@@ -30,6 +30,12 @@ import PoliceReportView from '@/views/PoliceReportView.vue';
 import PoliceReportFormView from '@/views/PoliceReportFormView.vue';
 import PoliceReportRecordView from '@/views/PoliceReportRecordView.vue';
 import PoliceReportRecordDetailView from '@/views/PoliceReportRecordDetailView.vue';
+import LibraryServiceView from '@/views/LibraryServiceView.vue';
+import LibraryKeywordSearchView from '@/views/LibraryKeywordSearchView.vue';
+import LibraryRankingListView from '@/views/LibraryRankingListView.vue';
+import LibraryBookDetailView from '@/views/LibraryBookDetailView.vue';
+import LibraryNoticeListView from '@/views/LibraryNoticeListView.vue';
+import LibraryNoticeDetailView from '@/views/LibraryNoticeDetailView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -260,6 +266,59 @@ const router = createRouter({
           path: 'record/:id',
           name: 'police-report-record-detail',
           component: PoliceReportRecordDetailView
+        }
+      ]
+    },
+    {
+      path: '/library-service',
+      children: [
+        {
+          path: '',
+          name: 'library-service',
+          component: LibraryServiceView,
+          meta: {
+            title: '圖書館服務'
+          }
+        },
+        {
+          path: 'keyword-search',
+          name: 'library-keyword-search',
+          component: LibraryKeywordSearchView,
+          meta: {
+            title: '關鍵字搜尋'
+          }
+        },
+        {
+          path: 'ranking-list',
+          name: 'library-ranking-list',
+          component: LibraryRankingListView,
+          meta: {
+            title: '點閱排行'
+          }
+        },
+        {
+          path: 'book-detail/:id',
+          name: 'library-book-detail',
+          component: LibraryBookDetailView,
+          meta: {
+            title: '詳細內容'
+          }
+        },
+        {
+          path: 'notice-list',
+          name: 'library-notice-list',
+          component: LibraryNoticeListView,
+          meta: {
+            title: '重要訊息'
+          }
+        },
+        {
+          path: 'notice-detail/:id',
+          name: 'library-notice-detail',
+          component: LibraryNoticeDetailView,
+          meta: {
+            title: '重要訊息'
+          }
         }
       ]
     }

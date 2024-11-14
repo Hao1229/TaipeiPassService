@@ -5,11 +5,11 @@ const props = withDefaults(defineProps<TabsProps>(), {
   tabList: () => [
     {
       id: 1,
-      title: '申辦'
+      title: '離我最近'
     },
     {
       id: 2,
-      title: '查詢'
+      title: '依行政區選擇'
     }
   ],
   contentType: false

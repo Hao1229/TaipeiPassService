@@ -1,73 +1,19 @@
 <script setup lang="ts">
-import FindPlace, { type Place } from '@/components/molecules/FindPlace.vue';
-import SpotList from '@/components/organisms/SpotListView.vue';
-import SpotDetail from '@/components/organisms/SpotDetailView.vue';
+import type { Library } from '@/interfaces/library-book.interface';
+import LibraryList from '@/components/organisms/LibraryListView.vue';
+import LibraryDetail from '@/components/organisms/LibraryDetailView.vue';
 import MessageModal from '@/components/molecules/MessageModal.vue';
 import { useGoogleMapsStore } from '@/stores/googleMaps';
-import axios from 'axios';
 import { onMounted, ref, watch } from 'vue';
-import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer';
 import greenDotIconUrl from '/public/images/map/youbike/mappin-green.svg';
 import defaultFocusIconUrl from '/public/images/map/icon_mappin-garbagetruck-green-pressed.svg';
-import { mappingFormatter, getNestedValue } from '@/utils/spot-formatter';
-
-export interface Spot {
-  id: string;
-  /** 站點名稱 */
-  name: string;
-  /** 行政區 */
-  area: string;
-  /** 地址 */
-  address: string;
-  /** 經度 */
-  lat: number;
-  /** 緯度 */
-  lng: number;
-  /** 距離 */
-  distance?: number;
-  /** 詳細資訊 */
-  service_infos?: {
-    title: string;
-    value: { title: string; value: string }[] | string;
-  }[];
-
-  /** 其餘詳細資訊 */
-  [key: string]: any;
-}
+import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer';
+import { useLibraryStore } from '@/stores/library';
+import { storeToRefs } from 'pinia';
 
 const googleMapsStore = useGoogleMapsStore();
-
-const selectedSearchData = ref<Place>({
-  id: '',
-  name: '',
-  icon: '',
-  agency: '',
-  type: '',
-  request_url: '',
-  data_path: ''
-});
-
-/** 搜尋結果 */
-const searchSpotList = ref<Spot[]>([]);
-/** 視窗下搜尋結果 */
-const filteredSpotList = ref<Spot[]>([]);
-const selectedSpot = ref<Spot | null>(null);
-
-/** 是否展開找地點面板 */
-const isExpand = ref(false);
-/** 是否點選展開列表 */
-const isExpandList = ref(false);
-/** 是否點選展開明細 */
-const isExpandDetail = ref(false);
-const isFrom = ref<'spot' | 'list' | ''>('');
-
-let isMapReady = ref(false);
-
-let map: any = null;
-/** 使用者定位 */
-let marker: any = null;
-let markers: google.maps.Marker[] = [];
-let markerCluster: any = null;
+const libraryStore = useLibraryStore();
+const { libraryList } = storeToRefs(libraryStore);
 
 /**
  * 目前位置
@@ -79,46 +25,30 @@ const currentLocation = ref<{ lat: number; lng: number; results: any[] }>({
   results: []
 });
 
+/** 搜尋結果 */
+const searchLibraryList = ref<Library[]>([]);
+/** 視窗下搜尋結果 */
+const filteredLibraryList = ref<Library[]>([]);
+const selectedLibrary = ref<Library | null>(null);
+
+let isMapReady = ref(false);
+
+let map: any = null;
+/** 使用者定位 */
+let marker: any = null;
+let markers: google.maps.Marker[] = [];
+let markerCluster: any = null;
+
+/** 是否點選展開列表 */
+const isExpandList = ref(false);
+/** 是否點選展開明細 */
+const isExpandDetail = ref(false);
+const isFrom = ref<'spot' | 'list' | ''>('');
+
 /**
  * 是否顯示未開啟取用位置權限通知
  */
 let isShowGeoError = ref(false);
-
-onMounted(() => {
-  initMap(currentLocation.value.lat, currentLocation.value.lng);
-});
-
-const handleExpandChange = (newValue: boolean) => {
-  isExpand.value = newValue;
-};
-
-const handleSearchChange = async (data: Place) => {
-  if (!data) {
-    return;
-  }
-  console.log('handleSearchChange:', data);
-  searchSpotList.value = [];
-  selectedSearchData.value = data;
-
-  switch (data.data_type) {
-    case 'api':
-    case 'json':
-      searchSpotList.value = await fetchAndFormatData(
-        data.request_url,
-        mappingFormatter,
-        data.format_fields,
-        data.service_infos,
-        data.data_path
-      );
-      break;
-    case 'csv':
-      break;
-    default:
-      break;
-  }
-
-  console.log('searchSpotList:', searchSpotList.value);
-};
 
 const setMapHeight = () => {
   const mapElement = document.getElementById('map');
@@ -215,44 +145,18 @@ const errorCallback = (error: any) => {
   }
 };
 
-const fetchAndFormatData = async (
-  url: string,
-  formatter: (item: any, formatFields: any, serviceInfos: any[]) => Spot,
-  formatFields: any,
-  serviceInfos: any,
-  dataPath: string
-) => {
-  try {
-    const response = await axios.get(url);
-    return formatSpotData(response.data, formatter, formatFields, serviceInfos, dataPath);
-  } catch (error) {
-    console.error(`Failed to fetch data from ${url}:`, error);
-    return [];
-  }
-};
-
-const formatSpotData = (
-  data: any,
-  formatter: (item: any, formatFields: any, serviceInfos: any[]) => Spot,
-  formatFields: any,
-  serviceInfos: any,
-  dataPath: string
-): Spot[] => {
-  // 動態解析 dataPath，如果沒有提供 dataPath，默認使用 response
-  const targetData = dataPath ? getNestedValue(data, dataPath) : data;
-  return targetData.map((item: any) => formatter(item, formatFields, serviceInfos));
-};
-
 const updateMarkers = async () => {
-  if (!selectedSearchData.value.id) {
-    clearMarkers();
-    return;
-  }
+  console.log('map', map);
 
-  const bounds = map.getBounds();
+  // if (!selectedSearchData.value?.id) {
+  //   clearMarkers();
+  //   return;
+  // }
+
+  const bounds = map?.getBounds();
   if (!bounds) return;
 
-  filteredSpotList.value = searchSpotList.value
+  filteredLibraryList.value = searchLibraryList.value
     .map((spot) => ({
       ...spot,
       position: new google.maps.LatLng(spot.lat, spot.lng)
@@ -270,14 +174,14 @@ const updateMarkers = async () => {
       )
     }));
 
-  console.log('filteredSpotList:', filteredSpotList.value);
+  console.log('filteredLibraryList:', filteredLibraryList.value);
 
   // Clear existing markers
   clearMarkers();
 
   let currentFocusedMarker: any = null;
 
-  filteredSpotList.value.forEach((spot) => {
+  filteredLibraryList.value.forEach((spot) => {
     const greenDotIcon = {
       url: greenDotIconUrl, // 預設綠色小圓點圖標的路徑
       scaledSize: new google.maps.Size(20, 20), // 設置圖標的大小
@@ -294,7 +198,7 @@ const updateMarkers = async () => {
       if (currentFocusedMarker && currentFocusedMarker !== marker) {
         // 恢復之前聚焦的標記為預設圖標
         currentFocusedMarker.setIcon(greenDotIcon);
-        selectedSpot.value = null;
+        selectedLibrary.value = null;
       }
 
       const focusedIcon = {
@@ -308,8 +212,8 @@ const updateMarkers = async () => {
       currentFocusedMarker = marker;
 
       // 獲取所選擇的 spot 的所有屬性
-      selectedSpot.value = spot;
-      console.log('Selected spot:', selectedSpot);
+      selectedLibrary.value = spot;
+      console.log('Selected spot:', selectedLibrary);
     });
 
     markers.push(marker);
@@ -358,27 +262,25 @@ const clearMarkers = () => {
   if (markerCluster) {
     markerCluster.clearMarkers();
   }
-  selectedSpot.value = null;
+  selectedLibrary.value = null;
 };
 
-// Watch for changes in searchSpotList
-watch(searchSpotList, updateMarkers);
+onMounted(() => {
+  searchLibraryList.value = libraryList.value;
+  initMap(currentLocation.value.lat, currentLocation.value.lng);
+});
+
+// Watch for changes in searchLibraryList
+watch(searchLibraryList, updateMarkers);
 </script>
 
 <template>
-  <div class="pb-8 h-screen">
+  <div class="">
     <div
       :class="{ hidden: isExpandList || isExpandDetail, visible: !isExpandList && !isExpandDetail }"
     >
-      <!-- 找地點搜尋框 -->
-      <div class="flex items-center">
-        <FindPlace
-          @onSearchChange="(value) => handleSearchChange(value)"
-          @update:isExpand="handleExpandChange"
-        />
-      </div>
       <!-- 地圖 -->
-      <div class="relative flex-1" :class="{ hidden: isExpand, visible: !isExpand }">
+      <div class="relative flex-1">
         <div class="google-map" id="map"></div>
         <div v-if="isMapReady" class="gps" @click="getPositionClick">
           <img src="@/assets/images/gps.png" width="20" alt="" />
@@ -386,7 +288,7 @@ watch(searchSpotList, updateMarkers);
       </div>
       <!-- 選取的點 -->
       <div
-        v-if="selectedSearchData.id && !isExpand && selectedSpot"
+        v-if="selectedLibrary"
         class="floating-box bottom-24 left-[50%] translate-x-[-50%] w-[90%]"
         @click="
           isExpandDetail = true;
@@ -394,52 +296,50 @@ watch(searchSpotList, updateMarkers);
         "
       >
         <div>
-          <p class="font-bold mb-2">{{ selectedSpot.name }}</p>
+          <p class="font-bold mb-2">{{ selectedLibrary.name }}</p>
           <div class="flex mb-2">
             <img src="@/assets/images/icon-geo.svg" alt="" />
-            <span class="underline">{{ selectedSpot.address }}</span>
+            <span class="underline">{{ selectedLibrary.address }}</span>
           </div>
           <!-- custom template -->
           <div class="flex text-grey-500">
-            <span>{{ selectedSpot.distance }}公里</span>
+            <span>{{ selectedLibrary.distance }}公里</span>
           </div>
         </div>
         <img src="@/assets/images/down-icon.svg" class="-rotate-90" alt="" />
       </div>
       <!-- 底部搜尋結果 -->
-      <div v-if="selectedSearchData.id && !isExpand" class="floating-box bottom-0 w-full">
+      <div class="floating-box bottom-0 w-full">
         <div class="flex items-center">
-          <span class="font-bold mr-2">{{ selectedSearchData.name }}</span>
+          <span class="font-bold mr-2">分館與站點</span>
           <div class="text-primary-500 border border-primary-500 rounded-full px-2">
-            {{ filteredSpotList.length }}筆結果
+            {{ filteredLibraryList.length }}筆結果
           </div>
         </div>
         <a class="text-primary-500" @click="isExpandList = true">展開列表</a>
       </div>
     </div>
     <!-- 搜尋結果列表 -->
-    <SpotList
+    <LibraryList
       v-if="isExpandList"
-      :selectedSearchData="selectedSearchData"
-      :filteredSpotList="filteredSpotList"
+      :filteredLibraryList="filteredLibraryList"
       @update:isExpandList="(value: boolean) => (isExpandList = value)"
-      @update:selectedSpot="
-        (value: Spot) => {
-          selectedSpot = value;
+      @update:selectedLibrary="
+        (value: Library) => {
+          selectedLibrary = value;
           isExpandDetail = true;
           isFrom = 'list';
         }
       "
     />
     <!-- 搜尋結果明細 -->
-    <SpotDetail
-      v-if="selectedSpot && isExpandDetail && isFrom"
-      :selectedSearchData="selectedSearchData"
-      :selectedSpot="selectedSpot"
+    <LibraryDetail
+      v-if="selectedLibrary && isExpandDetail && isFrom"
+      :selectedLibrary="selectedLibrary"
       @update:isExpandDetail="
         (value) => {
           isExpandDetail = value;
-          selectedSpot = null;
+          selectedLibrary = null;
           if (isFrom === 'list') {
             isExpandList = true;
           }
