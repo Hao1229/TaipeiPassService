@@ -1,0 +1,72 @@
+{
+  "//": "規費繳納-服務(包含熱門、其他)",
+  "data": [
+    {
+      "name": "規費",
+      "icon": "/images/icon_toilet.svg",
+      "data": [
+        {
+          "id": "fee-1",
+          "name": "公司登記費",
+          "search_type_list": [
+            {
+              "name": "輸入資料",
+              "type": "form",
+              "form_format": [
+                {
+                  "type": "input",
+                  "label": "手機號碼",
+                  "required": true,
+                  "field": "name",
+                  "description": "範例：0910999999，不含分隔符號"
+                }
+              ],
+              "notice": [
+                "行動支付交易限額依各家業者規定為準。",
+                "欲使用 Linepay 繳費，請改用其 APP 查繳。",
+                "繳費相關問題，請洽詢商業處服務電話 (02)2720-8889 轉 6485、6491。"
+              ]
+            },
+            {
+              "name": "繳費編號",
+              "type": "form",
+              "form_format": [
+                {
+                  "type": "input",
+                  "label": "繳費編號",
+                  "required": true,
+                  "field": "name",
+                  "description": "逾繳費期限，不提供查詢繳費功能"
+                }
+              ],
+              "notice": [
+                "行動支付交易限額依各家業者規定為準。",
+                "欲使用 Linepay 繳費，請改用其 APP 查繳。",
+                "繳費相關問題，請洽詢商業處服務電話 (02)2720-8889 轉 6485、6491。"
+              ]
+            },
+            {
+              "name": "掃描",
+              "type": "scan"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "稅費",
+      "icon": "",
+      "data": []
+    },
+    {
+      "name": "罰鍰",
+      "icon": "",
+      "data": []
+    },
+    {
+      "name": "金門縣政府",
+      "icon": "",
+      "data": []
+    }
+  ]
+}

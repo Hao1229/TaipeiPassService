@@ -36,6 +36,9 @@ import LibraryRankingListView from '@/views/LibraryRankingListView.vue';
 import LibraryBookDetailView from '@/views/LibraryBookDetailView.vue';
 import LibraryNoticeListView from '@/views/LibraryNoticeListView.vue';
 import LibraryNoticeDetailView from '@/views/LibraryNoticeDetailView.vue';
+import FeePaymentOthersView from '@/views/FeePaymentOthersView.vue';
+import FeePaymentSearchView from '@/views/FeePaymentSearchView.vue';
+import FeePaymentDetailView from '@/views/FeePaymentDetailView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -318,6 +321,36 @@ const router = createRouter({
           component: LibraryNoticeDetailView,
           meta: {
             title: '重要訊息'
+          }
+        }
+      ]
+    },
+    {
+      path: '/fee-payment',
+      name: 'fee-payment',
+      children: [
+        {
+          path: 'others',
+          name: 'fee-payment-others',
+          component: FeePaymentOthersView,
+          meta: {
+            title: '其他'
+          }
+        },
+        {
+          path: 'detail/:id',
+          name: 'fee-payment-detail',
+          component: FeePaymentDetailView,
+          meta: {
+            title: '繳費項目'
+          }
+        },
+        {
+          path: 'search',
+          name: 'fee-payment-search',
+          component: FeePaymentSearchView,
+          meta: {
+            title: '搜尋繳費項目'
           }
         }
       ]
