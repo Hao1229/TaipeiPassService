@@ -1,22 +1,9 @@
 <script setup lang="ts">
-import LibraryTabs from '@/components/molecules/LibraryTabs.vue';
+import FeePaymentTabs from '@/components/molecules/FeePaymentTabs.vue';
 import type { TabsProps } from '@/interfaces/tab-props.interface';
 
 const props = withDefaults(defineProps<TabsProps>(), {
-  tabList: () => [
-    {
-      id: 1,
-      title: '館藏查詢'
-    },
-    {
-      id: 2,
-      title: '我的紀錄'
-    },
-    {
-      id: 3,
-      title: '分館地圖'
-    }
-  ],
+  tabList: () => [],
   contentType: false
 });
 
@@ -24,7 +11,7 @@ const activeTab = defineModel({ default: 0 });
 </script>
 
 <template>
-  <LibraryTabs v-model="activeTab" :tab-list="props.tabList" :contentType="props.contentType" />
+  <FeePaymentTabs v-model="activeTab" :tab-list="props.tabList" :contentType="props.contentType" />
   <section class="tab-view-container">
     <div
       v-for="(item, index) in props.tabList"
@@ -40,7 +27,7 @@ const activeTab = defineModel({ default: 0 });
 <style lang="postcss" scoped>
 .tab-view-container {
   @apply flex flex-nowrap overflow-x-hidden;
-  height: calc(100vh - 43px);
+  height: calc(100vh - 83px);
 }
 
 .tab-view {

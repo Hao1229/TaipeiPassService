@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, reactive } from 'vue';
 import FeePaymentForm from '@/components/molecules/FeePaymentForm.vue';
-
+import BaseButton from '@/components/atoms/BaseButton.vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useFeePaymentStore } from '@/stores/fee-payment';
 import FeePaymentTabsView from '@/components/organisms/FeePaymentTabsView.vue';
+import FixedTitleSection from '@/components/molecules/FixedTitleSection.vue';
 
 const route = useRoute();
 const paymentStore = useFeePaymentStore();
@@ -28,10 +29,13 @@ const tabList = computed(() => {
 
 const activeTab = ref(0);
 
+const onScanClick = () => {};
+
 onMounted(() => {});
 </script>
 
 <template>
+  <FixedTitleSection :title="paymentItem.name" />
   <FeePaymentTabsView v-model="activeTab" :tab-list="tabList">
     <template #tab0>
       <!-- form -->
@@ -39,7 +43,12 @@ onMounted(() => {});
         <FeePaymentForm :payment-item="paymentItem" :tab-index="0"></FeePaymentForm>
       </template>
       <!-- scan -->
-      <template v-else> </template>
+      <template v-else>
+        <div class="text-grey-400 text-center mt-20">
+          <!-- <img src="@/assets/images/illustrations_no_data.svg" class="mx-auto" alt="nodata-icon" /> -->
+          <BaseButton @click="onScanClick()"> 開啟掃描 </BaseButton>
+        </div>
+      </template>
     </template>
     <template #tab1>
       <!-- form -->
@@ -47,7 +56,12 @@ onMounted(() => {});
         <FeePaymentForm :payment-item="paymentItem" :tab-index="1"></FeePaymentForm>
       </template>
       <!-- scan -->
-      <template v-else> </template>
+      <template v-else>
+        <div class="text-grey-400 text-center mt-20">
+          <!-- <img src="@/assets/images/illustrations_no_data.svg" class="mx-auto" alt="nodata-icon" /> -->
+          <BaseButton @click="onScanClick()"> 開啟掃描 </BaseButton>
+        </div>
+      </template>
     </template>
     <template #tab2>
       <!-- form -->
@@ -55,7 +69,12 @@ onMounted(() => {});
         <FeePaymentForm :payment-item="paymentItem" :tab-index="2"></FeePaymentForm>
       </template>
       <!-- scan -->
-      <template v-else> </template>
+      <template v-else>
+        <div class="text-grey-400 text-center mt-20">
+          <!-- <img src="@/assets/images/illustrations_no_data.svg" class="mx-auto" alt="nodata-icon" /> -->
+          <BaseButton @click="onScanClick()"> 開啟掃描 </BaseButton>
+        </div>
+      </template>
     </template>
   </FeePaymentTabsView>
 </template>

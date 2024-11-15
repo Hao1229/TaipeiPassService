@@ -74,7 +74,7 @@ onMounted(() => {});
       >
         <ul class="overflow-hidden">
           <li v-for="(subItem, index) in item.data" :key="index">
-            <div class="flex-grow pl-[3px]">
+            <div class="flex-grow pl-[3px] mb-4">
               <ul>
                 <li class="mb-3">
                   <router-link :to="{ name: 'fee-payment-detail', params: { id: subItem.id } }">

@@ -39,6 +39,7 @@ import LibraryNoticeDetailView from '@/views/LibraryNoticeDetailView.vue';
 import FeePaymentOthersView from '@/views/FeePaymentOthersView.vue';
 import FeePaymentSearchView from '@/views/FeePaymentSearchView.vue';
 import FeePaymentDetailView from '@/views/FeePaymentDetailView.vue';
+import FeePaymentResultView from '@/views/FeePaymentResultView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -341,6 +342,14 @@ const router = createRouter({
           path: 'detail/:id',
           name: 'fee-payment-detail',
           component: FeePaymentDetailView,
+          meta: {
+            title: '繳費項目'
+          }
+        },
+        {
+          path: 'success/:id',
+          name: 'fee-payment-result',
+          component: FeePaymentResultView,
           meta: {
             title: '繳費項目'
           }

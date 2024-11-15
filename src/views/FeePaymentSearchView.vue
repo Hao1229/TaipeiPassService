@@ -95,12 +95,12 @@ onMounted(() => {});
     </div>
     <!-- search history -->
     <template v-if="!isSearchClicked">
-      <div class="flex">
+      <div class="flex mb-4">
         <span>歷史紀錄</span>
         <a href="" class="ml-auto underline" @click.prevent="clearSearchHistory">清除</a>
       </div>
       <ul>
-        <li v-for="(keyword, index) in searchHistoryList" :key="index" class="mb-2">
+        <li v-for="(keyword, index) in searchHistoryList" :key="index">
           <a
             href="javascript:void(0)"
             class="w-full inline-block my-2"
@@ -114,11 +114,15 @@ onMounted(() => {});
     <!-- 搜尋結果 -->
     <template v-else>
       <p class="font-semibold mb-4">查詢結果</p>
-      <div v-for="(item, index) in searchResultList" :key="index">
-        <router-link :to="{ name: 'fee-payment-detail', params: { id: item.id } }" class="item">
+      <router-link
+        :to="{ name: 'fee-payment-detail', params: { id: item.id } }"
+        v-for="(item, index) in searchResultList"
+        :key="index"
+      >
+        <div class="my-2">
           {{ item.name }}
-        </router-link>
-      </div>
+        </div>
+      </router-link>
       <div v-if="!searchResultList.length" class="flex flex-col justify-center items-center pt-40">
         <img src="@/assets/images/img-info.svg" class="w-36" />
         <p class="text-primary-500 font-semibold text-2xl">無符合的搜尋結果</p>
