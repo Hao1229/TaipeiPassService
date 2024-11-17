@@ -36,6 +36,11 @@ import LibraryRankingListView from '@/views/LibraryRankingListView.vue';
 import LibraryBookDetailView from '@/views/LibraryBookDetailView.vue';
 import LibraryNoticeListView from '@/views/LibraryNoticeListView.vue';
 import LibraryNoticeDetailView from '@/views/LibraryNoticeDetailView.vue';
+import FeePaymentOthersView from '@/views/FeePaymentOthersView.vue';
+import FeePaymentSearchView from '@/views/FeePaymentSearchView.vue';
+import FeePaymentDetailView from '@/views/FeePaymentDetailView.vue';
+import FeePaymentResultView from '@/views/FeePaymentResultView.vue';
+import FeePaymentHistoryView from '@/views/FeePaymentHistoryView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -318,6 +323,52 @@ const router = createRouter({
           component: LibraryNoticeDetailView,
           meta: {
             title: '重要訊息'
+          }
+        }
+      ]
+    },
+    {
+      path: '/fee-payment',
+      name: 'fee-payment',
+      children: [
+        {
+          path: 'others',
+          name: 'fee-payment-others',
+          component: FeePaymentOthersView,
+          meta: {
+            title: '其他'
+          }
+        },
+        {
+          path: 'detail/:id',
+          name: 'fee-payment-detail',
+          component: FeePaymentDetailView,
+          meta: {
+            title: '繳費項目'
+          }
+        },
+        {
+          path: 'success/:id',
+          name: 'fee-payment-result',
+          component: FeePaymentResultView,
+          meta: {
+            title: '繳費項目'
+          }
+        },
+        {
+          path: 'search',
+          name: 'fee-payment-search',
+          component: FeePaymentSearchView,
+          meta: {
+            title: '搜尋繳費項目'
+          }
+        },
+        {
+          path: 'history',
+          name: 'fee-payment-history',
+          component: FeePaymentHistoryView,
+          meta: {
+            title: '帳務紀錄'
           }
         }
       ]

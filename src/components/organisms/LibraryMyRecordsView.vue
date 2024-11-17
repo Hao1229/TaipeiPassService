@@ -130,7 +130,10 @@ onMounted(() => {
     <template v-if="selectedListId === 'reservation-list'">
       <ul>
         <li class="px-4 py-2" v-for="item in reservationRecords" :key="item.name">
-          <button class="w-full flex justify-between items-center mb-5">
+          <button
+            class="w-full flex justify-between items-center mb-5"
+            @click="onExpandClick(item.name)"
+          >
             <div
               class="flex items-end"
               :class="{
@@ -145,7 +148,6 @@ onMounted(() => {
               :class="{
                 'rotate-180': expandListSet.has(item.name)
               }"
-              @click="onExpandClick(item.name)"
             />
           </button>
           <div
