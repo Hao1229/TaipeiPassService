@@ -40,6 +40,7 @@ import FeePaymentOthersView from '@/views/FeePaymentOthersView.vue';
 import FeePaymentSearchView from '@/views/FeePaymentSearchView.vue';
 import FeePaymentDetailView from '@/views/FeePaymentDetailView.vue';
 import FeePaymentResultView from '@/views/FeePaymentResultView.vue';
+import FeePaymentHistoryView from '@/views/FeePaymentHistoryView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -360,6 +361,14 @@ const router = createRouter({
           component: FeePaymentSearchView,
           meta: {
             title: '搜尋繳費項目'
+          }
+        },
+        {
+          path: 'history',
+          name: 'fee-payment-history',
+          component: FeePaymentHistoryView,
+          meta: {
+            title: '帳務紀錄'
           }
         }
       ]

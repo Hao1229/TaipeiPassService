@@ -129,7 +129,6 @@ onMounted(() => {});
         <p class="text-gray-400 text-sm mt-2 font-semibold">請試試其他關鍵字</p>
       </div>
     </template>
-    <!-- <template v-else> no data </template> -->
   </div>
 </template>
 
