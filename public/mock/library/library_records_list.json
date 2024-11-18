@@ -30,9 +30,9 @@
           "reservation_date": "2024/08/27",
           "processing_date": "2024/08/28",
           "pickup_start_date": "2024/09/01",
-          "pickup_date": "2024/09/05",
+          "pickup_date": "",
           "pickup_end_date": "2024/09/08",
-          "return_end_date": "2024/10/05",
+          "return_end_date": "",
           "return_date": "",
           "pickup_number": "080"
         }
