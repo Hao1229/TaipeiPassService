@@ -2,7 +2,6 @@
 import type { Library } from '@/interfaces/library-book.interface';
 import { ref } from 'vue';
 import BaseDialog from '@/components/atoms/BaseDialog.vue';
-import type { LibraryRecords } from '@/interfaces/library-records.interface';
 import { useConnectionMessage } from '@/composables/useConnectionMessage';
 
 const props = defineProps<{

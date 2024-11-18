@@ -10,6 +10,7 @@ import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
 import type { LibraryRecords } from '@/interfaces/library-records.interface';
 import type { BookSeries, Library } from '@/interfaces/library-book.interface';
+import { BookStatusEnum } from '@/enums/book-status.enum';
 
 const router = useRouter();
 const route = useRoute();
@@ -103,6 +104,7 @@ const onSubmitClick = async () => {
     record_id: item.book_id + item.id,
     call_number: bookItem.value.call_number + item.series＿name,
     selected_library: selectedLibrary,
+    status: BookStatusEnum.Reserved,
     extend_count: 0,
     reservation_order: item.waiting_people + 1,
     reservation_date: `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}` // 預約當下日期

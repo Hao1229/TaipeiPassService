@@ -20,6 +20,7 @@
         "lat": 25.036840205171266,
         "lng": 121.55728022540654
       },
+      "status":"1",
       "reservation_order": 1,
       "extend_count": 0,
       "reservation_date": "2024/08/27",
@@ -50,6 +51,7 @@
         "lat": 25.037491,
         "lng": 121.564088
       },
+      "status": "1",
       "reservation_order": 1,
       "extend_count": 0,
       "reservation_date": "2024/11/09",

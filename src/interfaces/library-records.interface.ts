@@ -1,10 +1,13 @@
-import type { BookSeries, Library, LibraryBook } from './library-book.interface';
+import type { BookStatusEnum } from '@/enums/book-status.enum';
+import type { Library, LibraryBook } from './library-book.interface';
 
 /**
  * 我的紀錄
  */
 export interface LibraryRecords extends LibraryBook {
   record_id: string;
+  /** 狀態 */
+  status: BookStatusEnum;
   /** 取書館 */
   selected_library: Library;
   /** 延長次數 */
