@@ -6,6 +6,7 @@
       "data": [
         {
           "id": "lib-book-1",
+          "record_id": "lib-book-1lib-series-1",
           "book_name": "我的第一本滑塊書 : 顏色配對",
           "author": "Anton Poitier文 ; Maria Neradova圖",
           "publisher": "新北市 :九童國際文化事業有限公司,[2016] ,©2016",
@@ -14,7 +15,7 @@
           "isbn": "9789864420780",
           "thumbnail": "/images/library/IMG_2509.WEBP",
           "click_count": 3450,
-          "call_number": "",
+          "call_number": "V. 1",
           "selected_library": {
             "id": "lib-2",
             "name": "C21延吉",
@@ -23,6 +24,7 @@
             "lat": 25.036840205171266,
             "lng": 121.55728022540654
           },
+          "status":"5",
           "reservation_order": 1,
           "extend_count": 0,
           "reservation_date": "2024/08/27",
@@ -41,6 +43,7 @@
       "data": [
         {
           "id": "lib-book-5",
+          "record_id": "lib-book-5lib-series-1",
           "book_name": "歡迎光臨錢天堂 : 神奇柑仔店大圖鑑",
           "author": "廣嶋玲子文 ; jyajya圖 ; 王蘊潔譯",
           "publisher": "台北市 :親子天下股份有限公司,2023",
@@ -58,6 +61,7 @@
             "lat": 25.037491,
             "lng": 121.564088
           },
+          "status":"3",
           "reservation_order": 1,
           "extend_count": 0,
           "reservation_date": "2024/11/09",
