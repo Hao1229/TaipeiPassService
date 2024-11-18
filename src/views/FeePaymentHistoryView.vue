@@ -147,8 +147,6 @@ const getPaymentHistoryList = () => {
 };
 
 watch([searchYear, searchType, searchStatus], () => {
-  console.log('watch:', searchYear.value, searchType.value, searchStatus.value);
-  
   getPaymentHistoryList();
 });
 </script>
