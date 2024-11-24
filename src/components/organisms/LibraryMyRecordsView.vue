@@ -269,7 +269,12 @@ onMounted(() => {
       />
     </template>
     <template v-else-if="selectedListId === 'reservation-not-take-records'">
-      <!-- TODO: 預約未取紀錄 list -->
+      <div v-for="(item, index) in noPickupRecords" :key="index">
+        <p>{{ item.book_name }}</p>
+        <p class="text-grey-400">索書號：{{ item.call_number }}</p>
+        <p class="text-grey-400">紀錄日期：{{ item.processing_date }}</p>
+        <hr class="my-4" />
+      </div>
       <div v-if="!noPickupRecords.length">
         <div class="text-grey-400">
           <img src="@/assets/images/illustrations_no_data.svg" class="mx-auto" alt="nodata-icon" />
