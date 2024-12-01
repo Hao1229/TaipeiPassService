@@ -23,15 +23,15 @@ useHandleConnectionData(handleScan);
 const isErrorDialogOpen = ref(false);
 
 onMounted(() => {
-  setTimeout(() => {
-    const json = {
-      name: 'qr_code_scan',
-      data: { asdf: 'fee-1' }
-    };
-    const scanString: string = JSON.stringify(json);
-    console.log('scanString:', scanString);
-    handleScan({ data: scanString });
-  }, 2000);
+  // setTimeout(() => {
+  //   const json = {
+  //     name: 'qr_code_scan',
+  //     data: { asdf: 'fee-1' }
+  //   };
+  //   const scanString: string = JSON.stringify(json);
+  //   console.log('scanString:', scanString);
+  //   handleScan({ data: scanString });
+  // }, 2000);
 });
 </script>
 
