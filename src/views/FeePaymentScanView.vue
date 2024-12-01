@@ -41,7 +41,10 @@ onMounted(() => {
     :isAlert="true"
     title="讀取失敗"
     content="此類型的行動條碼不適用"
-    positiveText="確認"
-    @onPositiveClick="isErrorDialogOpen = false"
+    positiveText="重新掃描"
+    @onPositiveClick="
+      isErrorDialogOpen = false;
+      useConnectionMessage('qr_code_scan', null);
+    "
   />
 </template>
