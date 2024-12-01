@@ -5,16 +5,14 @@ import { useHandleConnectionData } from '@/composables/useHandleConnectionData';
 import router from '@/router';
 import BaseDialog from '@/components/atoms/BaseDialog.vue';
 
-const handleScan = (event: { data: string | null }) => {
-  if (event.data) {
-    const result: { name: string; data: { id: string } } = JSON.parse(event.data);
-    console.log('result:', result.data);
+const handleScan = (event: { data: string }) => {
+  const result: { name: string; data: { id: string } | null } = JSON.parse(event.data);
+  console.log('result:', result.data);
 
-    if (result.data.id) {
-      router.push({ name: 'fee-payment-result', params: { id: result.data.id } });
-    } else {
-      isErrorDialogOpen.value = true;
-    }
+  if (result.data?.id) {
+    router.push({ name: 'fee-payment-result', params: { id: result.data.id } });
+  } else {
+    isErrorDialogOpen.value = true;
   }
 };
 
@@ -25,15 +23,15 @@ useHandleConnectionData(handleScan);
 const isErrorDialogOpen = ref(false);
 
 onMounted(() => {
-  // setTimeout(() => {
-  //   const json = {
-  //     name: 'qr_code_scan',
-  //     data: { id: 'fee-1' }
-  //   };
-  //   const scanString: string = JSON.stringify(json);
-  //   console.log('scanString:', scanString);
-  //   handleScan({ data: scanString });
-  // }, 2000);
+  setTimeout(() => {
+    const json = {
+      name: 'qr_code_scan',
+      data: { asdf: 'fee-1' }
+    };
+    const scanString: string = JSON.stringify(json);
+    console.log('scanString:', scanString);
+    handleScan({ data: scanString });
+  }, 2000);
 });
 </script>
 
