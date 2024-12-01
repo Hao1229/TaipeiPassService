@@ -23,15 +23,15 @@ useHandleConnectionData(handleScan);
 const isErrorDialogOpen = ref(false);
 
 onMounted(() => {
-  setTimeout(() => {
-    const json = {
-      name: 'qr_code_scan',
-      data: { asdf: 'fee-1' }
-    };
-    const scanString: string = JSON.stringify(json);
-    console.log('scanString:', scanString);
-    handleScan({ data: scanString });
-  }, 2000);
+  // setTimeout(() => {
+  //   const json = {
+  //     name: 'qr_code_scan',
+  //     data: { asdf: 'fee-1' }
+  //   };
+  //   const scanString: string = JSON.stringify(json);
+  //   console.log('scanString:', scanString);
+  //   handleScan({ data: scanString });
+  // }, 2000);
 });
 </script>
 
@@ -41,7 +41,10 @@ onMounted(() => {
     :isAlert="true"
     title="讀取失敗"
     content="此類型的行動條碼不適用"
-    positiveText="確認"
-    @onPositiveClick="isErrorDialogOpen = false"
+    positiveText="重新掃描"
+    @onPositiveClick="
+      isErrorDialogOpen = false;
+      useConnectionMessage('qr_code_scan', null);
+    "
   />
 </template>
