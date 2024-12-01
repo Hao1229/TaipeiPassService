@@ -9,7 +9,7 @@ const handleScan = (event: { data: string | null }) => {
     const result = JSON.parse(event.data);
     console.log('result:', result);
 
-    window.location.href = result;
+    router.push({ name: 'fee-payment-result', params: { id: result.id } });
   }
 };
 
@@ -19,9 +19,7 @@ useHandleConnectionData(handleScan);
 
 onMounted(() => {
   // setTimeout(() => {
-  //   const scanString: string = JSON.stringify(
-  //     'https://taipei-pass-service.vercel.app/fee-payment/result/fee-1'
-  //   );
+  //   const scanString: string = JSON.stringify({ id: 'fee-1' });
   //   handleScan({ data: scanString });
   // }, 2000);
 });
