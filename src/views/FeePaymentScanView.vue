@@ -10,7 +10,16 @@ const handleScan = (event: { data: string }) => {
   console.log('result:', result.data);
 
   if (result.data?.id) {
-    router.push({ name: 'fee-payment-result', params: { id: result.data.id } });
+    const navigateToResult = async () => {
+      try {
+        await router.push({ name: 'fee-payment-result', params: { id: result.data!.id } });
+        console.log('Navigation successful');
+      } catch (error) {
+        console.error('Navigation failed:', error);
+      }
+    };
+    navigateToResult();
+    // router.push({ name: 'fee-payment-result', params: { id: result.data.id } });
   } else {
     isErrorDialogOpen.value = true;
   }
@@ -26,7 +35,7 @@ onMounted(() => {
   // setTimeout(() => {
   //   const json = {
   //     name: 'qr_code_scan',
-  //     data: { asdf: 'fee-1' }
+  //     data: { id: 'fee-1' }
   //   };
   //   const scanString: string = JSON.stringify(json);
   //   console.log('scanString:', scanString);
