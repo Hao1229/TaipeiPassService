@@ -6,20 +6,9 @@ import router from '@/router';
 import BaseDialog from '@/components/atoms/BaseDialog.vue';
 
 const handleScan = (event: { data: string }) => {
-  const result: { name: string; data: string } = JSON.parse(event.data);
-  console.log('result:', result.data);
-  const id = JSON.parse(result.data)?.id;
-  if (id) {
-    const navigateToResult = async () => {
-      try {
-        await router.push({ name: 'fee-payment-result', params: { id } });
-        console.log('Navigation successful');
-      } catch (error) {
-        console.error('Navigation failed:', error);
-      }
-    };
-    navigateToResult();
-    // router.push({ name: 'fee-payment-result', params: { id: result.data.id } });
+  const result: { name: string; data: string | null } = JSON.parse(event.data);
+  if (result.data) {
+    router.push({ name: 'fee-payment-result', params: { id: result.data } });
   } else {
     isErrorDialogOpen.value = true;
   }
