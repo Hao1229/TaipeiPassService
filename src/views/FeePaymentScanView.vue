@@ -6,13 +6,13 @@ import router from '@/router';
 import BaseDialog from '@/components/atoms/BaseDialog.vue';
 
 const handleScan = (event: { data: string }) => {
-  const result: { name: string; data: { id: string } | null } = JSON.parse(event.data);
+  const result: { name: string; data: string } = JSON.parse(event.data);
   console.log('result:', result.data);
-
-  if (result.data?.id) {
+  const id = JSON.parse(result.data)?.id;
+  if (id) {
     const navigateToResult = async () => {
       try {
-        await router.push({ name: 'fee-payment-result', params: { id: result.data!.id } });
+        await router.push({ name: 'fee-payment-result', params: { id } });
         console.log('Navigation successful');
       } catch (error) {
         console.error('Navigation failed:', error);
@@ -35,7 +35,7 @@ onMounted(() => {
   // setTimeout(() => {
   //   const json = {
   //     name: 'qr_code_scan',
-  //     data: { id: 'fee-1' }
+  //     data: JSON.stringify({ id: 'fee-1' })
   //   };
   //   const scanString: string = JSON.stringify(json);
   //   console.log('scanString:', scanString);
