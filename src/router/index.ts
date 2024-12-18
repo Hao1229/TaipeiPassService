@@ -41,6 +41,7 @@ import FeePaymentSearchView from '@/views/FeePaymentSearchView.vue';
 import FeePaymentDetailView from '@/views/FeePaymentDetailView.vue';
 import FeePaymentResultView from '@/views/FeePaymentResultView.vue';
 import FeePaymentHistoryView from '@/views/FeePaymentHistoryView.vue';
+import FeePaymentHistoryDetailView from '@/views/FeePaymentHistoryDetailView.vue';
 import FeePaymentScanView from '@/views/FeePaymentScanView.vue';
 import FeePaymentStepView from '@/views/FeePaymentStepView.vue';
 import FeePaymentFinishedView from '@/views/FeePaymentFinishedView.vue';
@@ -382,6 +383,14 @@ const router = createRouter({
           component: FeePaymentHistoryView,
           meta: {
             title: '帳務紀錄'
+          }
+        },
+        {
+          path: 'history/:id',
+          name: 'fee-payment-history-detail',
+          component: FeePaymentHistoryDetailView,
+          meta: {
+            title: '帳單明細'
           }
         },
         {
