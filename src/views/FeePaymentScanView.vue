@@ -32,8 +32,8 @@ const handleScan = (event: { data: string }) => {
       isErrorDialogOpen.value = true;
     }
   } else {
-    // 如果 result.data 為空，顯示錯誤對話框
-    isErrorDialogOpen.value = true;
+    // 如果 result.data 為空，關閉 webview
+    window.close();
   }
 };
 
