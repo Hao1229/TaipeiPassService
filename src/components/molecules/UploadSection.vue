@@ -156,7 +156,9 @@ watch(
             class="w-24 h-24 object-cover"
           />
           <div v-else class="h-full flex justify-center items-center px-2">
-            <p class="text-sm">{{ fileList[count - 1]?.name }}</p>
+            <p class="text-sm max-w-16 overflow-hidden text-ellipsis whitespace-nowrap">
+              {{ fileList[count - 1]?.name }}
+            </p>
           </div>
         </div>
       </div>
