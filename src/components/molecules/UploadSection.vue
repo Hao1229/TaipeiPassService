@@ -88,7 +88,7 @@ watch(
       <div>
         <p class="font-bold text-gray-800">{{ props.title || '新增附件' }}</p>
         <p class="text-sm text-gray-500">
-          <span v-if="props.isReport">上傳附件(照片、錄影、錄音)總容量限制為40MB，</span>
+          <span v-if="props.isReport">上傳附件(照片、錄影、錄音)總容量限制為40MB</span>
           <span v-if="!props.isReport">容量限制為{{ props.isDisaster ? 10 : 20 }}MB</span>
           <span v-if="props.fileMax > 1 && !props.fileUnLimit">
             ，最多{{ props.fileMax }}個檔案
