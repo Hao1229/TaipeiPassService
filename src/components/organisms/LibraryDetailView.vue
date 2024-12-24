@@ -12,7 +12,7 @@ const emit = defineEmits(['update:isExpandDetail']);
 const isMapDialogOpen = ref(false);
 
 const onMapOpenClick = (library: Library) => {
-  useConnectionMessage('launch_map', library.address);
+  useConnectionMessage('launch_map', library.address.map);
 };
 </script>
 
@@ -36,7 +36,7 @@ const onMapOpenClick = (library: Library) => {
       <div class="flex mb-2">
         <img src="@/assets/images/icon-geo.svg" alt="" />
         <a href="" @click.prevent="isMapDialogOpen = true">
-          <span class="underline">{{ selectedLibrary.address }}</span>
+          <span class="underline">{{ selectedLibrary.address.text }}</span>
         </a>
       </div>
       <!-- phone -->
