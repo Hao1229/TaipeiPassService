@@ -11,6 +11,10 @@ const emit = defineEmits(['update:isExpandDetail']);
 
 const isMapDialogOpen = ref(false);
 
+const onPhoneCallClick = (phone: string) => {
+  useConnectionMessage('phone_call', phone);
+};
+
 const onMapOpenClick = (library: Library) => {
   useConnectionMessage('launch_map', library.address.map);
 };
@@ -40,7 +44,11 @@ const onMapOpenClick = (library: Library) => {
         </a>
       </div>
       <!-- phone -->
-      <a :href="`tel://${selectedLibrary.phone}`" class="flex mb-2">
+      <a
+        href="javascript:void(0)"
+        class="flex mb-2"
+        @click="onPhoneCallClick(selectedLibrary.phone)"
+      >
         <img src="@/assets/images/icon_tel.svg" class="icon" alt="icon_tel" />
         <span class="mx-1">{{ selectedLibrary.phone }}</span>
       </a>
